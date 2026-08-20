@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fanzones - Exclusive Creator Connections</title>
-    <!-- Tailwind CSS -->
+    <title>Fanzones Live - Stream & Connect</title>
+    
+    <!-- Tailwind CSS (For Modern Styling) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Plus Jakarta Sans for premium tech feel -->
+    
+    <!-- Premium Font: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Pro Icons -->
+    
+    <!-- FontAwesome Pro Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -19,32 +24,110 @@
         .active-view { display: block !important; }
         .hidden-view { display: none !important; }
         .glass-panel {
-            background: rgba(10, 15, 30, 0.7);
+            background: rgba(10, 15, 30, 0.75);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .text-glow {
-            text-shadow: 0 0 40px rgba(236, 72, 153, 0.3);
-        }
-        .glow-border:hover {
-            border-color: rgba(236, 72, 153, 0.4);
-            box-shadow: 0 0 30px rgba(236, 72, 153, 0.15);
+            text-shadow: 0 0 35px rgba(236, 72, 153, 0.4);
         }
         .premium-blur {
-            filter: blur(20px) brightness(0.5);
+            filter: blur(25px) brightness(0.4);
             pointer-events: none;
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Floating Hearts Animation keyframes */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) scale(1.4) rotate(20deg);
+                opacity: 0;
+            }
+        }
+        .floating-heart {
+            position: absolute;
+            animation: floatUp 1.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 30;
+        }
     </style>
 </head>
 <body class="bg-[#030712] text-gray-100 min-h-screen flex flex-col selection:bg-pink-500 selection:text-white">
 
-    <!-- Toast Notifications Container -->
-    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+    <!-- Toast Notifications Wrapper -->
+    <div id="toast-container" class="fixed bottom-24 lg:bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- TANGO STYLE LIVE VIEWER MODAL -->
+    <div id="live-viewer-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex items-center justify-center p-0 sm:p-4">
+        <div class="w-full sm:max-w-md h-full sm:h-[85vh] bg-gray-950 sm:rounded-3xl overflow-hidden border border-gray-900 flex flex-col relative">
+            
+            <!-- Live Image Frame (Syncs from Broadcaster Camera) -->
+            <div class="flex-grow bg-black relative flex items-center justify-center overflow-hidden">
+                <img id="live-player-screen" src="" alt="Live Stream" class="w-full h-full object-cover">
+                
+                <!-- Screen overlay dark gradient -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60 pointer-events-none"></div>
+
+                <!-- Floating Hearts Container -->
+                <div id="hearts-container" class="absolute inset-0 pointer-events-none"></div>
+
+                <!-- Live Info Header Overlay -->
+                <div class="absolute top-4 inset-x-4 flex justify-between items-center z-10">
+                    <div class="flex items-center space-x-2 bg-black/40 backdrop-blur px-3 py-1.5 rounded-full border border-white/10">
+                        <div class="h-6 w-6 bg-pink-500 rounded-full flex items-center justify-center text-[10px] font-black text-white" id="live-room-avatar">CR</div>
+                        <div>
+                            <p class="text-[10px] font-bold text-white" id="live-room-author">@creator</p>
+                            <p class="text-[8px] text-gray-400 font-medium" id="live-room-viewers">0 watching</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-red-600 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center animate-pulse"><i class="fa-solid fa-tower-broadcast mr-1"></i> Live</span>
+                        <button onclick="leaveLiveRoom()" class="bg-black/50 hover:bg-red-600 text-white p-2 rounded-full text-sm transition-colors border border-white/10">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tango Gift Counter Widget -->
+                <div class="absolute top-20 left-4 bg-amber-500/20 backdrop-blur-md border border-amber-500/30 px-3 py-1.5 rounded-xl flex items-center space-x-1.5 z-10">
+                    <span class="text-amber-400 text-xs"><i class="fa-solid fa-gift animate-bounce"></i></span>
+                    <span class="text-[10px] font-black text-amber-200">Gifts: <span id="live-room-gifts">0</span></span>
+                </div>
+
+                <!-- Tango-Style Chat Overlay inside Player -->
+                <div class="absolute bottom-20 inset-x-4 max-h-40 overflow-y-auto no-scrollbar flex flex-col space-y-1.5 justify-end" id="live-room-chat">
+                    <!-- Chats will render here dynamically -->
+                </div>
+            </div>
+
+            <!-- Tango Viewer Interaction Footer Panel -->
+            <div class="p-4 bg-gray-950 border-t border-gray-900 flex items-center space-x-3 z-10">
+                <form onsubmit="sendLiveComment(event)" class="flex-grow flex items-center bg-gray-900 rounded-full border border-gray-800 px-3 py-1">
+                    <input type="text" id="live-chat-input" required placeholder="Send a live comment..." class="flex-grow bg-transparent text-xs text-white outline-none py-2">
+                    <button type="submit" class="text-pink-500 hover:text-white transition"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+                </form>
+
+                <!-- Floating Heart Button -->
+                <button onclick="triggerHeartSplash()" class="bg-pink-600 hover:bg-pink-700 text-white p-3 rounded-full shadow-lg transition duration-300">
+                    <i class="fa-solid fa-heart text-sm"></i>
+                </button>
+
+                <!-- Coin Gift Button (Tango Style) -->
+                <button onclick="sendLiveGift()" class="bg-amber-500 hover:bg-amber-600 text-gray-950 font-black px-4 py-2.5 rounded-full text-xs flex items-center space-x-1 shadow-lg shadow-amber-500/15 transition duration-300">
+                    <i class="fa-solid fa-gift"></i> <span>Gift 10</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Full-Screen Stories Player Modal -->
-    <div id="story-viewer" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center p-4">
+    <div id="story-viewer" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center p-4">
         <div class="max-w-md w-full relative flex flex-col h-[80vh] bg-gray-900 rounded-3xl overflow-hidden border border-gray-800">
             <div class="absolute top-3 inset-x-4 h-1 bg-white/20 rounded-full overflow-hidden z-10">
                 <div id="story-progress" class="h-full bg-pink-500 w-0 transition-all duration-[5000ms] ease-linear"></div>
@@ -62,45 +145,48 @@
         </div>
     </div>
 
-    <!-- Main Responsive Navigation Header -->
+    <!-- Main Navigation Header -->
     <header class="border-b border-gray-900 bg-[#030712]/80 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             
-            <!-- Branding -->
+            <!-- Branding Logo -->
             <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('home')">
                 <span class="text-2xl font-black tracking-wider text-pink-500 flex items-center">
                     <i class="fa-solid fa-crown mr-2 text-pink-500 animate-pulse"></i>FAN<span class="text-white">ZONES</span>
                 </span>
-                <span class="bg-pink-500/10 text-pink-400 text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-1 rounded-full border border-pink-500/20">V3.5</span>
+                <span class="bg-pink-500/10 text-pink-400 text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-1 rounded-full border border-pink-500/20">V4.0</span>
             </div>
             
-            <!-- Navbar Items -->
+            <!-- Desktop Exclusive Menu Links -->
             <nav class="hidden lg:flex items-center space-x-8 text-sm font-bold text-gray-400">
                 <button onclick="navigateTo('home')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-house text-xs"></i> <span>Welcome</span></button>
-                <button onclick="navigateTo('feed')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-compass text-xs"></i> <span>Live Feed</span></button>
+                <button onclick="navigateTo('feed')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-compass text-xs"></i> <span>Live Streams</span></button>
                 <button onclick="navigateTo('bookmarks')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-bookmark text-xs"></i> <span>Saved</span></button>
                 <button onclick="navigateTo('dashboard')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-circle-plus text-xs"></i> <span>Studio Desk</span></button>
                 <button onclick="navigateTo('profile')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-user-astronaut text-xs"></i> <span>My Studio</span></button>
             </nav>
 
-            <!-- Wallet & Interactions -->
+            <!-- Wallet & Log Access Widget Area -->
             <div class="flex items-center space-x-4">
-                <div class="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-full flex items-center space-x-1.5 cursor-pointer hover:bg-amber-500/20 transition" onclick="showToast('Your active Fanzones Coins balance.')" title="Your Coins Wallet">
-                    <span class="text-amber-400 text-sm"><i class="fa-solid fa-coins"></i></span>
+                <!-- Coins Balance Display -->
+                <div class="bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-full flex items-center space-x-1.5 cursor-pointer hover:bg-amber-500/20 transition duration-300" onclick="showToast('Your active coins wallet balance!')">
+                    <span class="text-amber-400 text-sm"><i class="fa-solid fa-coins animate-bounce"></i></span>
                     <span class="text-xs font-black text-amber-300" id="wallet-balance">200</span>
                 </div>
+                <!-- Alert Bell -->
                 <div class="relative cursor-pointer py-1" onclick="toggleNotifications()">
                     <span class="text-gray-400 hover:text-white transition text-lg"><i class="fa-regular fa-bell"></i></span>
                     <span id="notif-dot" class="absolute top-1.5 right-0.5 h-2 w-2 bg-red-500 rounded-full hidden animate-ping"></span>
                 </div>
-                <button onclick="navigateTo('dashboard')" class="bg-gradient-to-r from-pink-500 to-indigo-600 hover:opacity-95 text-white px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition transform hover:scale-[1.03] shadow-lg shadow-pink-500/20">
+                <!-- Desktop-only CTA Button -->
+                <button onclick="navigateTo('dashboard')" class="hidden lg:inline-block bg-gradient-to-r from-pink-500 to-indigo-600 hover:opacity-95 text-white px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition transform hover:scale-[1.03] shadow-lg shadow-pink-500/20">
                     Create Post
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Notification Tray Drawer -->
+    <!-- Activity Log Notification Drawer -->
     <div id="notif-drawer" class="fixed right-6 top-16 w-80 bg-gray-950 border border-gray-900 rounded-2xl shadow-2xl p-4 hidden z-50">
         <div class="flex justify-between items-center border-b border-gray-900 pb-2 mb-3">
             <h4 class="text-xs font-black uppercase tracking-wider text-gray-400">Activity Logs</h4>
@@ -112,171 +198,145 @@
     </div>
 
     <!-- MAIN APP STRUCTURE -->
-    <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-8">
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 md:px-6 py-6 md:py-10 pb-24 lg:pb-10">
 
-        <!-- VIEW 1: PREMIUM WELCOME LANDING INTERFACE -->
-        <section id="view-home" class="view active-view space-y-20 py-6">
+        <!-- VIEW 1: PREMIUM WELCOME INTERFACE (LANDING PAGE) -->
+        <section id="view-home" class="view active-view space-y-16 md:space-y-24">
             
-            <!-- Hero Grid Layout -->
-            <div class="grid lg:grid-cols-12 gap-12 items-center relative">
-                <!-- Background ambient glows -->
-                <div class="absolute -top-24 left-1/4 w-96 h-96 bg-pink-500/10 rounded-full filter blur-3xl -z-10"></div>
-                <div class="absolute top-12 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full filter blur-3xl -z-10"></div>
+            <!-- Hero Layout Section -->
+            <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center relative">
+                <!-- Ambient blur glows -->
+                <div class="absolute -top-20 left-1/4 w-72 md:w-96 h-72 md:h-96 bg-pink-500/10 rounded-full filter blur-3xl -z-10"></div>
+                <div class="absolute top-10 right-1/4 w-72 md:w-96 h-72 md:h-96 bg-indigo-500/10 rounded-full filter blur-3xl -z-10"></div>
 
-                <!-- Text Presentation (Left Side) -->
-                <div class="lg:col-span-7 space-y-6">
-                    <span class="bg-gradient-to-r from-pink-500/10 to-indigo-500/10 border border-pink-500/20 px-4 py-2 rounded-full text-xs font-extrabold tracking-widest uppercase text-pink-400">
-                        ✨ OWN YOUR NETWORK. REWARD YOUR WORK.
+                <!-- Text Presentation Frame -->
+                <div class="lg:col-span-7 space-y-5 md:space-y-7 text-center lg:text-left">
+                    <span class="inline-block bg-gradient-to-r from-pink-500/10 to-indigo-500/10 border border-pink-500/20 px-4 py-2 rounded-full text-[10px] md:text-xs font-extrabold tracking-widest uppercase text-pink-400">
+                        ⚡ LIVE BROADCASTING & PREMIUM NETWORKS
                     </span>
-                    <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-none text-glow">
-                        Where Passion Meets <br>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">True Connection</span>
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-none text-glow">
+                        Live Streaming <br class="hidden md:inline">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Tango Experience</span>
                     </h1>
-                    <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-xl">
-                        Welcome to **Fanzones**, the leading open social-subscription web system built on high-speed ImgBB CDN hosting and synchronized real-time interactions. Share, unlock, and save exclusive media securely.
+                    <p class="text-gray-400 text-sm md:text-base lg:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+                        Welcome to **Fanzones Live**, the open social live broadcast network. Go live from your studio workspace instantly, receive coin gifts from fans, and engage in real-time overlaid chats. No auth constraints [1].
                     </p>
-                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-2">
-                        <button onclick="navigateTo('feed')" class="bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white font-extrabold text-xs uppercase tracking-wider px-10 py-4.5 rounded-full hover:opacity-90 transition shadow-2xl shadow-pink-500/30">
-                            Launch Live Streams
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-2 justify-center lg:justify-start">
+                        <button onclick="navigateTo('feed')" class="w-full sm:w-auto bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white font-extrabold text-xs uppercase tracking-wider px-10 py-4.5 rounded-full hover:opacity-90 transition shadow-2xl shadow-pink-500/30">
+                            Launch Live Feed
                         </button>
-                        <button onclick="navigateTo('dashboard')" class="bg-gray-900/60 border border-gray-800 hover:border-pink-500/30 text-white font-extrabold text-xs uppercase tracking-wider px-10 py-4.5 rounded-full hover:bg-gray-800 transition">
-                            Create Creator Handle
+                        <button onclick="navigateTo('profile')" class="w-full sm:w-auto bg-gray-900/60 border border-gray-800 hover:border-pink-500/30 text-white font-extrabold text-xs uppercase tracking-wider px-10 py-4.5 rounded-full hover:bg-gray-800 transition">
+                            Go Live from Studio
                         </button>
                     </div>
                 </div>
 
-                <!-- Graphic Interactive Mockup Card (Right Side) -->
+                <!-- Graphics Mockup Card Panel -->
                 <div class="lg:col-span-5 flex justify-center">
-                    <div class="glass-panel p-6 rounded-[32px] w-full max-w-sm space-y-5 border border-gray-800/60 shadow-2xl transform rotate-2 hover:rotate-0 transition duration-500 relative">
-                        <div class="absolute -top-3 -right-3 bg-indigo-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full border border-indigo-500/50">
-                            FEATURED CREATOR
+                    <div class="glass-panel p-5 md:p-6 rounded-[32px] w-full max-w-sm space-y-5 border border-gray-800/60 shadow-2xl transform lg:rotate-2 hover:rotate-0 transition duration-500 relative">
+                        <div class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full border border-red-500/50 animate-pulse">
+                            <i class="fa-solid fa-tower-broadcast mr-1"></i> LIVE NOW
                         </div>
                         <div class="flex items-center space-x-3">
                             <div class="h-12 w-12 bg-gradient-to-tr from-pink-500 to-indigo-500 rounded-2xl flex items-center justify-center text-sm font-black text-white">FC</div>
                             <div>
                                 <div class="flex items-center space-x-1">
-                                    <h3 class="text-sm font-bold text-white">@aurora_sky</h3>
+                                    <h3 class="text-sm font-bold text-white">@live_star</h3>
                                     <i class="fa-solid fa-circle-check text-blue-400 text-[11px]"></i>
                                 </div>
-                                <p class="text-[10px] text-gray-500 font-bold">250+ Exclusive Uploads</p>
+                                <p class="text-[10px] text-gray-500 font-bold">2,500 Viewers on stream</p>
                             </div>
                         </div>
                         <div class="aspect-square rounded-2xl bg-gray-950 relative overflow-hidden">
-                            <!-- Premium Blur mockup -->
-                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover premium-blur">
-                            <div class="absolute inset-0 flex flex-col items-center justify-center space-y-2">
-                                <div class="h-10 w-10 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full flex items-center justify-center text-base"><i class="fa-solid fa-lock"></i></div>
-                                <span class="text-[10px] font-black uppercase tracking-wider text-amber-300">Unlock for 15 Coins</span>
-                            </div>
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover">
                         </div>
                         <div class="flex items-center justify-between text-xs text-gray-400">
-                            <span class="flex items-center space-x-1 text-pink-500 font-bold"><i class="fa-solid fa-heart"></i> <span>1.2k Likes</span></span>
-                            <span class="text-gray-500">Subscription economy mockup</span>
+                            <span class="flex items-center space-x-1 text-pink-500 font-bold"><i class="fa-solid fa-gift"></i> <span>150 Gifts Received</span></span>
+                            <span class="text-gray-500 text-[10px]">Tango Live Grid</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- "Discover Our Curated Creators" Showroom (Rich Content Showcase) -->
+            <!-- Genre Showroom Grid -->
             <div class="space-y-6 pt-10 border-t border-gray-900">
                 <div class="text-center space-y-2">
-                    <span class="text-[10px] font-black text-pink-500 uppercase tracking-widest">CHOOSE YOUR VIBE</span>
-                    <h2 class="text-3xl md:text-5xl font-black">Top Popular Genres</h2>
-                    <p class="text-gray-400 text-xs md:text-sm max-w-xl mx-auto">Explore some of our active global creator setups specializing in various aesthetic domains.</p>
+                    <span class="text-[10px] font-black text-pink-500 uppercase tracking-widest">AESTHETICS SHOWCASE</span>
+                    <h2 class="text-3xl md:text-5xl font-black">Interactive Genres</h2>
+                    <p class="text-gray-400 text-xs md:text-sm max-w-xl mx-auto">Explore active categories on our platform built on open real-time content paradigms.</p>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-8">
-                    <!-- Genre Card 1 -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-pink-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between">
                         <div class="space-y-3">
                             <div class="h-10 w-10 bg-pink-500/10 text-pink-400 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-camera-retro"></i></div>
-                            <h3 class="text-xl font-bold">Fashion & Glamour</h3>
-                            <p class="text-gray-400 text-xs leading-relaxed">Experience model portfolios, runway diaries, and exclusive streetwear outfits shared by premium models.</p>
+                            <h3 class="text-xl font-bold">Fashion Streams</h3>
+                            <p class="text-gray-400 text-xs leading-relaxed">Experience model portfolios, runway diaries, and exclusive outfit ideas shared by premium creators.</p>
                         </div>
-                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-pink-500 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Fashion streams</span> <i class="fa-solid fa-arrow-right"></i></button>
+                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-pink-500 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Streams</span> <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
 
-                    <!-- Genre Card 2 -->
                     <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-purple-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between">
                         <div class="space-y-3">
                             <div class="h-10 w-10 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-paintbrush"></i></div>
                             <h3 class="text-xl font-bold">Concept Art & Cosplay</h3>
-                            <p class="text-gray-400 text-xs leading-relaxed">Unlock high-definition conceptual design illustrations, cosplay shoots, and backstage makeup transformation videos.</p>
+                            <p class="text-gray-400 text-xs leading-relaxed">cosplay transformations, high-definition makeup tutorials, and visual design backstages.</p>
                         </div>
-                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-purple-400 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Cosplay files</span> <i class="fa-solid fa-arrow-right"></i></button>
+                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-purple-400 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Cosplay</span> <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
 
-                    <!-- Genre Card 3 -->
-                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-indigo-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between">
+                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-indigo-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between md:col-span-2 lg:col-span-1">
                         <div class="space-y-3">
                             <div class="h-10 w-10 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-dumbbell"></i></div>
                             <h3 class="text-xl font-bold">Fitness & Lifestyle</h3>
-                            <p class="text-gray-400 text-xs leading-relaxed">Unlock complete nutrition diet plans, daily lifestyle vlogs, and hardcore transformation updates.</p>
+                            <p class="text-gray-400 text-xs leading-relaxed">Complete workout setups, healthy meal preparations, and daily motivation live streaming panels.</p>
                         </div>
-                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-indigo-400 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Workout vlogs</span> <i class="fa-solid fa-arrow-right"></i></button>
+                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-indigo-400 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Lifestyle</span> <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
-
-            <!-- "How it Works" timeline -->
-            <div class="space-y-8 pt-10 border-t border-gray-900">
-                <div class="text-center space-y-2">
-                    <h2 class="text-3xl font-black">Platform Operations Timeline</h2>
-                    <p class="text-gray-400 text-sm">Getting your portfolio or stream active takes less than 2 minutes.</p>
-                </div>
-
-                <div class="grid md:grid-cols-4 gap-6">
-                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
-                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">01</span>
-                        <h4 class="text-sm font-bold text-pink-500 mb-2 uppercase tracking-wide">Claim Your Handle</h4>
-                        <p class="text-gray-400 text-xs">Instantly write a pseudonym or nickname to define your local session workspace.</p>
-                    </div>
-                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
-                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">02</span>
-                        <h4 class="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-wide">Acquire Coins</h4>
-                        <p class="text-gray-400 text-xs">New users automatically get 200 free credits to unlock premium locked assets on the feed.</p>
-                    </div>
-                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
-                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">03</span>
-                        <h4 class="text-sm font-bold text-purple-400 mb-2 uppercase tracking-wide">Cloud Publishing</h4>
-                        <p class="text-gray-400 text-xs">Directly upload images via ImgBB secure cloud API to establish high-speed storage links.</p>
-                    </div>
-                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
-                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">04</span>
-                        <h4 class="text-sm font-bold text-teal-400 mb-2 uppercase tracking-wide">Earn & Unlock</h4>
-                        <p class="text-gray-400 text-xs">Publish locked images to let other users unlock them using coins, boosting your virtual profile metrics.</p>
-                    </div>
-                </div>
-            </div>
-
         </section>
 
-        <!-- VIEW 2: FEED PAGE WITH STORIES -->
-        <section id="view-feed" class="view hidden-view space-y-8">
+        <!-- VIEW 2: DYNAMIC FEED & LIVE STREAM HUB (Active feeds and stories) -->
+        <section id="view-feed" class="view hidden-view space-y-10">
             
-            <!-- Dynamic Stories Tray -->
+            <!-- Horizontal Stories Tray -->
             <div class="space-y-3">
                 <h3 class="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center">
                     <i class="fa-solid fa-circle-notch text-pink-500 mr-2 animate-spin"></i>Recent Creator Stories
                 </h3>
                 <div class="flex items-center space-x-4 overflow-x-auto no-scrollbar py-2" id="stories-tray">
-                    <!-- Dynamic Stories inserted here -->
+                    <!-- Stories injected via JS -->
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-gray-900 pb-4 gap-4">
+            <!-- TANGO STYLE ACTIVE BROADCASTS PANEL -->
+            <div class="space-y-4 bg-gray-950/40 p-6 rounded-3xl border border-gray-900/50">
+                <div class="flex items-center justify-between border-b border-gray-900 pb-3">
+                    <h3 class="text-sm font-black uppercase tracking-wider text-pink-500 flex items-center">
+                        <i class="fa-solid fa-tower-broadcast mr-2 animate-pulse"></i> Tango Live Stream channels
+                    </h3>
+                    <span class="text-xs text-gray-500">Real-time web cams</span>
+                </div>
+                <!-- Streamers Cards Container Grid -->
+                <div id="live-streamers-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <p class="text-gray-500 text-xs py-4 col-span-full text-center">No creators currently live. Go to My Studio to start streaming! [1]</p>
+                </div>
+            </div>
+
+            <!-- Feed Header & Filters -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-900 pb-4 gap-4">
                 <div>
-                    <h2 class="text-2xl font-black">Live Streams Feed</h2>
-                    <p class="text-gray-400 text-sm">Explore images, captions, and lock systems published by creators.</p>
+                    <h2 class="text-2xl font-black">Community Upload Feed</h2>
+                    <p class="text-gray-400 text-sm">Explore premium images and locked subscriptions posted by creators.</p>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <input type="text" id="feed-search" oninput="filterFeed()" placeholder="Search creators by @handle..." class="bg-gray-900 border border-gray-800 focus:border-pink-500 text-xs px-4 py-2.5 rounded-full text-white outline-none w-56 transition">
+                <div>
+                    <input type="text" id="feed-search" oninput="filterFeed()" placeholder="Search handles..." class="bg-gray-900 border border-gray-800 focus:border-pink-500 text-xs px-4 py-2.5 rounded-full text-white outline-none w-full sm:w-56 transition">
                 </div>
             </div>
 
-            <!-- Feed Grid -->
-            <div id="feed-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Loading fallback state -->
+            <!-- Post Container Grid -->
+            <div id="feed-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 <div class="col-span-full py-12 text-center">
                     <div class="animate-spin inline-block w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mb-3"></div>
                     <p class="text-gray-400 text-sm">Syncing live nodes...</p>
@@ -288,24 +348,24 @@
         <section id="view-bookmarks" class="view hidden-view space-y-6">
             <div class="border-b border-gray-900 pb-4">
                 <h2 class="text-2xl font-black">My Saved Vault</h2>
-                <p class="text-gray-400 text-sm">Contents bookmarked by you for private local session viewing.</p>
+                <p class="text-gray-400 text-sm">Contents bookmarked by you for private session retrieval.</p>
             </div>
-            <div id="bookmarks-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="bookmarks-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 <p class="text-gray-500 text-sm col-span-full text-center py-12">No bookmarked items found.</p>
             </div>
         </section>
 
-        <!-- VIEW 4: PUBLISH STUDIO DESK (DASHBOARD) -->
+        <!-- VIEW 4: CREATOR PUBLISH DESK (DASHBOARD) -->
         <section id="view-dashboard" class="view hidden-view max-w-2xl mx-auto space-y-8">
             <div class="border-b border-gray-900 pb-4">
                 <h2 class="text-2xl font-black">Creator Studio Desk</h2>
                 <p class="text-gray-400 text-sm">Publish interactive feeds or stories securely over ImgBB CDN API.</p>
             </div>
 
-            <div class="glass-panel p-8 rounded-3xl space-y-6">
+            <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-6">
                 <form id="upload-form" class="space-y-6" onsubmit="handlePostUpload(event)">
                     
-                    <!-- Content Type Toggle -->
+                    <!-- Content Toggle Options -->
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Upload Scope Type</label>
                         <div class="grid grid-cols-2 gap-3">
@@ -314,7 +374,7 @@
                         </div>
                     </div>
 
-                    <!-- Input Fields -->
+                    <!-- Meta details fields -->
                     <div class="space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Creator Handle ID</label>
@@ -324,18 +384,18 @@
                             </div>
                         </div>
 
-                        <!-- Caption (Hide for stories) -->
+                        <!-- Caption container (Hidden for story modes) -->
                         <div id="caption-field-container">
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Caption Description</label>
-                            <textarea id="post-caption" rows="3" placeholder="Write exclusive updates or details about the asset..." class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3.5 text-sm text-white focus:outline-none transition resize-none"></textarea>
+                            <textarea id="post-caption" rows="3" placeholder="Write premium details about this visual file..." class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3.5 text-sm text-white focus:outline-none transition resize-none"></textarea>
                         </div>
 
-                        <!-- Locking Parameters (Hide for stories) -->
+                        <!-- Locks configuration system (Hidden for story modes) -->
                         <div id="premium-toggle-container" class="space-y-4">
                             <div class="flex items-center justify-between bg-gray-950/60 p-4 rounded-2xl border border-gray-900">
                                 <div>
                                     <h4 class="text-xs font-bold">Lock this Post? (Premium Mode)</h4>
-                                    <p class="text-[10px] text-gray-500 mt-0.5">Users will pay virtual coins to see the image.</p>
+                                    <p class="text-[10px] text-gray-500 mt-0.5">Users will spend virtual coins to see this image file.</p>
                                 </div>
                                 <input type="checkbox" id="premium-checkbox" onchange="togglePremiumDetails()" class="w-5 h-5 accent-pink-500 rounded cursor-pointer">
                             </div>
@@ -348,9 +408,9 @@
                         </div>
                     </div>
 
-                    <!-- Image Drop Area -->
+                    <!-- Media Upload Drag & Drop container -->
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Upload File</label>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Upload Visual File</label>
                         <div class="border-2 border-dashed border-gray-800 hover:border-pink-500/50 rounded-2xl p-10 text-center cursor-pointer relative transition duration-300" onclick="document.getElementById('post-image').click()">
                             <i class="fa-solid fa-cloud-arrow-up text-4xl text-gray-600 mb-3" id="upload-icon"></i>
                             <p class="text-sm font-bold text-gray-300" id="upload-text">Browse image from disk storage</p>
@@ -371,39 +431,104 @@
             </div>
         </section>
 
-        <!-- VIEW 5: CREATOR METRICS & PROFILE (STUDIO) -->
+        <!-- VIEW 5: MY STUDIO & LIVE BROADCASTER WORKSPACE -->
         <section id="view-profile" class="view hidden-view space-y-8">
             
-            <!-- Dashboard Info -->
-            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-center gap-6">
+            <!-- Dashboard Info Header -->
+            <div class="glass-panel p-6 md:p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-center gap-6">
                 <div class="absolute -right-16 -top-16 w-48 h-48 bg-indigo-500/10 rounded-full filter blur-2xl"></div>
 
-                <div class="h-24 w-24 bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-600 rounded-3xl flex items-center justify-center text-white text-4xl shadow-xl">
+                <div class="h-20 w-20 md:h-24 md:w-24 bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-600 rounded-3xl flex items-center justify-center text-white text-3xl md:text-4xl shadow-xl">
                     <i class="fa-solid fa-user-astronaut"></i>
                 </div>
-                <div class="text-center md:text-left flex-grow space-y-2">
-                    <div class="flex flex-col md:flex-row items-center md:space-x-3 gap-2">
-                        <h2 class="text-2xl font-black text-white" id="profile-display-name">Alex Carter</h2>
+                <div class="text-center md:text-left flex-grow space-y-2 w-full">
+                    <div class="flex flex-col md:flex-row items-center md:space-x-3 gap-2 justify-center md:justify-start">
+                        <h2 class="text-xl md:text-2xl font-black text-white" id="profile-display-name">Alex Carter</h2>
                         <span class="bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase px-2.5 py-1 rounded border border-blue-500/20 flex items-center">
                             <i class="fa-solid fa-circle-check mr-1 text-xs"></i> Verified Creator
                         </span>
                     </div>
-                    <!-- Custom Local Edit Form -->
+                    
+                    <!-- Profile configuration -->
                     <div class="space-y-3 pt-2">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <input type="text" id="edit-display-name" placeholder="Display Name" oninput="saveLocalProfile()" class="bg-gray-950 border border-gray-800 text-xs px-3 py-2 rounded-lg text-white outline-none w-full">
-                            <input type="text" id="edit-bio" placeholder="Bio description (e.g., Artist & Creator)" oninput="saveLocalProfile()" class="bg-gray-950 border border-gray-800 text-xs px-3 py-2 rounded-lg text-white outline-none w-full">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <input type="text" id="edit-display-name" placeholder="Display Name" oninput="saveLocalProfile()" class="bg-gray-950 border border-gray-800 text-xs px-3 py-2.5 rounded-lg text-white outline-none w-full">
+                            <input type="text" id="edit-bio" placeholder="Bio details (e.g., Artist & Model)" oninput="saveLocalProfile()" class="bg-gray-950 border border-gray-800 text-xs px-3 py-2.5 rounded-lg text-white outline-none w-full">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Profile Dashboard Posts -->
+            <!-- TANGO ADVANCED GO LIVE WORKSPACE [1] -->
+            <div class="bg-gradient-to-b from-gray-900 to-gray-950 border border-gray-800 rounded-3xl p-6 space-y-6 relative overflow-hidden">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                    <div>
+                        <h3 class="text-lg font-black text-white flex items-center">
+                            <span class="h-3 w-3 bg-red-600 rounded-full inline-block mr-2 animate-ping"></span> Live Broadcast Studio
+                        </h3>
+                        <p class="text-xs text-gray-400 mt-1">Activate camera, sync Base64 Canvas frames, and stream instantly.</p>
+                    </div>
+                    <span class="text-[10px] bg-red-500/15 text-red-500 font-extrabold px-3 py-1 rounded-full border border-red-500/20">TANGO NODE v1.0</span>
+                </div>
+
+                <div class="grid md:grid-cols-12 gap-6">
+                    <!-- Stream local camera feed screen monitor -->
+                    <div class="md:col-span-7 bg-black rounded-2xl overflow-hidden aspect-video relative flex items-center justify-center border border-gray-800">
+                        <video id="studio-webcam" autoplay muted playsinline class="w-full h-full object-cover hidden"></video>
+                        <!-- Canvas used for Base64 image compression -->
+                        <canvas id="studio-canvas" class="hidden"></canvas>
+                        
+                        <!-- Offline placeholder state -->
+                        <div id="studio-offline-screen" class="absolute inset-0 flex flex-col items-center justify-center space-y-3 bg-gray-950">
+                            <div class="h-14 w-14 bg-gray-900 rounded-full flex items-center justify-center border border-gray-800 text-xl text-gray-500">
+                                <i class="fa-solid fa-video-slash"></i>
+                            </div>
+                            <span class="text-xs font-bold text-gray-400">Stream monitor offline [1]</span>
+                        </div>
+
+                        <!-- On-air dynamic indicators -->
+                        <div id="studio-onair-indicator" class="absolute top-4 left-4 bg-red-600/90 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full border border-red-500/50 hidden animate-pulse">
+                            <i class="fa-solid fa-tower-broadcast mr-1"></i> ON AIR
+                        </div>
+                    </div>
+
+                    <!-- Stream control panels -->
+                    <div class="md:col-span-5 flex flex-col justify-between space-y-4 bg-gray-900/40 p-4 rounded-2xl border border-gray-800/40">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Stream Bio / Topic</label>
+                                <input type="text" id="stream-topic" placeholder="e.g., Q&A and Chill with Fans! 🌟" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-pink-500 transition">
+                            </div>
+
+                            <!-- Real-time metrics counters -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-gray-950 p-3 rounded-xl border border-gray-800">
+                                    <p class="text-[10px] uppercase font-extrabold text-gray-500">Viewer Pool</p>
+                                    <p class="text-lg font-black text-white mt-1" id="studio-viewer-count">0</p>
+                                </div>
+                                <div class="bg-gray-950 p-3 rounded-xl border border-gray-800">
+                                    <p class="text-[10px] uppercase font-extrabold text-gray-500">Coins Gifted</p>
+                                    <p class="text-lg font-black text-amber-400 mt-1" id="studio-coin-gifts">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-gray-800/60">
+                            <!-- Stream activation trigger -->
+                            <button id="studio-stream-btn" onclick="toggleLocalStream()" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-xl transition duration-300 shadow-lg shadow-pink-500/20 flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-video"></i> <span>Initialize Broadcaster</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile uploaded items -->
             <div>
                 <h3 class="text-xl font-black mb-4 flex items-center">
                     <i class="fa-solid fa-folder-open text-pink-500 mr-2"></i>My Uploaded Assets
                 </h3>
-                <div id="profile-posts-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div id="profile-posts-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     <p class="text-gray-500 text-sm col-span-full">Nothing posted from this device session yet.</p>
                 </div>
             </div>
@@ -411,8 +536,32 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-gray-900 bg-gray-950 py-10 mt-16 text-center text-xs text-gray-500 font-medium">
+    <!-- Native Mobile Sticky Bottom Navigation Bar [1] -->
+    <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-[#030712]/95 border-t border-gray-900 backdrop-blur-lg z-40 px-4 py-2 flex justify-around items-center shadow-2xl">
+        <button onclick="navigateTo('home')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[9px] font-bold">Home</span>
+        </button>
+        <button onclick="navigateTo('feed')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+            <i class="fa-solid fa-compass text-lg"></i>
+            <span class="text-[9px] font-bold">Streams</span>
+        </button>
+        <button onclick="navigateTo('dashboard')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+            <i class="fa-solid fa-circle-plus text-lg text-pink-500"></i>
+            <span class="text-[9px] font-bold">Publish</span>
+        </button>
+        <button onclick="navigateTo('bookmarks')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+            <i class="fa-solid fa-bookmark text-lg"></i>
+            <span class="text-[9px] font-bold">Saved</span>
+        </button>
+        <button onclick="navigateTo('profile')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+            <i class="fa-solid fa-user-astronaut text-lg animate-pulse"></i>
+            <span class="text-[9px] font-bold">My Studio</span>
+        </button>
+    </nav>
+
+    <!-- Desktop Footer -->
+    <footer class="hidden lg:block border-t border-gray-900 bg-gray-950 py-10 mt-16 text-center text-xs text-gray-500 font-medium">
         <div class="max-w-7xl mx-auto px-6 space-y-2">
             <p>&copy; 2026 Fanzones Studio Network. All rights reserved.</p>
             <p class="text-gray-600 flex justify-center items-center gap-1.5">
@@ -421,12 +570,12 @@
         </div>
     </footer>
 
-    <!-- REAL-TIME DATABASE ENGINE & APP LOGIC -->
+    <!-- REAL-TIME DATABASE ENGINE & TANGO CORE CODES (100% Uncompressed) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue, runTransaction, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Firebase config
+        // Firebase Web SDK configurations
         const firebaseConfig = {
             apiKey: "AIzaSyC84FBpn-O2VkHPJCw9O3oKDnNZ-2K1iG4",
             authDomain: "mrel-8a378.firebaseapp.com",
@@ -443,15 +592,27 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
+        // State Tracking
         let activeFeedPosts = [];
-        let uploadType = 'post'; // 'post' or 'story'
+        let uploadType = 'post'; 
 
-        // Wallet Initialization
+        // Tango Live Streaming Session States [1]
+        let localStream = null;
+        let isBroadcasting = false;
+        let activeBroadcasterId = null; 
+        let base64LoopInterval = null; 
+        let viewerCounterListener = null;
+        let giftsListener = null;
+
+        // Viewer Live Session states
+        let viewingStreamId = null;
+        let viewerLiveRoomListener = null;
+        let viewerRoomChatsListener = null;
+
         if (!localStorage.getItem('fanzones_coins')) {
             localStorage.setItem('fanzones_coins', '200');
         }
 
-        // Custom Toast Notifications
         window.showToast = function(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -501,7 +662,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // File Previews
+        // Browse image preview controller
         window.previewFile = function(event) {
             const file = event.target.files[0];
             const previewContainer = document.getElementById('preview-container');
@@ -559,7 +720,7 @@
             }
         };
 
-        // CORE UPLOAD PIPELINE
+        // CORE POST UPLOAD (ImgBB + Firebase DB)
         window.handlePostUpload = async function(e) {
             e.preventDefault();
 
@@ -576,7 +737,6 @@
             submitBtn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></span> Publishing pipeline active...`;
 
             try {
-                // 1. Send binary image payloads to ImgBB secure CDN API
                 const formData = new FormData();
                 formData.append('image', imageFile);
 
@@ -595,7 +755,6 @@
                     const isPremium = document.getElementById('premium-checkbox').checked;
                     const coinPrice = isPremium ? parseInt(document.getElementById('post-coin-price').value) : 0;
 
-                    // 2. Commit Node payloads to Firebase database
                     const postsRef = ref(database, 'posts');
                     const newPostRef = push(postsRef);
                     const postId = newPostRef.key;
@@ -616,7 +775,6 @@
                     addNotification(`Successfully published a ${isPremium ? 'Premium' : 'Free'} visual feed.`);
 
                 } else {
-                    // Stories database push
                     const storiesRef = ref(database, 'stories');
                     const newStoryRef = push(storiesRef);
 
@@ -662,13 +820,13 @@
                 return (currentLikes || 0) + 1;
             }).then(() => {
                 likedList.push(postId);
-                localStorage.setItem('likedPosts', JSON.stringify(likedList));
+                localStorage.setItem('likedPosts', likedList);
                 addNotification('You liked a feed post.');
                 showToast('Post Liked!');
             });
         };
 
-        // Unlock Locked posts
+        // Unlock Premium post
         window.unlockPremiumPost = function(postId, coinPrice) {
             const currentCoins = parseInt(localStorage.getItem('fanzones_coins'));
 
@@ -692,7 +850,7 @@
             }
         };
 
-        // Bookmarks Toggling
+        // Bookmarks Toggle
         window.toggleBookmark = function(postId) {
             let bookmarks = JSON.parse(localStorage.getItem('savedPosts') || '[]');
             if (bookmarks.includes(postId)) {
@@ -706,8 +864,348 @@
             renderFeedUI(activeFeedPosts);
         };
 
-        // Realtime Fetching Stories node
-        const storiesRef = ref(database, 'stories');
+        // TANGO LIVE BROADCASTER STUDIO ENGINE [1]
+        window.toggleLocalStream = async function() {
+            const btn = document.getElementById('studio-stream-btn');
+            const localVideo = document.getElementById('studio-webcam');
+            const offlineScreen = document.getElementById('studio-offline-screen');
+            const onairIndicator = document.getElementById('studio-onair-indicator');
+            const topicInput = document.getElementById('stream-topic');
+
+            const myHandle = localStorage.getItem('lastUsedName') || 'anonymous_star';
+
+            if (!isBroadcasting) {
+                // START LIVE BROADCAST
+                const topicText = topicInput.value.trim() || `${myHandle} is broadcasting Live!`;
+                btn.disabled = true;
+                btn.textContent = "Negotiating camera...";
+
+                try {
+                    // 1. Capture user webcam
+                    localStream = await navigator.mediaDevices.getUserMedia({
+                        video: { width: 320, height: 240, frameRate: { ideal: 10 } },
+                        audio: false // silent video base64 streaming is light and network-friendly
+                    });
+
+                    localVideo.srcObject = localStream;
+                    localVideo.classList.remove('hidden');
+                    offlineScreen.classList.add('hidden');
+                    onairIndicator.classList.remove('hidden');
+
+                    // 2. Register Active stream node in Firebase Database
+                    const liveStreamsRef = ref(database, 'live_streams');
+                    const newLiveNode = push(liveStreamsRef);
+                    activeBroadcasterId = newLiveNode.key;
+
+                    await set(newLiveNode, {
+                        streamId: activeBroadcasterId,
+                        authorName: myHandle,
+                        topic: topicText,
+                        viewersCount: 0,
+                        giftsCount: 0,
+                        currentFrame: "",
+                        timestamp: Date.now()
+                    });
+
+                    // 3. Start high frequency Canvas Base64 Frame-Sync loop
+                    const canvas = document.getElementById('studio-canvas');
+                    canvas.width = 160;
+                    canvas.height = 120;
+                    const ctx = canvas.getContext('2d');
+
+                    base64LoopInterval = setInterval(() => {
+                        if (localStream) {
+                            ctx.drawImage(localVideo, 0, 0, canvas.width, canvas.height);
+                            // Compress canvas to raw jpeg base64 string
+                            const base64Data = canvas.toDataURL('image/jpeg', 0.4); 
+                            set(ref(database, `live_streams/${activeBroadcasterId}/currentFrame`), base64Data);
+                        }
+                    }, 1000); // 1 frame per second is safe, lightweight, and works seamlessly anywhere [1]
+
+                    // 4. Live metrics listener
+                    viewerCounterListener = onValue(ref(database, `live_streams/${activeBroadcasterId}/viewersCount`), (snap) => {
+                        const count = snap.val() || 0;
+                        document.getElementById('studio-viewer-count').textContent = count;
+                    });
+
+                    giftsListener = onValue(ref(database, `live_streams/${activeBroadcasterId}/giftsCount`), (snap) => {
+                        const count = snap.val() || 0;
+                        document.getElementById('studio-coin-gifts').textContent = count;
+                    });
+
+                    isBroadcasting = true;
+                    btn.disabled = false;
+                    btn.className = "w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-xl transition duration-300 shadow-lg flex items-center justify-center space-x-1.5";
+                    btn.innerHTML = `<i class="fa-solid fa-video-slash"></i> <span>Stop Live Stream</span>`;
+                    
+                    showToast('Broadcaster negotiation complete! You are LIVE.', 'success');
+                    addNotification('You started a live stream.');
+
+                } catch (error) {
+                    showToast(`Camera Access Refused: ${error.message}`, 'error');
+                    // Reset UI
+                    localVideo.classList.add('hidden');
+                    offlineScreen.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.className = "w-full bg-pink-600 hover:bg-pink-700 text-white font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-xl transition duration-300 shadow-lg flex items-center justify-center space-x-1.5";
+                    btn.innerHTML = `<i class="fa-solid fa-video"></i> <span>Initialize Broadcaster</span>`;
+                }
+
+            } else {
+                // STOP LIVE BROADCAST
+                if (confirm('Are you sure you want to stop live streaming?')) {
+                    stopLocalBroadcaster();
+                }
+            }
+        };
+
+        function stopLocalBroadcaster() {
+            const btn = document.getElementById('studio-stream-btn');
+            const localVideo = document.getElementById('studio-webcam');
+            const offlineScreen = document.getElementById('studio-offline-screen');
+            const onairIndicator = document.getElementById('studio-onair-indicator');
+
+            // 1. Stop video streams
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+
+            // 2. Clear sync loops
+            if (base64LoopInterval) {
+                clearInterval(base64LoopInterval);
+                base64LoopInterval = null;
+            }
+
+            // 3. Clear listeners
+            if (viewerCounterListener) {
+                viewerCounterListener();
+                viewerCounterListener = null;
+            }
+            if (giftsListener) {
+                giftsListener();
+                giftsListener = null;
+            }
+
+            // 4. Delete live node from Firebase Database
+            if (activeBroadcasterId) {
+                remove(ref(database, `live_streams/${activeBroadcasterId}`));
+                activeBroadcasterId = null;
+            }
+
+            localVideo.classList.add('hidden');
+            offlineScreen.classList.remove('hidden');
+            onairIndicator.classList.add('hidden');
+
+            isBroadcasting = false;
+            btn.className = "w-full bg-pink-600 hover:bg-pink-700 text-white font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-xl transition duration-300 shadow-lg flex items-center justify-center space-x-1.5";
+            btn.innerHTML = `<i class="fa-solid fa-video"></i> <span>Initialize Broadcaster</span>`;
+            
+            showToast('Studio broadcast disconnected successfully.');
+            addNotification('You ended your live stream.');
+        }
+
+        // TANGO LIVE STREAMERS LISTENING SYSTEM [1]
+        const activeStreamsRef = ref(database, 'live_streams');
+        onValue(activeStreamsRef, (snapshot) => {
+            const grid = document.getElementById('live-streamers-grid');
+            grid.innerHTML = '';
+            const data = snapshot.val();
+
+            if (!data) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-6">
+                        <p class="text-gray-500 text-xs">No creators live right now. Head over to My Studio and broadcast!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            Object.entries(data).reverse().forEach(([id, stream]) => {
+                const card = document.createElement('div');
+                card.className = "relative bg-gray-900 rounded-2xl border border-gray-800/80 overflow-hidden cursor-pointer group hover:border-pink-500/30 transition duration-300 aspect-[3/4]";
+                card.onclick = () => joinLiveRoom(stream.streamId);
+                
+                // Show dynamic live base64 frame preview directly in the card thumbnail!
+                const thumbnailSrc = stream.currentFrame || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300";
+
+                card.innerHTML = `
+                    <img src="${thumbnailSrc}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" id="live-thumb-${stream.streamId}">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30 flex flex-col justify-between p-3">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-red-600 text-white text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center"><span class="h-1.5 w-1.5 bg-white rounded-full inline-block mr-1 animate-ping"></span> Live</span>
+                            <span class="text-[9px] text-white bg-black/40 px-2 py-0.5 rounded-full font-bold"><i class="fa-solid fa-eye"></i> ${stream.viewersCount || 0}</span>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-xs font-bold text-white truncate">@${escapeHTML(stream.authorName)}</p>
+                            <p class="text-[9px] text-gray-400 truncate">${escapeHTML(stream.topic)}</p>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        });
+
+        // TANGO LIVE ROOM VIEWER SYSTEM [1]
+        window.joinLiveRoom = function(streamId) {
+            viewingStreamId = streamId;
+            const modal = document.getElementById('live-viewer-modal');
+            const player = document.getElementById('live-player-screen');
+
+            // Open modal overlay
+            modal.classList.remove('hidden');
+
+            // 1. Increment database viewers counter via Firebase Transaction
+            runTransaction(ref(database, `live_streams/${streamId}/viewersCount`), (count) => {
+                return (count || 0) + 1;
+            });
+
+            // 2. Fetch broadcaster details dynamically
+            viewerLiveRoomListener = onValue(ref(database, `live_streams/${streamId}`), (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    // Creator ended stream abruptly
+                    showToast('Broadcaster stopped live transmission.', 'error');
+                    leaveLiveRoom();
+                    return;
+                }
+
+                // Render Base64 Video Frame directly to viewer canvas/img
+                player.src = data.currentFrame || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600";
+                
+                // Update profile overlays
+                document.getElementById('live-room-author').textContent = `@${data.authorName}`;
+                document.getElementById('live-room-viewers').textContent = `${data.viewersCount || 0} watching`;
+                document.getElementById('live-room-gifts').textContent = data.giftsCount || 0;
+                document.getElementById('live-room-avatar').textContent = data.authorName.substring(0,2).toUpperCase();
+            });
+
+            // 3. Listen to Stream Chat overlay messages
+            const chatsRef = ref(database, `live_streams/${streamId}/chat`);
+            viewerRoomChatsListener = onValue(chatsRef, (snapshot) => {
+                const chatContainer = document.getElementById('live-room-chat');
+                chatContainer.innerHTML = '';
+                const data = snapshot.val();
+
+                if (data) {
+                    Object.values(data).forEach(msg => {
+                        const div = document.createElement('div');
+                        div.className = "bg-black/50 backdrop-blur px-3 py-1 rounded-xl text-[10px] text-white self-start max-w-[85%] border border-white/5";
+                        div.innerHTML = `<span class="font-extrabold text-pink-400">@${escapeHTML(msg.author)}:</span> <span class="text-gray-200">${escapeHTML(msg.text)}</span>`;
+                        chatContainer.appendChild(div);
+                    });
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }
+            });
+
+            addNotification('You joined a live stream channel.');
+        };
+
+        window.leaveLiveRoom = function() {
+            if (!viewingStreamId) return;
+
+            const modal = document.getElementById('live-viewer-modal');
+            modal.classList.add('hidden');
+
+            // 1. Decrement viewer count transaction safely
+            runTransaction(ref(database, `live_streams/${viewingStreamId}/viewersCount`), (count) => {
+                return Math.max(0, (count || 0) - 1);
+            });
+
+            // 2. Clear real-time listeners
+            if (viewerLiveRoomListener) {
+                viewerLiveRoomListener();
+                viewerLiveRoomListener = null;
+            }
+            if (viewerRoomChatsListener) {
+                viewerRoomChatsListener();
+                viewerRoomChatsListener = null;
+            }
+
+            viewingStreamId = null;
+            showToast('Disconnected from live room.');
+        };
+
+        // Send Tango Live Commentary
+        window.sendLiveComment = function(e) {
+            e.preventDefault();
+            if (!viewingStreamId) return;
+
+            const input = document.getElementById('live-chat-input');
+            const text = input.value.trim();
+            const myHandle = localStorage.getItem('lastUsedName') || 'Guest';
+
+            if (!text) return;
+
+            const chatRef = ref(database, `live_streams/${viewingStreamId}/chat`);
+            const newMsgRef = push(chatRef);
+
+            set(newMsgRef, {
+                author: myHandle,
+                text: text,
+                timestamp: Date.now()
+            }).then(() => {
+                input.value = '';
+            });
+        };
+
+        // Coins gift transaction (Viewer gives broadcaster 10 Coins)
+        window.sendLiveGift = function() {
+            if (!viewingStreamId) return;
+
+            const currentCoins = parseInt(localStorage.getItem('fanzones_coins') || '0');
+            if (currentCoins < 10) {
+                showToast('Insufficient coins in wallet!', 'error');
+                return;
+            }
+
+            // Deduct locally
+            const updatedCoins = currentCoins - 10;
+            localStorage.setItem('fanzones_coins', updatedCoins.toString());
+            updateCoinsUI();
+
+            // 1. Increment live streams gift counter via Firebase Transaction
+            runTransaction(ref(database, `live_streams/${viewingStreamId}/giftsCount`), (count) => {
+                return (count || 0) + 10;
+            });
+
+            // 2. Send transaction notification message to Live Chat
+            const myHandle = localStorage.getItem('lastUsedName') || 'Guest';
+            const chatRef = ref(database, `live_streams/${viewingStreamId}/chat`);
+            const newMsgRef = push(chatRef);
+
+            set(newMsgRef, {
+                author: "System_Gift",
+                text: `@${myHandle} sent a gift of 10 Coins! 🎁🌟`,
+                timestamp: Date.now()
+            });
+
+            // Trigger beautiful explosions of canvas confetti
+            confetti({ particleCount: 50, spread: 40, origin: { y: 0.8 } });
+            showToast('Gift sent successfully!');
+        };
+
+        // Flying hearts animations splash [1]
+        window.triggerHeartSplash = function() {
+            const container = document.getElementById('hearts-container');
+            const heart = document.createElement('div');
+            heart.className = "floating-heart text-pink-500 text-lg";
+            heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+            
+            // Randomize starting position on X axis
+            const randomX = Math.random() * 80 + 10; // between 10% and 90%
+            heart.style.left = `${randomX}%`;
+            heart.style.bottom = "10%";
+
+            container.appendChild(heart);
+
+            // Destroy heart DOM node after transition finishes
+            setTimeout(() => {
+                heart.remove();
+            }, 1500);
+        };
+
+        // Realtime Stories Engine (Snapshot)
         onValue(storiesRef, (snapshot) => {
             const tray = document.getElementById('stories-tray');
             tray.innerHTML = '';
@@ -724,18 +1222,18 @@
                 bubble.className = "flex flex-col items-center space-y-1 cursor-pointer flex-shrink-0 group";
                 bubble.onclick = () => openStoryViewer(story.imageUrl, story.authorName);
                 bubble.innerHTML = `
-                    <div class="h-16 w-16 p-[3px] rounded-full bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-500 transition transform group-hover:scale-105">
+                    <div class="h-14 w-14 md:h-16 md:w-16 p-[3px] rounded-full bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-500 transition transform group-hover:scale-105">
                         <div class="h-full w-full bg-gray-900 rounded-full flex items-center justify-center border border-gray-900 overflow-hidden">
                             <img src="${story.imageUrl}" class="h-full w-full object-cover">
                         </div>
                     </div>
-                    <span class="text-[10px] text-gray-400 truncate w-16 text-center">@${escapeHTML(story.authorName)}</span>
+                    <span class="text-[9px] md:text-[10px] text-gray-400 truncate w-14 md:w-16 text-center">@${escapeHTML(story.authorName)}</span>
                 `;
                 tray.appendChild(bubble);
             });
         });
 
-        // Stories full-screen controller
+        // Story modal viewer
         let storyTimer = null;
         window.openStoryViewer = function(imgUrl, author) {
             const modal = document.getElementById('story-viewer');
@@ -770,31 +1268,29 @@
             }, 100);
         };
 
-        // Realtime Comment Publishing
-        window.submitComment = function(e, postId) {
-            e.preventDefault();
-            const inputField = document.getElementById(`comment-input-${postId}`);
-            const text = inputField.value.trim();
-            const commentAuthor = localStorage.getItem('lastUsedName') || 'Guest';
+        // Upload controls toggler
+        window.setUploadType = function(type) {
+            uploadType = type;
+            const postBtn = document.getElementById('type-post-btn');
+            const storyBtn = document.getElementById('type-story-btn');
+            const captionField = document.getElementById('caption-field-container');
+            const premiumToggle = document.getElementById('premium-toggle-container');
 
-            if (!text) return;
-
-            const commentsRef = ref(database, `posts/${postId}/comments`);
-            const newCommentRef = push(commentsRef);
-
-            set(newCommentRef, {
-                author: commentAuthor,
-                text: text,
-                timestamp: Date.now()
-            }).then(() => {
-                inputField.value = '';
-                showToast('Comment published!');
-            });
+            if (type === 'story') {
+                storyBtn.className = "bg-pink-600 border border-pink-500 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition";
+                postBtn.className = "bg-gray-900 border border-gray-800 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-gray-400 transition";
+                captionField.classList.add('hidden');
+                premiumToggle.classList.add('hidden');
+            } else {
+                postBtn.className = "bg-pink-600 border border-pink-500 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition";
+                storyBtn.className = "bg-gray-900 border border-gray-800 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-gray-400 transition";
+                captionField.classList.remove('hidden');
+                premiumToggle.classList.remove('hidden');
+            }
         };
 
         // Realtime Fetching Central Feeds
-        const dbPostsRef = ref(database, 'posts');
-        onValue(dbPostsRef, (snapshot) => {
+        onValue(ref(database, 'posts'), (snapshot) => {
             const data = snapshot.val();
             if (!data) {
                 activeFeedPosts = [];
@@ -860,7 +1356,6 @@
                         </div>
                     </div>
 
-                    <!-- Visual Cover -->
                     <div class="aspect-square bg-gray-950 relative overflow-hidden flex items-center justify-center">
                         <img src="${post.imageUrl}" class="w-full h-full object-cover ${isLocked ? 'premium-blur' : ''}" loading="lazy">
                         
@@ -877,7 +1372,6 @@
                         ` : ''}
                     </div>
 
-                    <!-- Details metadata -->
                     <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
                         <p class="text-gray-300 text-sm">${escapeHTML(post.caption)}</p>
                         
@@ -892,7 +1386,6 @@
                             </span>
                         </div>
 
-                        <!-- comments area -->
                         <div class="space-y-2">
                             <div class="max-h-24 overflow-y-auto space-y-1.5 no-scrollbar">
                                 ${commentsHTML}
@@ -934,9 +1427,7 @@
             renderFeedUI(bookmarkedPosts);
         };
 
-        // System Log Engine
-        let notifications = JSON.parse(localStorage.getItem('fanzones_notifs') || '[]');
-        
+        // System Log notifications
         function addNotification(message) {
             const newNotif = {
                 id: Date.now(),
@@ -971,7 +1462,7 @@
             }
             notifications.forEach(n => {
                 const item = document.createElement('div');
-                item.className = "bg-gray-950 p-2.5 rounded-xl border border-gray-900 flex justify-between items-center";
+                item.className = "bg-gray-950 p-2.5 rounded-xl border border-gray-800 flex justify-between items-center";
                 item.innerHTML = `
                     <span class="text-gray-300">${escapeHTML(n.message)}</span>
                     <span class="text-[9px] text-gray-500">${n.timestamp}</span>
@@ -980,7 +1471,7 @@
             });
         }
 
-        // Profile custom local variables
+        // Local Profile Storage
         window.saveLocalProfile = function() {
             const name = document.getElementById('edit-display-name').value;
             const bio = document.getElementById('edit-bio').value;
@@ -1003,7 +1494,7 @@
             const profileContainer = document.getElementById('profile-posts-container');
             const myUploadedIds = JSON.parse(localStorage.getItem('myPostIds') || '[]');
 
-            onValue(dbPostsRef, (snapshot) => {
+            onValue(ref(database, 'posts'), (snapshot) => {
                 profileContainer.innerHTML = '';
                 const data = snapshot.val();
                 let userPostCount = 0;
@@ -1036,6 +1527,16 @@
                 }
             });
         }
+
+        // Window events unload to safely shut down streams if user leaves abruptly
+        window.addEventListener('beforeunload', () => {
+            if (isBroadcasting) {
+                stopLocalBroadcaster();
+            }
+            if (viewingStreamId) {
+                leaveLiveRoom();
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             const lastUsed = localStorage.getItem('lastUsedName');
