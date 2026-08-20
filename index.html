@@ -3,48 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fanzones v3.0 - Ultimate Open Platform</title>
+    <title>Fanzones - Exclusive Creator Connections</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Pro Icons -->
+    <!-- Google Fonts: Plus Jakarta Sans for premium tech feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Pro Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Confetti Library -->
+    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
         .active-view { display: block !important; }
         .hidden-view { display: none !important; }
         .glass-panel {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .gradient-bg {
-            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #6366f1 100%);
+        .text-glow {
+            text-shadow: 0 0 40px rgba(236, 72, 153, 0.3);
         }
-        /* Custom Scrollbar for Stories Tray */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Blur effect for locked content */
+        .glow-border:hover {
+            border-color: rgba(236, 72, 153, 0.4);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.15);
+        }
         .premium-blur {
-            filter: blur(25px) brightness(0.6);
+            filter: blur(20px) brightness(0.5);
             pointer-events: none;
         }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-[#030712] text-gray-100 min-h-screen flex flex-col font-sans selection:bg-pink-500 selection:text-white">
+<body class="bg-[#030712] text-gray-100 min-h-screen flex flex-col selection:bg-pink-500 selection:text-white">
 
     <!-- Toast Notifications Container -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
-    <!-- 1. FULL SCREEN STORY VIEWER MODAL -->
+    <!-- Full-Screen Stories Player Modal -->
     <div id="story-viewer" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center p-4">
         <div class="max-w-md w-full relative flex flex-col h-[80vh] bg-gray-900 rounded-3xl overflow-hidden border border-gray-800">
-            <!-- Progress Bar -->
             <div class="absolute top-3 inset-x-4 h-1 bg-white/20 rounded-full overflow-hidden z-10">
                 <div id="story-progress" class="h-full bg-pink-500 w-0 transition-all duration-[5000ms] ease-linear"></div>
             </div>
-            <!-- Header -->
             <div class="absolute top-6 inset-x-4 flex justify-between items-center z-10 bg-gradient-to-b from-black/60 to-transparent p-2 rounded-xl">
                 <div class="flex items-center space-x-2">
                     <div class="h-8 w-8 bg-pink-600 rounded-full flex items-center justify-center text-xs font-bold text-white" id="story-author-avatar">US</div>
@@ -52,119 +56,208 @@
                 </div>
                 <button onclick="closeStoryViewer()" class="text-white hover:text-red-500 text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <!-- Image content -->
             <div class="flex-grow flex items-center justify-center bg-black">
                 <img id="story-viewer-img" src="" alt="Story Content" class="max-h-full max-w-full object-contain">
             </div>
         </div>
     </div>
 
-    <!-- Main Header -->
-    <header class="border-b border-gray-900 bg-gray-950/80 backdrop-blur-md sticky top-0 z-40">
+    <!-- Main Responsive Navigation Header -->
+    <header class="border-b border-gray-900 bg-[#030712]/80 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             
-            <!-- Logo -->
+            <!-- Branding -->
             <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('home')">
                 <span class="text-2xl font-black tracking-wider text-pink-500 flex items-center">
                     <i class="fa-solid fa-crown mr-2 text-pink-500 animate-pulse"></i>FAN<span class="text-white">ZONES</span>
                 </span>
-                <span class="bg-pink-500/10 text-pink-400 text-[10px] uppercase tracking-widest font-extrabold px-2 py-0.5 rounded-full border border-pink-500/20">V3.0</span>
+                <span class="bg-pink-500/10 text-pink-400 text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-1 rounded-full border border-pink-500/20">V3.5</span>
             </div>
             
-            <!-- Central Navigation -->
+            <!-- Navbar Items -->
             <nav class="hidden lg:flex items-center space-x-8 text-sm font-bold text-gray-400">
-                <button onclick="navigateTo('home')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-house"></i> <span>Home</span></button>
-                <button onclick="navigateTo('feed')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-compass"></i> <span>Explore</span></button>
-                <button onclick="navigateTo('bookmarks')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-bookmark"></i> <span>Saved</span></button>
-                <button onclick="navigateTo('dashboard')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-circle-plus"></i> <span>Publish</span></button>
-                <button onclick="navigateTo('profile')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-user-astronaut"></i> <span>My Studio</span></button>
+                <button onclick="navigateTo('home')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-house text-xs"></i> <span>Welcome</span></button>
+                <button onclick="navigateTo('feed')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-compass text-xs"></i> <span>Live Feed</span></button>
+                <button onclick="navigateTo('bookmarks')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-bookmark text-xs"></i> <span>Saved</span></button>
+                <button onclick="navigateTo('dashboard')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-circle-plus text-xs"></i> <span>Studio Desk</span></button>
+                <button onclick="navigateTo('profile')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-user-astronaut text-xs"></i> <span>My Studio</span></button>
             </nav>
 
-            <!-- Wallet & Notifications Area -->
+            <!-- Wallet & Interactions -->
             <div class="flex items-center space-x-4">
-                <!-- Coins Balance widget -->
-                <div class="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-full flex items-center space-x-1.5" title="Your Coins Wallet">
-                    <span class="text-amber-400 text-sm"><i class="fa-solid fa-coins animate-bounce"></i></span>
+                <div class="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-full flex items-center space-x-1.5 cursor-pointer hover:bg-amber-500/20 transition" onclick="showToast('Your active Fanzones Coins balance.')" title="Your Coins Wallet">
+                    <span class="text-amber-400 text-sm"><i class="fa-solid fa-coins"></i></span>
                     <span class="text-xs font-black text-amber-300" id="wallet-balance">200</span>
                 </div>
-                <!-- Notifications Bell -->
-                <div class="relative cursor-pointer" onclick="toggleNotifications()">
+                <div class="relative cursor-pointer py-1" onclick="toggleNotifications()">
                     <span class="text-gray-400 hover:text-white transition text-lg"><i class="fa-regular fa-bell"></i></span>
-                    <span id="notif-dot" class="absolute -top-1 -right-1 h-2.5 w-2.5 bg-red-500 rounded-full hidden animate-ping"></span>
+                    <span id="notif-dot" class="absolute top-1.5 right-0.5 h-2 w-2 bg-red-500 rounded-full hidden animate-ping"></span>
                 </div>
-                <button onclick="navigateTo('dashboard')" class="bg-gradient-to-r from-pink-500 to-indigo-600 hover:opacity-95 text-white px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-lg shadow-pink-500/20">
-                    Upload
+                <button onclick="navigateTo('dashboard')" class="bg-gradient-to-r from-pink-500 to-indigo-600 hover:opacity-95 text-white px-5 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition transform hover:scale-[1.03] shadow-lg shadow-pink-500/20">
+                    Create Post
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Notifications Drawer Modal -->
-    <div id="notif-drawer" class="fixed right-6 top-16 w-80 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-4 hidden z-50">
-        <div class="flex justify-between items-center border-b border-gray-800 pb-2 mb-3">
-            <h4 class="text-xs font-black uppercase tracking-wider text-gray-400">System Notifications</h4>
+    <!-- Notification Tray Drawer -->
+    <div id="notif-drawer" class="fixed right-6 top-16 w-80 bg-gray-950 border border-gray-900 rounded-2xl shadow-2xl p-4 hidden z-50">
+        <div class="flex justify-between items-center border-b border-gray-900 pb-2 mb-3">
+            <h4 class="text-xs font-black uppercase tracking-wider text-gray-400">Activity Logs</h4>
             <button onclick="clearNotifications()" class="text-[10px] text-pink-500 font-bold hover:underline">Clear All</button>
         </div>
         <div id="notif-list" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar text-xs">
-            <p class="text-gray-500 italic text-center py-4">No recent activity notifications.</p>
+            <p class="text-gray-500 italic text-center py-4">No recent activity logs.</p>
         </div>
     </div>
 
-    <!-- MAIN BODY -->
+    <!-- MAIN APP STRUCTURE -->
     <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-8">
 
-        <!-- VIEW 1: HOME/LANDING PAGE -->
-        <section id="view-home" class="view active-view space-y-16 py-10">
-            <div class="text-center space-y-6 max-w-4xl mx-auto relative">
-                <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-pink-500/10 rounded-full filter blur-3xl -z-10"></div>
-                <div class="absolute -top-12 left-1/3 w-64 h-64 bg-indigo-500/10 rounded-full filter blur-3xl -z-10"></div>
+        <!-- VIEW 1: PREMIUM WELCOME LANDING INTERFACE -->
+        <section id="view-home" class="view active-view space-y-20 py-6">
+            
+            <!-- Hero Grid Layout -->
+            <div class="grid lg:grid-cols-12 gap-12 items-center relative">
+                <!-- Background ambient glows -->
+                <div class="absolute -top-24 left-1/4 w-96 h-96 bg-pink-500/10 rounded-full filter blur-3xl -z-10"></div>
+                <div class="absolute top-12 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full filter blur-3xl -z-10"></div>
 
-                <span class="bg-pink-600/10 text-pink-400 border border-pink-500/20 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase">
-                    💎 Fanzones Premium Subscription Network
-                </span>
-                <h1 class="text-5xl md:text-8xl font-black tracking-tight leading-none">
-                    Uncensored Media. <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Subscribed Value.</span>
-                </h1>
-                <p class="text-gray-400 text-base md:text-xl max-w-2xl mx-auto font-medium">
-                    Earn coins on premium locked content or unlock images published by global creators. Zero login hassle. Pure interactions.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
-                    <button onclick="navigateTo('feed')" class="w-full sm:w-auto bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white font-extrabold text-sm uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition shadow-2xl shadow-pink-500/30">
-                        Launch Feed Dashboard
-                    </button>
-                    <button onclick="navigateTo('dashboard')" class="w-full sm:w-auto bg-gray-900/60 border border-gray-800 text-white font-bold text-sm uppercase tracking-wider px-10 py-4 rounded-full hover:bg-gray-800 transition">
-                        Start Uploading
-                    </button>
+                <!-- Text Presentation (Left Side) -->
+                <div class="lg:col-span-7 space-y-6">
+                    <span class="bg-gradient-to-r from-pink-500/10 to-indigo-500/10 border border-pink-500/20 px-4 py-2 rounded-full text-xs font-extrabold tracking-widest uppercase text-pink-400">
+                        ✨ OWN YOUR NETWORK. REWARD YOUR WORK.
+                    </span>
+                    <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-none text-glow">
+                        Where Passion Meets <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">True Connection</span>
+                    </h1>
+                    <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-xl">
+                        Welcome to **Fanzones**, the leading open social-subscription web system built on high-speed ImgBB CDN hosting and synchronized real-time interactions. Share, unlock, and save exclusive media securely.
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-2">
+                        <button onclick="navigateTo('feed')" class="bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white font-extrabold text-xs uppercase tracking-wider px-10 py-4.5 rounded-full hover:opacity-90 transition shadow-2xl shadow-pink-500/30">
+                            Launch Live Streams
+                        </button>
+                        <button onclick="navigateTo('dashboard')" class="bg-gray-900/60 border border-gray-800 hover:border-pink-500/30 text-white font-extrabold text-xs uppercase tracking-wider px-10 py-4.5 rounded-full hover:bg-gray-800 transition">
+                            Create Creator Handle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Graphic Interactive Mockup Card (Right Side) -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="glass-panel p-6 rounded-[32px] w-full max-w-sm space-y-5 border border-gray-800/60 shadow-2xl transform rotate-2 hover:rotate-0 transition duration-500 relative">
+                        <div class="absolute -top-3 -right-3 bg-indigo-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full border border-indigo-500/50">
+                            FEATURED CREATOR
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="h-12 w-12 bg-gradient-to-tr from-pink-500 to-indigo-500 rounded-2xl flex items-center justify-center text-sm font-black text-white">FC</div>
+                            <div>
+                                <div class="flex items-center space-x-1">
+                                    <h3 class="text-sm font-bold text-white">@aurora_sky</h3>
+                                    <i class="fa-solid fa-circle-check text-blue-400 text-[11px]"></i>
+                                </div>
+                                <p class="text-[10px] text-gray-500 font-bold">250+ Exclusive Uploads</p>
+                            </div>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-gray-950 relative overflow-hidden">
+                            <!-- Premium Blur mockup -->
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover premium-blur">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center space-y-2">
+                                <div class="h-10 w-10 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full flex items-center justify-center text-base"><i class="fa-solid fa-lock"></i></div>
+                                <span class="text-[10px] font-black uppercase tracking-wider text-amber-300">Unlock for 15 Coins</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-gray-400">
+                            <span class="flex items-center space-x-1 text-pink-500 font-bold"><i class="fa-solid fa-heart"></i> <span>1.2k Likes</span></span>
+                            <span class="text-gray-500">Subscription economy mockup</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Features Grid -->
-            <div class="grid md:grid-cols-3 gap-8 pt-8">
-                <div class="glass-panel p-6 rounded-2xl">
-                    <div class="h-12 w-12 bg-pink-500/20 rounded-xl flex items-center justify-center text-pink-500 mb-4 text-xl"><i class="fa-solid fa-coins"></i></div>
-                    <h3 class="text-xl font-bold mb-2">Coin Unlock Economy</h3>
-                    <p class="text-gray-400 text-sm">Lock your exclusive content under custom coin parameters. Users pay virtual coins to view them.</p>
+            <!-- "Discover Our Curated Creators" Showroom (Rich Content Showcase) -->
+            <div class="space-y-6 pt-10 border-t border-gray-900">
+                <div class="text-center space-y-2">
+                    <span class="text-[10px] font-black text-pink-500 uppercase tracking-widest">CHOOSE YOUR VIBE</span>
+                    <h2 class="text-3xl md:text-5xl font-black">Top Popular Genres</h2>
+                    <p class="text-gray-400 text-xs md:text-sm max-w-xl mx-auto">Explore some of our active global creator setups specializing in various aesthetic domains.</p>
                 </div>
-                <div class="glass-panel p-6 rounded-2xl">
-                    <div class="h-12 w-12 bg-indigo-500/20 rounded-xl flex items-center justify-center text-indigo-400 mb-4 text-xl"><i class="fa-solid fa-circle-play"></i></div>
-                    <h3 class="text-xl font-bold mb-2">Live Stories Integration</h3>
-                    <p class="text-gray-400 text-sm">Create and post immersive image stories that users can watch in real-time.</p>
-                </div>
-                <div class="glass-panel p-6 rounded-2xl">
-                    <div class="h-12 w-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mb-4 text-xl"><i class="fa-solid fa-user-shield"></i></div>
-                    <h3 class="text-xl font-bold mb-2">Anonymity & Security</h3>
-                    <p class="text-gray-400 text-sm">Experience absolute anonymity without entering passwords or emails.</p>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Genre Card 1 -->
+                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-pink-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="h-10 w-10 bg-pink-500/10 text-pink-400 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-camera-retro"></i></div>
+                            <h3 class="text-xl font-bold">Fashion & Glamour</h3>
+                            <p class="text-gray-400 text-xs leading-relaxed">Experience model portfolios, runway diaries, and exclusive streetwear outfits shared by premium models.</p>
+                        </div>
+                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-pink-500 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Fashion streams</span> <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+
+                    <!-- Genre Card 2 -->
+                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-purple-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="h-10 w-10 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-paintbrush"></i></div>
+                            <h3 class="text-xl font-bold">Concept Art & Cosplay</h3>
+                            <p class="text-gray-400 text-xs leading-relaxed">Unlock high-definition conceptual design illustrations, cosplay shoots, and backstage makeup transformation videos.</p>
+                        </div>
+                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-purple-400 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Cosplay files</span> <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+
+                    <!-- Genre Card 3 -->
+                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-indigo-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="h-10 w-10 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-dumbbell"></i></div>
+                            <h3 class="text-xl font-bold">Fitness & Lifestyle</h3>
+                            <p class="text-gray-400 text-xs leading-relaxed">Unlock complete nutrition diet plans, daily lifestyle vlogs, and hardcore transformation updates.</p>
+                        </div>
+                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-indigo-400 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Workout vlogs</span> <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
                 </div>
             </div>
+
+            <!-- "How it Works" timeline -->
+            <div class="space-y-8 pt-10 border-t border-gray-900">
+                <div class="text-center space-y-2">
+                    <h2 class="text-3xl font-black">Platform Operations Timeline</h2>
+                    <p class="text-gray-400 text-sm">Getting your portfolio or stream active takes less than 2 minutes.</p>
+                </div>
+
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
+                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">01</span>
+                        <h4 class="text-sm font-bold text-pink-500 mb-2 uppercase tracking-wide">Claim Your Handle</h4>
+                        <p class="text-gray-400 text-xs">Instantly write a pseudonym or nickname to define your local session workspace.</p>
+                    </div>
+                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
+                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">02</span>
+                        <h4 class="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-wide">Acquire Coins</h4>
+                        <p class="text-gray-400 text-xs">New users automatically get 200 free credits to unlock premium locked assets on the feed.</p>
+                    </div>
+                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
+                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">03</span>
+                        <h4 class="text-sm font-bold text-purple-400 mb-2 uppercase tracking-wide">Cloud Publishing</h4>
+                        <p class="text-gray-400 text-xs">Directly upload images via ImgBB secure cloud API to establish high-speed storage links.</p>
+                    </div>
+                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
+                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">04</span>
+                        <h4 class="text-sm font-bold text-teal-400 mb-2 uppercase tracking-wide">Earn & Unlock</h4>
+                        <p class="text-gray-400 text-xs">Publish locked images to let other users unlock them using coins, boosting your virtual profile metrics.</p>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <!-- VIEW 2: FEED PAGE WITH STORIES -->
         <section id="view-feed" class="view hidden-view space-y-8">
             
-            <!-- STORIES AREA -->
+            <!-- Dynamic Stories Tray -->
             <div class="space-y-3">
                 <h3 class="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center">
-                    <i class="fa-solid fa-circle-notch text-pink-500 mr-2 animate-spin"></i>Recent Stories
+                    <i class="fa-solid fa-circle-notch text-pink-500 mr-2 animate-spin"></i>Recent Creator Stories
                 </h3>
                 <div class="flex items-center space-x-4 overflow-x-auto no-scrollbar py-2" id="stories-tray">
                     <!-- Dynamic Stories inserted here -->
@@ -173,18 +266,17 @@
 
             <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-gray-900 pb-4 gap-4">
                 <div>
-                    <h2 class="text-2xl font-black">Live Streams</h2>
-                    <p class="text-gray-400 text-sm">Unlock the premium visual assets posted by verified creators.</p>
+                    <h2 class="text-2xl font-black">Live Streams Feed</h2>
+                    <p class="text-gray-400 text-sm">Explore images, captions, and lock systems published by creators.</p>
                 </div>
-                <!-- Controls -->
                 <div class="flex items-center space-x-3">
-                    <input type="text" id="feed-search" oninput="filterFeed()" placeholder="Search creators..." class="bg-gray-900 border border-gray-800 focus:border-pink-500 text-xs px-4 py-2.5 rounded-full text-white outline-none w-52 transition">
+                    <input type="text" id="feed-search" oninput="filterFeed()" placeholder="Search creators by @handle..." class="bg-gray-900 border border-gray-800 focus:border-pink-500 text-xs px-4 py-2.5 rounded-full text-white outline-none w-56 transition">
                 </div>
             </div>
 
             <!-- Feed Grid -->
             <div id="feed-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Loading State -->
+                <!-- Loading fallback state -->
                 <div class="col-span-full py-12 text-center">
                     <div class="animate-spin inline-block w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mb-3"></div>
                     <p class="text-gray-400 text-sm">Syncing live nodes...</p>
@@ -196,18 +288,18 @@
         <section id="view-bookmarks" class="view hidden-view space-y-6">
             <div class="border-b border-gray-900 pb-4">
                 <h2 class="text-2xl font-black">My Saved Vault</h2>
-                <p class="text-gray-400 text-sm">Exclusive contents bookmarked by you for easy retrieval.</p>
+                <p class="text-gray-400 text-sm">Contents bookmarked by you for private local session viewing.</p>
             </div>
             <div id="bookmarks-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <p class="text-gray-500 text-sm">No bookmarked items found.</p>
+                <p class="text-gray-500 text-sm col-span-full text-center py-12">No bookmarked items found.</p>
             </div>
         </section>
 
-        <!-- VIEW 4: PUBLISH STUDIO (DASHBOARD) -->
+        <!-- VIEW 4: PUBLISH STUDIO DESK (DASHBOARD) -->
         <section id="view-dashboard" class="view hidden-view max-w-2xl mx-auto space-y-8">
             <div class="border-b border-gray-900 pb-4">
-                <h2 class="text-2xl font-black">Creator Publishing Desk</h2>
-                <p class="text-gray-400 text-sm">Upload contents instantly onto ImgBB & secure the cloud references.</p>
+                <h2 class="text-2xl font-black">Creator Studio Desk</h2>
+                <p class="text-gray-400 text-sm">Publish interactive feeds or stories securely over ImgBB CDN API.</p>
             </div>
 
             <div class="glass-panel p-8 rounded-3xl space-y-6">
@@ -215,7 +307,7 @@
                     
                     <!-- Content Type Toggle -->
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Upload Type</label>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Upload Scope Type</label>
                         <div class="grid grid-cols-2 gap-3">
                             <button type="button" id="type-post-btn" onclick="setUploadType('post')" class="bg-pink-600 border border-pink-500 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition">Normal Feed Post</button>
                             <button type="button" id="type-story-btn" onclick="setUploadType('story')" class="bg-gray-900 border border-gray-800 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-gray-400 transition">Image Story</button>
@@ -225,17 +317,17 @@
                     <!-- Input Fields -->
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Creator ID / Handle</label>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Creator Handle ID</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 text-sm font-semibold">@</span>
-                                <input type="text" id="post-author" required placeholder="creator_handle" class="w-full bg-gray-950/80 border border-gray-800 focus:border-pink-500 rounded-2xl pl-8 pr-4 py-3.5 text-sm text-white focus:outline-none transition">
+                                <input type="text" id="post-author" required placeholder="your_handle" class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl pl-8 pr-4 py-3.5 text-sm text-white focus:outline-none transition">
                             </div>
                         </div>
 
                         <!-- Caption (Hide for stories) -->
                         <div id="caption-field-container">
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Caption Description</label>
-                            <textarea id="post-caption" rows="3" placeholder="Describe your exclusive image to your fans..." class="w-full bg-gray-950/80 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3.5 text-sm text-white focus:outline-none transition resize-none"></textarea>
+                            <textarea id="post-caption" rows="3" placeholder="Write exclusive updates or details about the asset..." class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3.5 text-sm text-white focus:outline-none transition resize-none"></textarea>
                         </div>
 
                         <!-- Locking Parameters (Hide for stories) -->
@@ -250,7 +342,7 @@
 
                             <div id="premium-details" class="hidden">
                                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Unlock Coin Cost</label>
-                                <input type="number" id="post-coin-price" min="5" max="100" value="15" class="w-full bg-gray-950/80 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none transition">
+                                <input type="number" id="post-coin-price" min="5" max="100" value="15" class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none transition">
                                 <p class="text-[10px] text-gray-500 mt-1">Provide a cost between 5 and 100 coins.</p>
                             </div>
                         </div>
@@ -258,10 +350,10 @@
 
                     <!-- Image Drop Area -->
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Select Visual Media</label>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Upload File</label>
                         <div class="border-2 border-dashed border-gray-800 hover:border-pink-500/50 rounded-2xl p-10 text-center cursor-pointer relative transition duration-300" onclick="document.getElementById('post-image').click()">
                             <i class="fa-solid fa-cloud-arrow-up text-4xl text-gray-600 mb-3" id="upload-icon"></i>
-                            <p class="text-sm font-bold text-gray-300" id="upload-text">Browse from storage</p>
+                            <p class="text-sm font-bold text-gray-300" id="upload-text">Browse image from disk storage</p>
                             <input type="file" id="post-image" accept="image/*" class="hidden" onchange="previewFile(event)">
                         </div>
                         <div id="preview-container" class="mt-4 hidden relative">
@@ -292,15 +384,15 @@
                 <div class="text-center md:text-left flex-grow space-y-2">
                     <div class="flex flex-col md:flex-row items-center md:space-x-3 gap-2">
                         <h2 class="text-2xl font-black text-white" id="profile-display-name">Alex Carter</h2>
-                        <span class="bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-blue-500/20 flex items-center">
+                        <span class="bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase px-2.5 py-1 rounded border border-blue-500/20 flex items-center">
                             <i class="fa-solid fa-circle-check mr-1 text-xs"></i> Verified Creator
                         </span>
                     </div>
                     <!-- Custom Local Edit Form -->
                     <div class="space-y-3 pt-2">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <input type="text" id="edit-display-name" placeholder="Display Name" oninput="saveLocalProfile()" class="bg-gray-950/80 border border-gray-800 text-xs px-3 py-2 rounded-lg text-white outline-none w-full">
-                            <input type="text" id="edit-bio" placeholder="Bio description (e.g., Artist & Creator)" oninput="saveLocalProfile()" class="bg-gray-950/80 border border-gray-800 text-xs px-3 py-2 rounded-lg text-white outline-none w-full">
+                            <input type="text" id="edit-display-name" placeholder="Display Name" oninput="saveLocalProfile()" class="bg-gray-950 border border-gray-800 text-xs px-3 py-2 rounded-lg text-white outline-none w-full">
+                            <input type="text" id="edit-bio" placeholder="Bio description (e.g., Artist & Creator)" oninput="saveLocalProfile()" class="bg-gray-950 border border-gray-800 text-xs px-3 py-2 rounded-lg text-white outline-none w-full">
                         </div>
                     </div>
                 </div>
@@ -320,11 +412,11 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-900 bg-gray-950 py-10 mt-16 text-center text-xs text-gray-500">
+    <footer class="border-t border-gray-900 bg-gray-950 py-10 mt-16 text-center text-xs text-gray-500 font-medium">
         <div class="max-w-7xl mx-auto px-6 space-y-2">
             <p>&copy; 2026 Fanzones Studio Network. All rights reserved.</p>
             <p class="text-gray-600 flex justify-center items-center gap-1.5">
-                Powered by <span class="text-pink-500 font-bold">ImgBB</span> and <span class="text-indigo-400 font-bold">Firebase Realtime DB</span>
+                Powered securely by <span class="text-pink-500 font-bold">ImgBB CDN</span> and <span class="text-indigo-400 font-bold">Firebase DB Engine</span>
             </p>
         </div>
     </footer>
@@ -351,16 +443,15 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // Core App State variables
         let activeFeedPosts = [];
         let uploadType = 'post'; // 'post' or 'story'
 
-        // Wallet Initialization (200 Free Coins)
+        // Wallet Initialization
         if (!localStorage.getItem('fanzones_coins')) {
             localStorage.setItem('fanzones_coins', '200');
         }
 
-        // Custom Toast Notification System
+        // Custom Toast Notifications
         window.showToast = function(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -381,14 +472,13 @@
             }, 3500);
         };
 
-        // Header Coin Balance Sync
         function updateCoinsUI() {
             const coins = localStorage.getItem('fanzones_coins');
             document.getElementById('wallet-balance').textContent = coins;
         }
         updateCoinsUI();
 
-        // Single Page App Router
+        // View Navigator Router
         window.navigateTo = function(viewId) {
             document.querySelectorAll('.view').forEach(view => {
                 view.classList.remove('active-view');
@@ -411,7 +501,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // File Select Management
+        // File Previews
         window.previewFile = function(event) {
             const file = event.target.files[0];
             const previewContainer = document.getElementById('preview-container');
@@ -436,10 +526,9 @@
             document.getElementById('post-image').value = '';
             document.getElementById('preview-container').classList.add('hidden');
             document.getElementById('upload-icon').classList.remove('hidden');
-            document.getElementById('upload-text').textContent = 'Browse from storage';
+            document.getElementById('upload-text').textContent = 'Browse image from disk storage';
         };
 
-        // Toggle Post vs Story UI
         window.setUploadType = function(type) {
             uploadType = type;
             const postBtn = document.getElementById('type-post-btn');
@@ -470,7 +559,7 @@
             }
         };
 
-        // CORE UPLOAD ACTION
+        // CORE UPLOAD PIPELINE
         window.handlePostUpload = async function(e) {
             e.preventDefault();
 
@@ -484,10 +573,10 @@
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></span> Cloud Uplink active...`;
+            submitBtn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></span> Publishing pipeline active...`;
 
             try {
-                // 1. Upload to ImgBB
+                // 1. Send binary image payloads to ImgBB secure CDN API
                 const formData = new FormData();
                 formData.append('image', imageFile);
 
@@ -506,7 +595,7 @@
                     const isPremium = document.getElementById('premium-checkbox').checked;
                     const coinPrice = isPremium ? parseInt(document.getElementById('post-coin-price').value) : 0;
 
-                    // Write post to DB
+                    // 2. Commit Node payloads to Firebase database
                     const postsRef = ref(database, 'posts');
                     const newPostRef = push(postsRef);
                     const postId = newPostRef.key;
@@ -521,14 +610,13 @@
                         timestamp: Date.now()
                     });
 
-                    // Track post created by this session
                     const myUploadedIds = JSON.parse(localStorage.getItem('myPostIds') || '[]');
                     myUploadedIds.push(postId);
                     localStorage.setItem('myPostIds', JSON.stringify(myUploadedIds));
-                    addNotification(`You successfully published a new ${isPremium ? 'Premium' : 'Free'} Post!`);
+                    addNotification(`Successfully published a ${isPremium ? 'Premium' : 'Free'} visual feed.`);
 
                 } else {
-                    // Upload to Stories Database node
+                    // Stories database push
                     const storiesRef = ref(database, 'stories');
                     const newStoryRef = push(storiesRef);
 
@@ -538,18 +626,16 @@
                         timestamp: Date.now()
                     });
 
-                    addNotification('You published a new visual Image Story.');
+                    addNotification('Successfully posted a live visual story.');
                 }
 
-                // Celebrations
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showToast('Upload Successful!');
 
-                // Reset Forms
                 document.getElementById('upload-form').reset();
                 document.getElementById('preview-container').classList.add('hidden');
                 document.getElementById('upload-icon').classList.remove('hidden');
-                document.getElementById('upload-text').textContent = 'Browse from storage';
+                document.getElementById('upload-text').textContent = 'Browse image from disk storage';
                 document.getElementById('post-author').value = author;
 
                 navigateTo('feed');
@@ -562,13 +648,13 @@
             }
         };
 
-        // Likes Update Node
+        // Likes Transaction
         window.likePost = function(postId) {
             const likesRef = ref(database, `posts/${postId}/likesCount`);
             const likedList = JSON.parse(localStorage.getItem('likedPosts') || '[]');
             
             if (likedList.includes(postId)) {
-                showToast('You already liked this content.', 'error');
+                showToast('Already liked this post.', 'error');
                 return;
             }
 
@@ -577,53 +663,50 @@
             }).then(() => {
                 likedList.push(postId);
                 localStorage.setItem('likedPosts', JSON.stringify(likedList));
-                addNotification('You liked a post.');
-                showToast('Liked post successfully!');
+                addNotification('You liked a feed post.');
+                showToast('Post Liked!');
             });
         };
 
-        // UNLOCK PREMIUM POST ECONOMY
+        // Unlock Locked posts
         window.unlockPremiumPost = function(postId, coinPrice) {
             const currentCoins = parseInt(localStorage.getItem('fanzones_coins'));
 
             if (currentCoins < coinPrice) {
-                showToast('Insufficient coins balance! Try saving some.', 'error');
+                showToast('Not enough coins in your wallet!', 'error');
                 return;
             }
 
-            if (confirm(`Unlock this premium image for ${coinPrice} Coins?`)) {
+            if (confirm(`Unlock premium file for ${coinPrice} Coins?`)) {
                 const updatedCoins = currentCoins - coinPrice;
                 localStorage.setItem('fanzones_coins', updatedCoins.toString());
                 updateCoinsUI();
 
-                // Add to unlocked registry
                 const unlockedList = JSON.parse(localStorage.getItem('unlockedPosts') || '[]');
                 unlockedList.push(postId);
                 localStorage.setItem('unlockedPosts', JSON.stringify(unlockedList));
 
-                addNotification(`You unlocked a premium post for ${coinPrice} Coins.`);
-                showToast('Premium post unlocked!', 'success');
-                
-                // Re-render
+                addNotification(`Unlocked premium asset for ${coinPrice} Coins.`);
+                showToast('Post unlocked successfully!', 'success');
                 renderFeedUI(activeFeedPosts);
             }
         };
 
-        // SAVED BOOKMARKS LISTS
+        // Bookmarks Toggling
         window.toggleBookmark = function(postId) {
             let bookmarks = JSON.parse(localStorage.getItem('savedPosts') || '[]');
             if (bookmarks.includes(postId)) {
                 bookmarks = bookmarks.filter(id => id !== postId);
-                showToast('Post removed from saved vault.');
+                showToast('Removed from saved vault.');
             } else {
                 bookmarks.push(postId);
-                showToast('Post added to saved vault!', 'success');
+                showToast('Saved to vault successfully!', 'success');
             }
             localStorage.setItem('savedPosts', JSON.stringify(bookmarks));
             renderFeedUI(activeFeedPosts);
         };
 
-        // REAL-TIME STORIES TRAY FETCHING
+        // Realtime Fetching Stories node
         const storiesRef = ref(database, 'stories');
         onValue(storiesRef, (snapshot) => {
             const tray = document.getElementById('stories-tray');
@@ -652,7 +735,7 @@
             });
         });
 
-        // FULL SCREEN STORY SYSTEM
+        // Stories full-screen controller
         let storyTimer = null;
         window.openStoryViewer = function(imgUrl, author) {
             const modal = document.getElementById('story-viewer');
@@ -668,7 +751,6 @@
             modal.classList.remove('hidden');
             progress.style.width = '100%';
 
-            // Close automatically after 5 seconds
             storyTimer = setTimeout(() => {
                 closeStoryViewer();
             }, 5000);
@@ -681,7 +763,6 @@
             modal.classList.add('hidden');
             clearTimeout(storyTimer);
             
-            // reset progress width smoothly
             progress.style.transition = 'none';
             progress.style.width = '0';
             setTimeout(() => {
@@ -711,7 +792,7 @@
             });
         };
 
-        // RENDER CENTRAL FEED AREA
+        // Realtime Fetching Central Feeds
         const dbPostsRef = ref(database, 'posts');
         onValue(dbPostsRef, (snapshot) => {
             const data = snapshot.val();
@@ -744,15 +825,13 @@
             posts.forEach(post => {
                 const dateText = new Date(post.timestamp).toLocaleDateString();
                 const isSaved = savedList.includes(post.id);
-                
-                // Lock Logic Check
                 const isLocked = post.isPremium && !unlockedList.includes(post.id);
 
                 let commentsHTML = '';
                 if (post.comments) {
                     Object.values(post.comments).forEach(c => {
                         commentsHTML += `
-                            <div class="bg-gray-950 p-2 rounded-lg border border-gray-900/60 text-xs">
+                            <div class="bg-gray-950 p-2.5 rounded-xl border border-gray-900/60 text-xs">
                                 <span class="font-bold text-pink-400">@${escapeHTML(c.author)}:</span>
                                 <span class="text-gray-300 ml-1">${escapeHTML(c.text)}</span>
                             </div>
@@ -774,24 +853,23 @@
                             <p class="text-[9px] text-gray-500 font-bold">${dateText}</p>
                         </div>
                         <div class="flex items-center space-x-2">
-                            ${post.isPremium ? '<span class="bg-amber-500/15 text-amber-500 px-2 py-0.5 rounded text-[10px] font-bold">Premium</span>' : ''}
+                            ${post.isPremium ? '<span class="bg-amber-500/15 text-amber-500 px-2.5 py-1 rounded text-[10px] font-bold">Premium</span>' : ''}
                             <button onclick="toggleBookmark('${post.id}')" class="${isSaved ? 'text-pink-500' : 'text-gray-500 hover:text-white'} text-sm transition">
                                 <i class="fa-solid fa-bookmark"></i>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Image Section (Blurred if Premium & Locked) -->
+                    <!-- Visual Cover -->
                     <div class="aspect-square bg-gray-950 relative overflow-hidden flex items-center justify-center">
                         <img src="${post.imageUrl}" class="w-full h-full object-cover ${isLocked ? 'premium-blur' : ''}" loading="lazy">
                         
-                        <!-- Lock Overlay -->
                         ${isLocked ? `
                         <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center space-y-3 p-4">
                             <div class="h-12 w-12 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center border border-amber-500/40 text-xl animate-pulse">
                                 <i class="fa-solid fa-lock"></i>
                             </div>
-                            <p class="text-xs font-bold text-gray-200">Exclusive Premium locked image</p>
+                            <p class="text-xs font-bold text-gray-200">Locked subscription image file</p>
                             <button onclick="unlockPremiumPost('${post.id}', ${post.coinPrice})" class="bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs uppercase px-5 py-2.5 rounded-full transition shadow-lg shadow-amber-500/20 flex items-center space-x-1.5">
                                 <i class="fa-solid fa-coins"></i> <span>Unlock for ${post.coinPrice} Coins</span>
                             </button>
@@ -799,7 +877,7 @@
                         ` : ''}
                     </div>
 
-                    <!-- Card Body -->
+                    <!-- Details metadata -->
                     <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
                         <p class="text-gray-300 text-sm">${escapeHTML(post.caption)}</p>
                         
@@ -814,7 +892,7 @@
                             </span>
                         </div>
 
-                        <!-- Comments section -->
+                        <!-- comments area -->
                         <div class="space-y-2">
                             <div class="max-h-24 overflow-y-auto space-y-1.5 no-scrollbar">
                                 ${commentsHTML}
@@ -832,7 +910,6 @@
             });
         }
 
-        // Search Filter
         window.filterFeed = function() {
             const query = document.getElementById('feed-search').value.toLowerCase().trim();
             if (!query) {
@@ -843,7 +920,6 @@
             renderFeedUI(filtered);
         };
 
-        // Bookmarks Render Function
         window.renderBookmarks = function() {
             const container = document.getElementById('bookmarks-container');
             container.innerHTML = '';
@@ -852,13 +928,13 @@
             const bookmarkedPosts = activeFeedPosts.filter(post => savedList.includes(post.id));
 
             if (bookmarkedPosts.length === 0) {
-                container.innerHTML = `<p class="text-gray-500 text-sm col-span-full">Your bookmarks folder is empty.</p>`;
+                container.innerHTML = `<p class="text-gray-500 text-sm col-span-full text-center py-12">Your bookmarks vault is empty.</p>`;
                 return;
             }
-            renderFeedUI(bookmarkedPosts); // render filtered items directly onto bookmarks
+            renderFeedUI(bookmarkedPosts);
         };
 
-        // CUSTOM NOTIFICATIONS SUB-ENGINE
+        // System Log Engine
         let notifications = JSON.parse(localStorage.getItem('fanzones_notifs') || '[]');
         
         function addNotification(message) {
@@ -890,12 +966,12 @@
             const list = document.getElementById('notif-list');
             list.innerHTML = '';
             if (notifications.length === 0) {
-                list.innerHTML = `<p class="text-gray-500 italic text-center py-4">No recent activity notifications.</p>`;
+                list.innerHTML = `<p class="text-gray-500 italic text-center py-4">No recent activity logs.</p>`;
                 return;
             }
             notifications.forEach(n => {
                 const item = document.createElement('div');
-                item.className = "bg-gray-950 p-2.5 rounded-xl border border-gray-800 flex justify-between items-center";
+                item.className = "bg-gray-950 p-2.5 rounded-xl border border-gray-900 flex justify-between items-center";
                 item.innerHTML = `
                     <span class="text-gray-300">${escapeHTML(n.message)}</span>
                     <span class="text-[9px] text-gray-500">${n.timestamp}</span>
@@ -904,7 +980,7 @@
             });
         }
 
-        // Profile Storage
+        // Profile custom local variables
         window.saveLocalProfile = function() {
             const name = document.getElementById('edit-display-name').value;
             const bio = document.getElementById('edit-bio').value;
@@ -923,7 +999,6 @@
             document.getElementById('profile-display-name').textContent = name;
         }
 
-        // Render My Created posts inside Profile Tab
         function fetchLocalUserPosts() {
             const profileContainer = document.getElementById('profile-posts-container');
             const myUploadedIds = JSON.parse(localStorage.getItem('myPostIds') || '[]');
@@ -962,7 +1037,6 @@
             });
         }
 
-        // Initializer
         document.addEventListener('DOMContentLoaded', () => {
             const lastUsed = localStorage.getItem('lastUsedName');
             if (lastUsed) {
@@ -972,7 +1046,6 @@
             renderNotificationsUI();
         });
 
-        // Escapes strings safely
         function escapeHTML(str) {
             return str.replace(/[&<>'"]/g, 
                 tag => ({
