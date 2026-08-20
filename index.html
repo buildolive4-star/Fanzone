@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fanzones v3.0 - Ultimate Open Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Pro Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        .active-view { display: block !important; }
+        .hidden-view { display: none !important; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #6366f1 100%);
+        }
+        /* Custom Scrollbar for Stories Tray */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Blur effect for locked content */
+        .premium-blur {
+            filter: blur(25px) brightness(0.6);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-[#030712] text-gray-100 min-h-screen flex flex-col font-sans selection:bg-pink-500 selection:text-white">
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- 1. FULL SCREEN STORY VIEWER MODAL -->
+    <div id="story-viewer" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center p-4">
+        <div class="max-w-md w-full relative flex flex-col h-[80vh] bg-gray-900 rounded-3xl overflow-hidden border border-gray-800">
+            <!-- Progress Bar -->
+            <div class="absolute top-3 inset-x-4 h-1 bg-white/20 rounded-full overflow-hidden z-10">
+                <div id="story-progress" class="h-full bg-pink-500 w-0 transition-all duration-[5000ms] ease-linear"></div>
+            </div>
+            <!-- Header -->
+            <div class="absolute top-6 inset-x-4 flex justify-between items-center z-10 bg-gradient-to-b from-black/60 to-transparent p-2 rounded-xl">
+                <div class="flex items-center space-x-2">
+                    <div class="h-8 w-8 bg-pink-600 rounded-full flex items-center justify-center text-xs font-bold text-white" id="story-author-avatar">US</div>
+                    <span class="text-xs font-bold text-white" id="story-author-name">@username</span>
+                </div>
+                <button onclick="closeStoryViewer()" class="text-white hover:text-red-500 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <!-- Image content -->
+            <div class="flex-grow flex items-center justify-center bg-black">
+                <img id="story-viewer-img" src="" alt="Story Content" class="max-h-full max-w-full object-contain">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="border-b border-gray-900 bg-gray-950/80 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <!-- Logo -->
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('home')">
+                <span class="text-2xl font-black tracking-wider text-pink-500 flex items-center">
+                    <i class="fa-solid fa-crown mr-2 text-pink-500 animate-pulse"></i>FAN<span class="text-white">ZONES</span>
+                </span>
+                <span class="bg-pink-500/10 text-pink-400 text-[10px] uppercase tracking-widest font-extrabold px-2 py-0.5 rounded-full border border-pink-500/20">V3.0</span>
+            </div>
+            
+            <!-- Central Navigation -->
+            <nav class="hidden lg:flex items-center space-x-8 text-sm font-bold text-gray-400">
+                <button onclick="navigateTo('home')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-house"></i> <span>Home</span></button>
+                <button onclick="navigateTo('feed')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-compass"></i> <span>Explore</span></button>
+                <button onclick="navigateTo('bookmarks')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-bookmark"></i> <span>Saved</span></button>
+                <button onclick="navigateTo('dashboard')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-circle-plus"></i> <span>Publish</span></button>
+                <button onclick="navigateTo('profile')" class="hover:text-pink-500 transition-colors flex items-center space-x-1"><i class="fa-solid fa-user-astronaut"></i> <span>My Studio</span></button>
+            </nav>
+
+            <!-- Wallet & Notifications Area -->
+            <div class="flex items-center space-x-4">
+                <!-- Coins Balance widget -->
+                <div class="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-full flex items-center space-x-1.5" title="Your Coins Wallet">
+                    <span class="text-amber-400 text-sm"><i class="fa-solid fa-coins animate-bounce"></i></span>
+                    <span class="text-xs font-black text-amber-300" id="wallet-balance">200</span>
+                </div>
+                <!-- Notifications Bell -->
+                <div class="relative cursor-pointer" onclick="toggleNotifications()">
+                    <span class="text-gray-400 hover:text-white transition text-lg"><i class="fa-regular fa-bell"></i></span>
+                    <span id="notif-dot" class="absolute -top-1 -right-1 h-2.5 w-2.5 bg-red-500 rounded-full hidden animate-ping"></span>
+                </div>
+                <button onclick="navigateTo('dashboard')" class="bg-gradient-to-r from-pink-500 to-indigo-600 hover:opacity-95 text-white px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-lg shadow-pink-500/20">
+                    Upload
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notifications Drawer Modal -->
+    <div id="notif-drawer" class="fixed right-6 top-16 w-80 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-4 hidden z-50">
+        <div class="flex justify-between items-center border-b border-gray-800 pb-2 mb-3">
+            <h4 class="text-xs font-black uppercase tracking-wider text-gray-400">System Notifications</h4>
+            <button onclick="clearNotifications()" class="text-[10px] text-pink-500 font-bold hover:underline">Clear All</button>
+        </div>
+        <div id="notif-list" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar text-xs">
+            <p class="text-gray-500 italic text-center py-4">No recent activity notifications.</p>
+        </div>
+    </div>
+
+    <!-- MAIN BODY -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-8">
+
+        <!-- VIEW 1: HOME/LANDING PAGE -->
+        <section id="view-home" class="view active-view space-y-16 py-10">
+            <div class="text-center space-y-6 max-w-4xl mx-auto relative">
+                <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-pink-500/10 rounded-full filter blur-3xl -z-10"></div>
+                <div class="absolute -top-12 left-1/3 w-64 h-64 bg-indigo-500/10 rounded-full filter blur-3xl -z-10"></div>
+
+                <span class="bg-pink-600/10 text-pink-400 border border-pink-500/20 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase">
+                    💎 Fanzones Premium Subscription Network
+                </span>
+                <h1 class="text-5xl md:text-8xl font-black tracking-tight leading-none">
+                    Uncensored Media. <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Subscribed Value.</span>
+                </h1>
+                <p class="text-gray-400 text-base md:text-xl max-w-2xl mx-auto font-medium">
+                    Earn coins on premium locked content or unlock images published by global creators. Zero login hassle. Pure interactions.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
+                    <button onclick="navigateTo('feed')" class="w-full sm:w-auto bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white font-extrabold text-sm uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition shadow-2xl shadow-pink-500/30">
+                        Launch Feed Dashboard
+                    </button>
+                    <button onclick="navigateTo('dashboard')" class="w-full sm:w-auto bg-gray-900/60 border border-gray-800 text-white font-bold text-sm uppercase tracking-wider px-10 py-4 rounded-full hover:bg-gray-800 transition">
+                        Start Uploading
+                    </button>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid md:grid-cols-3 gap-8 pt-8">
+                <div class="glass-panel p-6 rounded-2xl">
+                    <div class="h-12 w-12 bg-pink-500/20 rounded-xl flex items-center justify-center text-pink-500 mb-4 text-xl"><i class="fa-solid fa-coins"></i></div>
+                    <h3 class="text-xl font-bold mb-2">Coin Unlock Economy</h3>
+                    <p class="text-gray-400 text-sm">Lock your exclusive content under custom coin parameters. Users pay virtual coins to view them.</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl">
+                    <div class="h-12 w-12 bg-indigo-500/20 rounded-xl flex items-center justify-center text-indigo-400 mb-4 text-xl"><i class="fa-solid fa-circle-play"></i></div>
+                    <h3 class="text-xl font-bold mb-2">Live Stories Integration</h3>
+                    <p class="text-gray-400 text-sm">Create and post immersive image stories that users can watch in real-time.</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl">
+                    <div class="h-12 w-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mb-4 text-xl"><i class="fa-solid fa-user-shield"></i></div>
+                    <h3 class="text-xl font-bold mb-2">Anonymity & Security</h3>
+                    <p class="text-gray-400 text-sm">Experience absolute anonymity without entering passwords or emails.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: FEED PAGE WITH STORIES -->
+        <section id="view-feed" class="view hidden-view space-y-8">
+            
+            <!-- STORIES AREA -->
+            <div class="space-y-3">
+                <h3 class="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center">
+                    <i class="fa-solid fa-circle-notch text-pink-500 mr-2 animate-spin"></i>Recent Stories
+                </h3>
+                <div class="flex items-center space-x-4 overflow-x-auto no-scrollbar py-2" id="stories-tray">
+                    <!-- Dynamic Stories inserted here -->
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-gray-900 pb-4 gap-4">
+                <div>
+                    <h2 class="text-2xl font-black">Live Streams</h2>
+                    <p class="text-gray-400 text-sm">Unlock the premium visual assets posted by verified creators.</p>
+                </div>
+                <!-- Controls -->
+                <div class="flex items-center space-x-3">
+                    <input type="text" id="feed-search" oninput="filterFeed()" placeholder="Search creators..." class="bg-gray-900 border border-gray-800 focus:border-pink-500 text-xs px-4 py-2.5 rounded-full text-white outline-none w-52 transition">
+                </div>
+            </div>
+
+            <!-- Feed Grid -->
+            <div id="feed-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Loading State -->
+                <div class="col-span-full py-12 text-center">
+                    <div class="animate-spin inline-block w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mb-3"></div>
+                    <p class="text-gray-400 text-sm">Syncing live nodes...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: BOOKMARKS / SAVED POSTS -->
+        <section id="view-bookmarks" class="view hidden-view space-y-6">
+            <div class="border-b border-gray-900 pb-4">
+                <h2 class="text-2xl font-black">My Saved Vault</h2>
+                <p class="text-gray-400 text-sm">Exclusive contents bookmarked by you for easy retrieval.</p>
+            </div>
+            <div id="bookmarks-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <p class="text-gray-500 text-sm">No bookmarked items found.</p>
+            </div>
+        </section>
+
+        <!-- VIEW 4: PUBLISH STUDIO (DASHBOARD) -->
+        <section id="view-dashboard" class="view hidden-view max-w-2xl mx-auto space-y-8">
+            <div class="border-b border-gray-900 pb-4">
+                <h2 class="text-2xl font-black">Creator Publishing Desk</h2>
+                <p class="text-gray-400 text-sm">Upload contents instantly onto ImgBB & secure the cloud references.</p>
+            </div>
+
+            <div class="glass-panel p-8 rounded-3xl space-y-6">
+                <form id="upload-form" class="space-y-6" onsubmit="handlePostUpload(event)">
+                    
+                    <!-- Content Type Toggle -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Upload Type</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="button" id="type-post-btn" onclick="setUploadType('post')" class="bg-pink-600 border border-pink-500 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition">Normal Feed Post</button>
+                            <button type="button" id="type-story-btn" onclick="setUploadType('story')" class="bg-gray-900 border border-gray-800 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-gray-400 transition">Image Story</button>
+                        </div>
+                    </div>
+
+                    <!-- Input Fields -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Creator ID / Handle</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 text-sm font-semibold">@</span>
+                                <input type="text" id="post-author" required placeholder="creator_handle" class="w-full bg-gray-950/80 border border-gray-800 focus:border-pink-500 rounded-2xl pl-8 pr-4 py-3.5 text-sm text-white focus:outline-none transition">
+                            </div>
+                        </div>
+
+                        <!-- Caption (Hide for stories) -->
+                        <div id="caption-field-container">
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Caption Description</label>
+                            <textarea id="post-caption" rows="3" placeholder="Describe your exclusive image to your fans..." class="w-full bg-gray-950/80 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3.5 text-sm text-white focus:outline-none transition resize-none"></textarea>
+                        </div>
+
+                        <!-- Locking Parameters (Hide for stories) -->
+                        <div id="premium-toggle-container" class="space-y-4">
+                            <div class="flex items-center justify-between bg-gray-950/60 p-4 rounded-2xl border border-gray-900">
+                                <div>
+                                    <h4 class="text-xs font-bold">Lock this Post? (Premium Mode)</h4>
+                                    <p class="text-[10px] text-gray-500 mt-0.5">Users will pay virtual coins to see the image.</p>
+                                </div>
+                                <input type="checkbox" id="premium-checkbox" onchange="togglePremiumDetails()" class="w-5 h-5 accent-pink-500 rounded cursor-pointer">
+                            </div>
+
+                            <div id="premium-details" class="hidden">
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Unlock Coin Cost</label>
+                                <input type="number" id="post-coin-price" min="5" max="100" value="15" class="w-full bg-gray-950/80 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none transition">
+                                <p class="text-[10px] text-gray-500 mt-1">Provide a cost between 5 and 100 coins.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Drop Area -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Select Visual Media</label>
+                        <div class="border-2 border-dashed border-gray-800 hover:border-pink-500/50 rounded-2xl p-10 text-center cursor-pointer relative transition duration-300" onclick="document.getElementById('post-image').click()">
+                            <i class="fa-solid fa-cloud-arrow-up text-4xl text-gray-600 mb-3" id="upload-icon"></i>
+                            <p class="text-sm font-bold text-gray-300" id="upload-text">Browse from storage</p>
+                            <input type="file" id="post-image" accept="image/*" class="hidden" onchange="previewFile(event)">
+                        </div>
+                        <div id="preview-container" class="mt-4 hidden relative">
+                            <button type="button" onclick="clearSelectedFile(event)" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full text-xs transition shadow-md">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                            <img id="image-preview" src="#" alt="Preview" class="max-h-72 w-full mx-auto rounded-xl object-cover border border-gray-800">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="upload-submit-btn" class="w-full bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white font-extrabold uppercase tracking-wider py-4 rounded-2xl transition shadow-lg flex items-center justify-center">
+                        <i class="fa-solid fa-circle-check mr-2"></i>Publish Live Asset
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW 5: CREATOR METRICS & PROFILE (STUDIO) -->
+        <section id="view-profile" class="view hidden-view space-y-8">
+            
+            <!-- Dashboard Info -->
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-center gap-6">
+                <div class="absolute -right-16 -top-16 w-48 h-48 bg-indigo-500/10 rounded-full filter blur-2xl"></div>
+
+                <div class="h-24 w-24 bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-600 rounded-3xl flex items-center justify-center text-white text-4xl shadow-xl">
+                    <i class="fa-solid fa-user-astronaut"></i>
+                </div>
+                <div class="text-center md:text-left flex-grow space-y-2">
+                    <div class="flex flex-col md:flex-row items-center md:space-x-3 gap-2">
+                        <h2 class="text-2xl font-black text-white" id="profile-display-name">Alex Carter</h2>
+                        <span class="bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-blue-500/20 flex items-center">
+                            <i class="fa-solid fa-circle-check mr-1 text-xs"></i> Verified Creator
+                        </span>
+                    </div>
+                    <!-- Custom Local Edit Form -->
+                    <div class="space-y-3 pt-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <input type="text" id="edit-display-name" placeholder="Display Name" oninput="saveLocalProfile()" class="bg-gray-950/80 border border-gray-800 text-xs px-3 py-2 rounded-lg text-white outline-none w-full">
+                            <input type="text" id="edit-bio" placeholder="Bio description (e.g., Artist & Creator)" oninput="saveLocalProfile()" class="bg-gray-950/80 border border-gray-800 text-xs px-3 py-2 rounded-lg text-white outline-none w-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Dashboard Posts -->
+            <div>
+                <h3 class="text-xl font-black mb-4 flex items-center">
+                    <i class="fa-solid fa-folder-open text-pink-500 mr-2"></i>My Uploaded Assets
+                </h3>
+                <div id="profile-posts-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <p class="text-gray-500 text-sm col-span-full">Nothing posted from this device session yet.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 bg-gray-950 py-10 mt-16 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-6 space-y-2">
+            <p>&copy; 2026 Fanzones Studio Network. All rights reserved.</p>
+            <p class="text-gray-600 flex justify-center items-center gap-1.5">
+                Powered by <span class="text-pink-500 font-bold">ImgBB</span> and <span class="text-indigo-400 font-bold">Firebase Realtime DB</span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- REAL-TIME DATABASE ENGINE & APP LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyC84FBpn-O2VkHPJCw9O3oKDnNZ-2K1iG4",
+            authDomain: "mrel-8a378.firebaseapp.com",
+            databaseURL: "https://mrel-8a378-default-rtdb.firebaseio.com",
+            projectId: "mrel-8a378",
+            storageBucket: "mrel-8a378.firebasestorage.app",
+            messagingSenderId: "1062382184856",
+            appId: "1:1062382184856:web:43f6cdb4e1b67a8d0a63ed",
+            measurementId: "G-1C3D7RFMHE"
+        };
+
+        const IMGBB_API_KEY = "2fb5cef9a3f009a49c6e502d87a448c2";
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Core App State variables
+        let activeFeedPosts = [];
+        let uploadType = 'post'; // 'post' or 'story'
+
+        // Wallet Initialization (200 Free Coins)
+        if (!localStorage.getItem('fanzones_coins')) {
+            localStorage.setItem('fanzones_coins', '200');
+        }
+
+        // Custom Toast Notification System
+        window.showToast = function(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-indigo-600' : type === 'error' ? 'bg-red-600' : 'bg-gray-800';
+            const iconClass = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-bell';
+            
+            toast.className = `${bgClass} text-white text-xs font-bold px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transform translate-y-2 opacity-0 transition-all duration-300 pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        };
+
+        // Header Coin Balance Sync
+        function updateCoinsUI() {
+            const coins = localStorage.getItem('fanzones_coins');
+            document.getElementById('wallet-balance').textContent = coins;
+        }
+        updateCoinsUI();
+
+        // Single Page App Router
+        window.navigateTo = function(viewId) {
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active-view');
+                view.classList.add('hidden-view');
+            });
+
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) {
+                target.classList.remove('hidden-view');
+                target.classList.add('active-view');
+            }
+
+            if (viewId === 'profile') {
+                loadLocalProfile();
+                fetchLocalUserPosts();
+            } else if (viewId === 'bookmarks') {
+                renderBookmarks();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // File Select Management
+        window.previewFile = function(event) {
+            const file = event.target.files[0];
+            const previewContainer = document.getElementById('preview-container');
+            const previewImage = document.getElementById('image-preview');
+            const uploadIcon = document.getElementById('upload-icon');
+            const uploadText = document.getElementById('upload-text');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.classList.remove('hidden');
+                    uploadIcon.classList.add('hidden');
+                    uploadText.textContent = `Selected: ${file.name}`;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.clearSelectedFile = function(event) {
+            event.stopPropagation();
+            document.getElementById('post-image').value = '';
+            document.getElementById('preview-container').classList.add('hidden');
+            document.getElementById('upload-icon').classList.remove('hidden');
+            document.getElementById('upload-text').textContent = 'Browse from storage';
+        };
+
+        // Toggle Post vs Story UI
+        window.setUploadType = function(type) {
+            uploadType = type;
+            const postBtn = document.getElementById('type-post-btn');
+            const storyBtn = document.getElementById('type-story-btn');
+            const captionField = document.getElementById('caption-field-container');
+            const premiumToggle = document.getElementById('premium-toggle-container');
+
+            if (type === 'story') {
+                storyBtn.className = "bg-pink-600 border border-pink-500 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition";
+                postBtn.className = "bg-gray-900 border border-gray-800 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-gray-400 transition";
+                captionField.classList.add('hidden');
+                premiumToggle.classList.add('hidden');
+            } else {
+                postBtn.className = "bg-pink-600 border border-pink-500 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition";
+                storyBtn.className = "bg-gray-900 border border-gray-800 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-gray-400 transition";
+                captionField.classList.remove('hidden');
+                premiumToggle.classList.remove('hidden');
+            }
+        };
+
+        window.togglePremiumDetails = function() {
+            const checkbox = document.getElementById('premium-checkbox');
+            const details = document.getElementById('premium-details');
+            if (checkbox.checked) {
+                details.classList.remove('hidden');
+            } else {
+                details.classList.add('hidden');
+            }
+        };
+
+        // CORE UPLOAD ACTION
+        window.handlePostUpload = async function(e) {
+            e.preventDefault();
+
+            const author = document.getElementById('post-author').value.replace('@', '').trim();
+            const imageFile = document.getElementById('post-image').files[0];
+            const submitBtn = document.getElementById('upload-submit-btn');
+
+            if (!imageFile) {
+                showToast('Please select an image file first.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></span> Cloud Uplink active...`;
+
+            try {
+                // 1. Upload to ImgBB
+                const formData = new FormData();
+                formData.append('image', imageFile);
+
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const cloudData = await response.json();
+                if (!cloudData.success) throw new Error('Cloud storage uploading failed.');
+
+                const imgUrl = cloudData.data.url;
+
+                if (uploadType === 'post') {
+                    const caption = document.getElementById('post-caption').value;
+                    const isPremium = document.getElementById('premium-checkbox').checked;
+                    const coinPrice = isPremium ? parseInt(document.getElementById('post-coin-price').value) : 0;
+
+                    // Write post to DB
+                    const postsRef = ref(database, 'posts');
+                    const newPostRef = push(postsRef);
+                    const postId = newPostRef.key;
+
+                    await set(newPostRef, {
+                        authorName: author,
+                        caption: caption,
+                        imageUrl: imgUrl,
+                        isPremium: isPremium,
+                        coinPrice: coinPrice,
+                        likesCount: 0,
+                        timestamp: Date.now()
+                    });
+
+                    // Track post created by this session
+                    const myUploadedIds = JSON.parse(localStorage.getItem('myPostIds') || '[]');
+                    myUploadedIds.push(postId);
+                    localStorage.setItem('myPostIds', JSON.stringify(myUploadedIds));
+                    addNotification(`You successfully published a new ${isPremium ? 'Premium' : 'Free'} Post!`);
+
+                } else {
+                    // Upload to Stories Database node
+                    const storiesRef = ref(database, 'stories');
+                    const newStoryRef = push(storiesRef);
+
+                    await set(newStoryRef, {
+                        authorName: author,
+                        imageUrl: imgUrl,
+                        timestamp: Date.now()
+                    });
+
+                    addNotification('You published a new visual Image Story.');
+                }
+
+                // Celebrations
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                showToast('Upload Successful!');
+
+                // Reset Forms
+                document.getElementById('upload-form').reset();
+                document.getElementById('preview-container').classList.add('hidden');
+                document.getElementById('upload-icon').classList.remove('hidden');
+                document.getElementById('upload-text').textContent = 'Browse from storage';
+                document.getElementById('post-author').value = author;
+
+                navigateTo('feed');
+
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i>Publish Live Asset`;
+            }
+        };
+
+        // Likes Update Node
+        window.likePost = function(postId) {
+            const likesRef = ref(database, `posts/${postId}/likesCount`);
+            const likedList = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+            
+            if (likedList.includes(postId)) {
+                showToast('You already liked this content.', 'error');
+                return;
+            }
+
+            runTransaction(likesRef, (currentLikes) => {
+                return (currentLikes || 0) + 1;
+            }).then(() => {
+                likedList.push(postId);
+                localStorage.setItem('likedPosts', JSON.stringify(likedList));
+                addNotification('You liked a post.');
+                showToast('Liked post successfully!');
+            });
+        };
+
+        // UNLOCK PREMIUM POST ECONOMY
+        window.unlockPremiumPost = function(postId, coinPrice) {
+            const currentCoins = parseInt(localStorage.getItem('fanzones_coins'));
+
+            if (currentCoins < coinPrice) {
+                showToast('Insufficient coins balance! Try saving some.', 'error');
+                return;
+            }
+
+            if (confirm(`Unlock this premium image for ${coinPrice} Coins?`)) {
+                const updatedCoins = currentCoins - coinPrice;
+                localStorage.setItem('fanzones_coins', updatedCoins.toString());
+                updateCoinsUI();
+
+                // Add to unlocked registry
+                const unlockedList = JSON.parse(localStorage.getItem('unlockedPosts') || '[]');
+                unlockedList.push(postId);
+                localStorage.setItem('unlockedPosts', JSON.stringify(unlockedList));
+
+                addNotification(`You unlocked a premium post for ${coinPrice} Coins.`);
+                showToast('Premium post unlocked!', 'success');
+                
+                // Re-render
+                renderFeedUI(activeFeedPosts);
+            }
+        };
+
+        // SAVED BOOKMARKS LISTS
+        window.toggleBookmark = function(postId) {
+            let bookmarks = JSON.parse(localStorage.getItem('savedPosts') || '[]');
+            if (bookmarks.includes(postId)) {
+                bookmarks = bookmarks.filter(id => id !== postId);
+                showToast('Post removed from saved vault.');
+            } else {
+                bookmarks.push(postId);
+                showToast('Post added to saved vault!', 'success');
+            }
+            localStorage.setItem('savedPosts', JSON.stringify(bookmarks));
+            renderFeedUI(activeFeedPosts);
+        };
+
+        // REAL-TIME STORIES TRAY FETCHING
+        const storiesRef = ref(database, 'stories');
+        onValue(storiesRef, (snapshot) => {
+            const tray = document.getElementById('stories-tray');
+            tray.innerHTML = '';
+            const data = snapshot.val();
+
+            if (!data) {
+                tray.innerHTML = `<p class="text-[11px] text-gray-500 italic pl-1 py-1">No active stories found.</p>`;
+                return;
+            }
+
+            const storiesList = Object.entries(data).reverse();
+            storiesList.forEach(([storyId, story]) => {
+                const bubble = document.createElement('div');
+                bubble.className = "flex flex-col items-center space-y-1 cursor-pointer flex-shrink-0 group";
+                bubble.onclick = () => openStoryViewer(story.imageUrl, story.authorName);
+                bubble.innerHTML = `
+                    <div class="h-16 w-16 p-[3px] rounded-full bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-500 transition transform group-hover:scale-105">
+                        <div class="h-full w-full bg-gray-900 rounded-full flex items-center justify-center border border-gray-900 overflow-hidden">
+                            <img src="${story.imageUrl}" class="h-full w-full object-cover">
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-gray-400 truncate w-16 text-center">@${escapeHTML(story.authorName)}</span>
+                `;
+                tray.appendChild(bubble);
+            });
+        });
+
+        // FULL SCREEN STORY SYSTEM
+        let storyTimer = null;
+        window.openStoryViewer = function(imgUrl, author) {
+            const modal = document.getElementById('story-viewer');
+            const img = document.getElementById('story-viewer-img');
+            const authorName = document.getElementById('story-author-name');
+            const authorAvatar = document.getElementById('story-author-avatar');
+            const progress = document.getElementById('story-progress');
+
+            authorName.textContent = `@${author}`;
+            authorAvatar.textContent = author.substring(0, 2).toUpperCase();
+            img.src = imgUrl;
+            
+            modal.classList.remove('hidden');
+            progress.style.width = '100%';
+
+            // Close automatically after 5 seconds
+            storyTimer = setTimeout(() => {
+                closeStoryViewer();
+            }, 5000);
+        };
+
+        window.closeStoryViewer = function() {
+            const modal = document.getElementById('story-viewer');
+            const progress = document.getElementById('story-progress');
+            
+            modal.classList.add('hidden');
+            clearTimeout(storyTimer);
+            
+            // reset progress width smoothly
+            progress.style.transition = 'none';
+            progress.style.width = '0';
+            setTimeout(() => {
+                progress.style.transition = 'all 5000ms ease-linear';
+            }, 100);
+        };
+
+        // Realtime Comment Publishing
+        window.submitComment = function(e, postId) {
+            e.preventDefault();
+            const inputField = document.getElementById(`comment-input-${postId}`);
+            const text = inputField.value.trim();
+            const commentAuthor = localStorage.getItem('lastUsedName') || 'Guest';
+
+            if (!text) return;
+
+            const commentsRef = ref(database, `posts/${postId}/comments`);
+            const newCommentRef = push(commentsRef);
+
+            set(newCommentRef, {
+                author: commentAuthor,
+                text: text,
+                timestamp: Date.now()
+            }).then(() => {
+                inputField.value = '';
+                showToast('Comment published!');
+            });
+        };
+
+        // RENDER CENTRAL FEED AREA
+        const dbPostsRef = ref(database, 'posts');
+        onValue(dbPostsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (!data) {
+                activeFeedPosts = [];
+                renderFeedUI([]);
+                return;
+            }
+            activeFeedPosts = Object.entries(data).reverse().map(([id, val]) => ({ id, ...val }));
+            renderFeedUI(activeFeedPosts);
+        });
+
+        function renderFeedUI(posts) {
+            const feedContainer = document.getElementById('feed-container');
+            feedContainer.innerHTML = '';
+
+            if (posts.length === 0) {
+                feedContainer.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fa-regular fa-folder-open text-4xl text-gray-700 mb-3"></i>
+                        <p class="text-gray-400">No active posts currently live.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const unlockedList = JSON.parse(localStorage.getItem('unlockedPosts') || '[]');
+            const savedList = JSON.parse(localStorage.getItem('savedPosts') || '[]');
+
+            posts.forEach(post => {
+                const dateText = new Date(post.timestamp).toLocaleDateString();
+                const isSaved = savedList.includes(post.id);
+                
+                // Lock Logic Check
+                const isLocked = post.isPremium && !unlockedList.includes(post.id);
+
+                let commentsHTML = '';
+                if (post.comments) {
+                    Object.values(post.comments).forEach(c => {
+                        commentsHTML += `
+                            <div class="bg-gray-950 p-2 rounded-lg border border-gray-900/60 text-xs">
+                                <span class="font-bold text-pink-400">@${escapeHTML(c.author)}:</span>
+                                <span class="text-gray-300 ml-1">${escapeHTML(c.text)}</span>
+                            </div>
+                        `;
+                    });
+                } else {
+                    commentsHTML = `<p class="text-[11px] text-gray-600 italic px-1">No comments posted yet.</p>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = "glass-panel rounded-3xl overflow-hidden flex flex-col shadow-xl";
+                card.innerHTML = `
+                    <div class="p-4 flex items-center space-x-3 border-b border-gray-900 bg-gray-900/10">
+                        <div class="h-10 w-10 bg-gradient-to-tr from-pink-500 to-indigo-500 rounded-2xl flex items-center justify-center text-xs font-black text-white">
+                            ${(post.authorName || 'CR').substring(0, 2).toUpperCase()}
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="text-sm font-bold text-white">@${escapeHTML(post.authorName || 'anonymous')}</h4>
+                            <p class="text-[9px] text-gray-500 font-bold">${dateText}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            ${post.isPremium ? '<span class="bg-amber-500/15 text-amber-500 px-2 py-0.5 rounded text-[10px] font-bold">Premium</span>' : ''}
+                            <button onclick="toggleBookmark('${post.id}')" class="${isSaved ? 'text-pink-500' : 'text-gray-500 hover:text-white'} text-sm transition">
+                                <i class="fa-solid fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Image Section (Blurred if Premium & Locked) -->
+                    <div class="aspect-square bg-gray-950 relative overflow-hidden flex items-center justify-center">
+                        <img src="${post.imageUrl}" class="w-full h-full object-cover ${isLocked ? 'premium-blur' : ''}" loading="lazy">
+                        
+                        <!-- Lock Overlay -->
+                        ${isLocked ? `
+                        <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center space-y-3 p-4">
+                            <div class="h-12 w-12 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center border border-amber-500/40 text-xl animate-pulse">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <p class="text-xs font-bold text-gray-200">Exclusive Premium locked image</p>
+                            <button onclick="unlockPremiumPost('${post.id}', ${post.coinPrice})" class="bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs uppercase px-5 py-2.5 rounded-full transition shadow-lg shadow-amber-500/20 flex items-center space-x-1.5">
+                                <i class="fa-solid fa-coins"></i> <span>Unlock for ${post.coinPrice} Coins</span>
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                        <p class="text-gray-300 text-sm">${escapeHTML(post.caption)}</p>
+                        
+                        <div class="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-900/60">
+                            <button onclick="likePost('${post.id}')" class="hover:text-pink-500 transition flex items-center space-x-1 font-bold">
+                                <i class="fa-solid fa-heart text-pink-500"></i>
+                                <span>${post.likesCount || 0} Likes</span>
+                            </button>
+                            <span class="text-gray-500 flex items-center space-x-1">
+                                <i class="fa-solid fa-comment"></i>
+                                <span>${post.comments ? Object.keys(post.comments).length : 0} Comments</span>
+                            </span>
+                        </div>
+
+                        <!-- Comments section -->
+                        <div class="space-y-2">
+                            <div class="max-h-24 overflow-y-auto space-y-1.5 no-scrollbar">
+                                ${commentsHTML}
+                            </div>
+                            <form onsubmit="submitComment(event, '${post.id}')" class="flex items-center space-x-2 pt-1">
+                                <input type="text" id="comment-input-${post.id}" required placeholder="Add commentary..." class="flex-grow bg-gray-950/80 border border-gray-900 focus:border-indigo-500 text-[11px] px-3 py-2 rounded-xl text-white outline-none transition">
+                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-xl text-xs transition">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+                feedContainer.appendChild(card);
+            });
+        }
+
+        // Search Filter
+        window.filterFeed = function() {
+            const query = document.getElementById('feed-search').value.toLowerCase().trim();
+            if (!query) {
+                renderFeedUI(activeFeedPosts);
+                return;
+            }
+            const filtered = activeFeedPosts.filter(p => p.authorName && p.authorName.toLowerCase().includes(query));
+            renderFeedUI(filtered);
+        };
+
+        // Bookmarks Render Function
+        window.renderBookmarks = function() {
+            const container = document.getElementById('bookmarks-container');
+            container.innerHTML = '';
+            const savedList = JSON.parse(localStorage.getItem('savedPosts') || '[]');
+
+            const bookmarkedPosts = activeFeedPosts.filter(post => savedList.includes(post.id));
+
+            if (bookmarkedPosts.length === 0) {
+                container.innerHTML = `<p class="text-gray-500 text-sm col-span-full">Your bookmarks folder is empty.</p>`;
+                return;
+            }
+            renderFeedUI(bookmarkedPosts); // render filtered items directly onto bookmarks
+        };
+
+        // CUSTOM NOTIFICATIONS SUB-ENGINE
+        let notifications = JSON.parse(localStorage.getItem('fanzones_notifs') || '[]');
+        
+        function addNotification(message) {
+            const newNotif = {
+                id: Date.now(),
+                message: message,
+                timestamp: new Date().toLocaleTimeString()
+            };
+            notifications.unshift(newNotif);
+            localStorage.setItem('fanzones_notifs', JSON.stringify(notifications));
+            document.getElementById('notif-dot').classList.remove('hidden');
+            renderNotificationsUI();
+        }
+
+        window.toggleNotifications = function() {
+            const drawer = document.getElementById('notif-drawer');
+            drawer.classList.toggle('hidden');
+            document.getElementById('notif-dot').classList.add('hidden');
+            renderNotificationsUI();
+        };
+
+        window.clearNotifications = function() {
+            notifications = [];
+            localStorage.setItem('fanzones_notifs', '[]');
+            renderNotificationsUI();
+        };
+
+        function renderNotificationsUI() {
+            const list = document.getElementById('notif-list');
+            list.innerHTML = '';
+            if (notifications.length === 0) {
+                list.innerHTML = `<p class="text-gray-500 italic text-center py-4">No recent activity notifications.</p>`;
+                return;
+            }
+            notifications.forEach(n => {
+                const item = document.createElement('div');
+                item.className = "bg-gray-950 p-2.5 rounded-xl border border-gray-800 flex justify-between items-center";
+                item.innerHTML = `
+                    <span class="text-gray-300">${escapeHTML(n.message)}</span>
+                    <span class="text-[9px] text-gray-500">${n.timestamp}</span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Profile Storage
+        window.saveLocalProfile = function() {
+            const name = document.getElementById('edit-display-name').value;
+            const bio = document.getElementById('edit-bio').value;
+
+            localStorage.setItem('profile_display_name', name);
+            localStorage.setItem('profile_bio', bio);
+            document.getElementById('profile-display-name').textContent = name || 'Anonymous Creator';
+        };
+
+        function loadLocalProfile() {
+            const name = localStorage.getItem('profile_display_name') || localStorage.getItem('lastUsedName') || 'Alex Carter';
+            const bio = localStorage.getItem('profile_bio') || 'Creative Content Producer';
+
+            document.getElementById('edit-display-name').value = name;
+            document.getElementById('edit-bio').value = bio;
+            document.getElementById('profile-display-name').textContent = name;
+        }
+
+        // Render My Created posts inside Profile Tab
+        function fetchLocalUserPosts() {
+            const profileContainer = document.getElementById('profile-posts-container');
+            const myUploadedIds = JSON.parse(localStorage.getItem('myPostIds') || '[]');
+
+            onValue(dbPostsRef, (snapshot) => {
+                profileContainer.innerHTML = '';
+                const data = snapshot.val();
+                let userPostCount = 0;
+
+                if (data && myUploadedIds.length > 0) {
+                    Object.entries(data).reverse().forEach(([postId, post]) => {
+                        if (myUploadedIds.includes(postId)) {
+                            userPostCount++;
+                            const card = document.createElement('div');
+                            card.className = "glass-panel rounded-2xl overflow-hidden flex flex-col shadow-md";
+                            card.innerHTML = `
+                                <div class="aspect-video bg-gray-950 overflow-hidden">
+                                    <img src="${post.imageUrl}" alt="Uploaded Visual" class="object-cover w-full h-full">
+                                </div>
+                                <div class="p-4 flex flex-col justify-between flex-grow">
+                                    <p class="text-xs text-gray-300 line-clamp-2">${escapeHTML(post.caption)}</p>
+                                    <div class="flex items-center justify-between text-[9px] text-gray-500 pt-2 border-t border-gray-900 mt-2">
+                                        <span><i class="fa-solid fa-heart text-pink-500"></i> ${post.likesCount || 0} Likes</span>
+                                        <span>${post.isPremium ? 'Premium (Locked)' : 'Free'}</span>
+                                    </div>
+                                </div>
+                            `;
+                            profileContainer.appendChild(card);
+                        }
+                    });
+                }
+
+                if (userPostCount === 0) {
+                    profileContainer.innerHTML = `<p class="text-gray-500 text-sm col-span-full">You haven't posted any assets from this device session.</p>`;
+                }
+            });
+        }
+
+        // Initializer
+        document.addEventListener('DOMContentLoaded', () => {
+            const lastUsed = localStorage.getItem('lastUsedName');
+            if (lastUsed) {
+                document.getElementById('post-author').value = lastUsed;
+            }
+            loadLocalProfile();
+            renderNotificationsUI();
+        });
+
+        // Escapes strings safely
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+    </script>
+</body>
+</html>
