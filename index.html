@@ -32,33 +32,34 @@
             display: none !important; 
         }
 
-        /* Premium Glassmorphic container backdrop panel */
+        /* Premium Light Glassmorphic container backdrop panel */
         .glass-panel {
-            background: rgba(10, 15, 30, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 40px -10px rgba(79, 70, 229, 0.08), 0 1px 1px 0 rgba(255, 255, 255, 0.8) inset;
         }
 
         /* Ambient text shadow glow */
         .text-glow {
-            text-shadow: 0 0 40px rgba(236, 72, 153, 0.35);
+            text-shadow: 0 0 40px rgba(236, 72, 153, 0.25);
         }
 
         /* Interactive card borders */
         .glow-border:hover {
-            border-color: rgba(236, 72, 153, 0.4);
-            box-shadow: 0 0 30px rgba(236, 72, 153, 0.15);
+            border-color: rgba(236, 72, 153, 0.3);
+            box-shadow: 0 15px 35px rgba(236, 72, 153, 0.08);
         }
 
         /* Live Stream Pulse Glow Border */
         @keyframes live-border-glow {
             0%, 100% {
-                border-color: rgba(239, 68, 68, 0.4);
-                box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+                border-color: rgba(239, 68, 68, 0.3);
+                box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
             }
             50% {
-                border-color: rgba(239, 68, 68, 1);
-                box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+                border-color: rgba(239, 68, 68, 0.8);
+                box-shadow: 0 0 25px rgba(239, 68, 68, 0.25);
             }
         }
         .live-pulse-border {
@@ -67,8 +68,13 @@
 
         /* Locked media filter blurs */
         .premium-blur {
-            filter: blur(25px) brightness(0.4);
+            filter: blur(30px) brightness(0.9);
             pointer-events: none;
+        }
+
+        /* Smooth crossfade for video stream frames */
+        .live-frame-img {
+            transition: content 0.15s ease-in-out;
         }
 
         /* Hide Scrollbars but retain swipe functionality */
@@ -81,39 +87,42 @@
         }
     </style>
 </head>
-<body class="bg-[#030712] text-gray-100 min-h-screen flex flex-col selection:bg-pink-500 selection:text-white">
+<body class="bg-gradient-to-tr from-[#f1f5f9] via-[#f8fafc] to-[#eef2f6] text-slate-800 min-h-screen flex flex-col selection:bg-pink-500 selection:text-white">
+
+    <!-- Persistent Hidden Video Element for Stream Capture (Ensures continuous background streaming) -->
+    <video id="persistent-broadcaster-video" autoplay playsinline muted class="absolute opacity-0 pointer-events-none w-1 h-1 z-0"></video>
 
     <!-- REQUIRED ACCESS GATE / REGISTRATION OVERLAY -->
-    <div id="auth-overlay" class="fixed inset-0 bg-[#030712]/98 z-50 flex items-center justify-center p-4">
-        <div class="glass-panel max-w-md w-full p-8 rounded-[32px] border border-pink-500/30 text-center space-y-6 shadow-2xl">
+    <div id="auth-overlay" class="fixed inset-0 bg-[#0f172a]/40 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full p-8 rounded-[32px] border border-pink-500/20 text-center space-y-6 shadow-2xl">
             <!-- App Logo Branding inside Auth -->
             <div class="flex flex-col items-center space-y-2">
-                <span class="text-3xl font-black tracking-wider text-pink-500 flex items-center justify-center">
-                    <i class="fa-solid fa-crown mr-2 text-pink-500 animate-bounce"></i>FAN<span class="text-white">ZONES</span>
+                <span class="text-3xl font-black tracking-wider text-pink-600 flex items-center justify-center">
+                    <i class="fa-solid fa-crown mr-2 text-pink-500 animate-bounce"></i>FAN<span class="text-slate-800">ZONES</span>
                 </span>
-                <span class="bg-pink-500/10 text-pink-400 text-[10px] uppercase tracking-widest font-extrabold px-3 py-1 rounded-full border border-pink-500/20">Access Gate / प्रवेश द्वार</span>
+                <span class="bg-pink-500/10 text-pink-600 text-[10px] uppercase tracking-widest font-extrabold px-3 py-1 rounded-full border border-pink-500/20">Access Gate / प्रवेश द्वार</span>
             </div>
             
             <div class="space-y-2">
-                <h2 class="text-xl font-black text-white">Create Your Account <br><span class="text-xs text-pink-400 font-medium">(आगे बढ़ने के लिए अकाउंट बनाएं)</span></h2>
-                <p class="text-xs text-gray-400">Please provide your normal name and mobile number to access real-time live feeds, unlock contents, and start live streaming broadcasts [1].</p>
+                <h2 class="text-xl font-black text-slate-800">Create Your Account <br><span class="text-xs text-pink-500 font-medium">(आगे बढ़ने के लिए अकाउंट बनाएं)</span></h2>
+                <p class="text-xs text-slate-500">Please provide your normal name and mobile number to access real-time live feeds, unlock contents, and start live streaming broadcasts [1].</p>
             </div>
 
             <form id="auth-form" onsubmit="handleAuthRegistration(event)" class="space-y-4 text-left">
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Your Full Name (आपका नाम)</label>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Your Full Name (आपका नाम)</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 text-sm"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" id="auth-name" required placeholder="Enter your normal name" class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-white focus:outline-none transition">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 text-sm"><i class="fa-solid fa-user"></i></span>
+                        <input type="text" id="auth-name" required placeholder="Enter your normal name" class="w-full bg-white border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-slate-800 focus:outline-none transition">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Mobile Number (मोबाइल नंबर)</label>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Mobile Number (मोबाइल नंबर)</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 text-sm"><i class="fa-solid fa-phone"></i></span>
-                        <input type="tel" id="auth-phone" required pattern="[0-9]{10,15}" placeholder="Enter 10-digit mobile number" class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-white focus:outline-none transition">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 text-sm"><i class="fa-solid fa-phone"></i></span>
+                        <input type="tel" id="auth-phone" required pattern="[0-9]{10,15}" placeholder="Enter 10-digit mobile number" class="w-full bg-white border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-slate-800 focus:outline-none transition">
                     </div>
-                    <p class="text-[10px] text-gray-500 mt-1">Provide a valid 10 to 15 digit mobile number.</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Provide a valid 10 to 15 digit mobile number.</p>
                 </div>
 
                 <button type="submit" class="w-full bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 hover:opacity-95 text-white font-extrabold uppercase tracking-wider py-4 rounded-2xl transition shadow-lg flex items-center justify-center text-xs transform hover:scale-[1.02]">
@@ -127,72 +136,109 @@
     <div id="toast-container" class="fixed bottom-20 lg:bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
     <!-- Live Story Player View Modal Overlay -->
-    <div id="story-viewer" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center p-4">
-        <div class="max-w-md w-full relative flex flex-col h-[75vh] md:h-[80vh] bg-gray-900 rounded-3xl overflow-hidden border border-gray-800">
+    <div id="story-viewer" class="fixed inset-0 bg-slate-900/80 backdrop-blur-xl z-50 hidden flex flex-col items-center justify-center p-4">
+        <div class="max-w-md w-full relative flex flex-col h-[75vh] md:h-[80vh] bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-2xl">
             
             <!-- Dynamic Horizontal Progress Bar -->
-            <div class="absolute top-3 inset-x-4 h-1 bg-white/20 rounded-full overflow-hidden z-10">
+            <div class="absolute top-3 inset-x-4 h-1 bg-slate-200 rounded-full overflow-hidden z-10">
                 <div id="story-progress" class="h-full bg-pink-500 w-0 transition-all duration-[5000ms] ease-linear"></div>
             </div>
 
             <!-- Story Info Header -->
-            <div class="absolute top-6 inset-x-4 flex justify-between items-center z-10 bg-gradient-to-b from-black/70 to-transparent p-2.5 rounded-xl">
+            <div class="absolute top-6 inset-x-4 flex justify-between items-center z-10 bg-gradient-to-b from-white/80 to-transparent p-2.5 rounded-xl">
                 <div class="flex items-center space-x-2">
                     <div class="h-8 w-8 bg-pink-600 rounded-full flex items-center justify-center text-xs font-bold text-white" id="story-author-avatar">US</div>
-                    <span class="text-xs font-bold text-white" id="story-author-name">@username</span>
+                    <span class="text-xs font-bold text-slate-800" id="story-author-name">@username</span>
                 </div>
-                <button onclick="closeStoryViewer()" class="text-white hover:text-red-500 text-xl transition-colors">
+                <button onclick="closeStoryViewer()" class="text-slate-800 hover:text-red-500 text-xl transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
             <!-- Story Image Frame -->
-            <div class="flex-grow flex items-center justify-center bg-black">
+            <div class="flex-grow flex items-center justify-center bg-slate-50">
                 <img id="story-viewer-img" src="" alt="Story Asset" class="max-h-full max-w-full object-contain">
             </div>
         </div>
     </div>
 
-    <!-- PERSISTENT LIVE STREAM OVERLAY PLAYER -->
-    <div id="live-viewer-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col md:flex-row items-stretch justify-between">
+    <!-- PERSISTENT LIVE STREAM OVERLAY PLAYER (Strictly optimized for Mobile Overlays & Desktop Peer views) -->
+    <div id="live-viewer-modal" class="fixed inset-0 bg-slate-950 z-50 hidden flex flex-col md:flex-row items-stretch justify-center overflow-hidden">
         
-        <!-- Left Area: Live Video stream frame (Optimized to beautiful smartphone vertical mock frame) -->
-        <div class="flex-grow flex flex-col justify-between relative bg-black p-4">
+        <!-- Left Area: Main immersive portrait player -->
+        <div class="flex-grow flex items-center justify-center relative bg-slate-900 p-2 md:p-6">
             
-            <!-- Live Indicator & Cut Button -->
-            <div class="absolute top-6 inset-x-6 flex justify-between items-center z-30">
-                <div class="flex items-center space-x-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-red-500/20">
-                    <span class="h-2.5 w-2.5 bg-red-600 rounded-full animate-pulse"></span>
-                    <span class="text-xs font-black text-white uppercase tracking-wider">LIVE VIEWING ACTIVE</span>
-                </div>
-                <!-- Close (Cut) button -->
-                <button onclick="closeLiveViewer()" class="h-11 w-11 bg-white/10 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xl transition border border-white/10 shadow-2xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Immersive Vertical 9:16 Video Player Container -->
-            <div class="w-full h-full flex items-center justify-center overflow-hidden rounded-3xl border border-gray-900/60 relative">
-                <img id="live-viewer-feed-bg" src="" class="absolute inset-0 w-full h-full object-cover filter blur-2xl opacity-25">
+            <!-- Dynamic Blur Backdrop -->
+            <img id="live-viewer-feed-bg" src="" class="absolute inset-0 w-full h-full object-cover filter blur-3xl opacity-30 pointer-events-none">
+            
+            <!-- 9:16 Core Smartphone-Style Shell Container -->
+            <div class="relative w-full max-w-[420px] aspect-[9/16] h-[95vh] md:h-[85vh] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl z-10 bg-black flex flex-col justify-between">
                 
-                <!-- 9:16 Core Video Screen Frame -->
-                <div class="relative aspect-[9/16] h-[92%] max-h-[85vh] rounded-[32px] overflow-hidden border border-red-500/30 shadow-2xl z-10 bg-gray-950 flex items-center justify-center">
-                    <img id="live-viewer-main-img" src="" class="w-full h-full object-cover relative z-10">
-                    
-                    <div class="absolute bottom-4 left-4 z-20 bg-black/70 backdrop-blur-md p-4 rounded-2xl border border-white/10 max-w-xs">
-                        <h4 class="text-xs font-black text-white" id="live-viewer-title">Live Title</h4>
-                        <p class="text-[10px] text-pink-400 mt-1 font-bold" id="live-viewer-author">@creator</p>
+                <!-- Floating HUD overlay bar at Top -->
+                <div class="absolute top-4 inset-x-4 flex justify-between items-center z-30 pointer-events-none">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-red-600 text-white font-black text-[9px] uppercase px-3 py-1.5 rounded-full flex items-center gap-1 animate-pulse shadow-lg pointer-events-auto">
+                            <span class="h-2 w-2 bg-white rounded-full"></span> LIVE
+                        </span>
+                        <span id="live-viewer-category-badge" class="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm pointer-events-auto">
+                            Fashion
+                        </span>
                     </div>
+                    <!-- Close Stream Trigger -->
+                    <button onclick="closeLiveViewer()" class="h-9 w-9 bg-black/60 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-lg transition border border-white/10 shadow-lg pointer-events-auto">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Video Rendering Base Frame -->
+                <div class="absolute inset-0 w-full h-full z-0 bg-slate-950 flex items-center justify-center">
+                    <!-- WebRTC Real-Time Stream Target -->
+                    <video id="live-viewer-video" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+                    <!-- Fallback continuous Canvas snapshots (Smooth 400ms crossfade engine) -->
+                    <img id="live-viewer-main-img" src="" class="w-full h-full object-cover">
+                </div>
+
+                <!-- Immersive Shadow gradient backdrop overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/30 z-10 pointer-events-none"></div>
+
+                <!-- HUD Floating Interface Overlay Content -->
+                <div class="mt-auto p-4 space-y-4 z-20 flex flex-col justify-end w-full">
+                    
+                    <!-- Broadcaster profile data -->
+                    <div class="flex items-center space-x-2.5">
+                        <div id="live-viewer-avatar" class="h-9 w-9 bg-red-600 rounded-full flex items-center justify-center text-[11px] font-black text-white border border-white/20 shadow-md">
+                            CR
+                        </div>
+                        <div>
+                            <span class="text-xs font-black text-white tracking-wide block drop-shadow-md" id="live-viewer-author">@creator</span>
+                            <span class="text-[11px] text-gray-300 line-clamp-1 drop-shadow-md font-medium" id="live-viewer-title">Title</span>
+                        </div>
+                    </div>
+
+                    <!-- Mobile-Only Floating Comments Panel (Overlay comments bubble directly on stream, no more squishing!) -->
+                    <div class="block md:hidden space-y-1.5 pointer-events-auto" onclick="event.stopPropagation()">
+                        <div class="max-h-[140px] overflow-y-auto space-y-1.5 no-scrollbar bg-black/40 backdrop-blur-md p-2.5 rounded-2xl border border-white/10 chat-box" id="live-viewer-mobile-chat-box">
+                            <!-- Overlay chats populate here -->
+                        </div>
+                    </div>
+
+                    <!-- Mobile-Only Chat input at absolute bottom -->
+                    <form id="live-viewer-mobile-chat-form" onsubmit="submitLiveViewerCommentMobile(event)" class="flex md:hidden items-center space-x-2 pointer-events-auto" onclick="event.stopPropagation()">
+                        <input type="text" id="live-viewer-mobile-chat-input" required placeholder="Comment..." class="flex-grow bg-black/60 border border-white/10 focus:border-red-500 text-xs px-3.5 py-2.5 rounded-xl text-white outline-none transition backdrop-blur-sm shadow-inner">
+                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-xl text-xs transition flex items-center justify-center shrink-0 shadow-lg">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- Right Area: Dedicated Live Interactive Chat panel -->
-        <div class="w-full md:w-[400px] bg-gray-950 border-t md:border-t-0 md:border-l border-gray-900 flex flex-col h-[45vh] md:h-auto">
+        <!-- Right Area: Dedicated Desktop-only Live Chat stream panel -->
+        <div class="hidden md:flex w-[380px] lg:w-[420px] bg-slate-900 border-l border-slate-800 flex-col h-full z-20 shadow-2xl">
             <!-- Chat Panel Header -->
-            <div class="p-4 border-b border-gray-900 flex justify-between items-center bg-gray-900/20">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/40">
                 <span class="text-xs font-black uppercase tracking-widest text-red-500"><i class="fa-solid fa-comment-dots mr-1.5"></i> Stream Discussion Chat</span>
-                <span class="bg-red-500/10 text-red-400 text-[10px] font-black px-2.5 py-0.5 rounded uppercase">Connected</span>
+                <span class="bg-red-500/10 text-red-500 text-[10px] font-black px-2.5 py-0.5 rounded uppercase">WebRTC Ready</span>
             </div>
 
             <!-- Active Messages Stream Container -->
@@ -201,8 +247,8 @@
             </div>
 
             <!-- Comment Input -->
-            <form id="live-viewer-chat-form" onsubmit="submitLiveViewerComment(event)" class="p-4 border-t border-gray-900 bg-gray-900/10 flex items-center space-x-2">
-                <input type="text" id="live-viewer-chat-input" required placeholder="Send real-time chat..." class="flex-grow bg-gray-950 border border-gray-800 focus:border-red-500 text-xs px-3.5 py-3 rounded-xl text-white outline-none transition">
+            <form id="live-viewer-chat-form" onsubmit="submitLiveViewerComment(event)" class="p-4 border-t border-slate-800 bg-slate-950/20 flex items-center space-x-2">
+                <input type="text" id="live-viewer-chat-input" required placeholder="Send real-time chat..." class="flex-grow bg-slate-950 border border-slate-800 focus:border-red-500 text-xs px-3.5 py-3 rounded-xl text-white outline-none transition shadow-sm">
                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition flex items-center justify-center shadow-lg">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
@@ -211,36 +257,36 @@
     </div>
 
     <!-- Desktop Persistent Header -->
-    <header class="border-b border-gray-900 bg-[#030712]/80 backdrop-blur-md sticky top-0 z-40">
+    <header class="border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             
             <!-- App Logo Branding -->
             <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('home')">
-                <span class="text-2xl font-black tracking-wider text-pink-500 flex items-center">
-                    <i class="fa-solid fa-crown mr-2 text-pink-500 animate-pulse"></i>FAN<span class="text-white">ZONES</span>
+                <span class="text-2xl font-black tracking-wider text-pink-600 flex items-center">
+                    <i class="fa-solid fa-crown mr-2 text-pink-500 animate-pulse"></i>FAN<span class="text-slate-800">ZONES</span>
                 </span>
                 <span class="bg-pink-500/10 text-pink-400 text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-1 rounded-full border border-pink-500/20">V3.9</span>
             </div>
             
             <!-- Desktop Exclusive Menu Links -->
-            <nav class="hidden lg:flex items-center space-x-8 text-sm font-bold text-gray-400">
-                <button onclick="navigateTo('home')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-house text-xs"></i> <span>Welcome</span></button>
-                <button onclick="navigateTo('feed')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-compass text-xs"></i> <span>Live Feed</span></button>
-                <button onclick="navigateTo('bookmarks')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-bookmark text-xs"></i> <span>Saved</span></button>
-                <button onclick="navigateTo('dashboard')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-circle-plus text-xs"></i> <span>Studio Desk</span></button>
-                <button onclick="navigateTo('profile')" class="hover:text-pink-500 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-user-astronaut text-xs"></i> <span>My Studio</span></button>
+            <nav class="hidden lg:flex items-center space-x-8 text-sm font-bold text-slate-500">
+                <button onclick="navigateTo('home')" class="hover:text-pink-600 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-house text-xs"></i> <span>Welcome</span></button>
+                <button onclick="navigateTo('feed')" class="hover:text-pink-600 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-compass text-xs"></i> <span>Live Feed</span></button>
+                <button onclick="navigateTo('bookmarks')" class="hover:text-pink-600 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-bookmark text-xs"></i> <span>Saved</span></button>
+                <button onclick="navigateTo('dashboard')" class="hover:text-pink-600 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-circle-plus text-xs"></i> <span>Studio Desk</span></button>
+                <button onclick="navigateTo('profile')" class="hover:text-pink-600 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-user-astronaut text-xs"></i> <span>My Studio</span></button>
             </nav>
 
             <!-- Wallet & Log Access Widget Area -->
             <div class="flex items-center space-x-4">
                 <!-- Coins Balance Display -->
                 <div class="bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-full flex items-center space-x-1.5 cursor-pointer hover:bg-amber-500/20 transition duration-300" onclick="showToast('Your active coins for unlocking premium posts!')">
-                    <span class="text-amber-400 text-sm"><i class="fa-solid fa-coins"></i></span>
-                    <span class="text-xs font-black text-amber-300 animate-pulse" id="wallet-balance">200</span>
+                    <span class="text-amber-500 text-sm"><i class="fa-solid fa-coins"></i></span>
+                    <span class="text-xs font-black text-amber-600 animate-pulse" id="wallet-balance">200</span>
                 </div>
                 <!-- Alert Bell -->
                 <div class="relative cursor-pointer py-1" onclick="toggleNotifications()">
-                    <span class="text-gray-400 hover:text-white transition text-lg"><i class="fa-regular fa-bell"></i></span>
+                    <span class="text-slate-400 hover:text-slate-800 transition text-lg"><i class="fa-regular fa-bell"></i></span>
                     <span id="notif-dot" class="absolute top-1.5 right-0.5 h-2 w-2 bg-red-500 rounded-full hidden animate-ping"></span>
                 </div>
                 <!-- Desktop-only CTA Button -->
@@ -252,13 +298,13 @@
     </header>
 
     <!-- Activity Log Notification Drawer -->
-    <div id="notif-drawer" class="fixed right-6 top-16 w-80 bg-gray-950 border border-gray-900 rounded-2xl shadow-2xl p-4 hidden z-50">
-        <div class="flex justify-between items-center border-b border-gray-900 pb-2 mb-3">
-            <h4 class="text-xs font-black uppercase tracking-wider text-gray-400">Activity Logs</h4>
+    <div id="notif-drawer" class="fixed right-6 top-16 w-80 bg-white border border-slate-100 rounded-2xl shadow-2xl p-4 hidden z-50">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-2 mb-3">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-500">Activity Logs</h4>
             <button onclick="clearNotifications()" class="text-[10px] text-pink-500 font-bold hover:underline">Clear All</button>
         </div>
         <div id="notif-list" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar text-xs">
-            <p class="text-gray-500 italic text-center py-4">No recent activity logs.</p>
+            <p class="text-slate-400 italic text-center py-4">No recent activity logs.</p>
         </div>
     </div>
 
@@ -271,19 +317,19 @@
             <!-- Hero Layout Section -->
             <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center relative">
                 <!-- Ambient blur glows -->
-                <div class="absolute -top-20 left-1/4 w-72 md:w-96 h-72 md:h-96 bg-pink-500/10 rounded-full filter blur-3xl -z-10"></div>
-                <div class="absolute top-10 right-1/4 w-72 md:w-96 h-72 md:h-96 bg-indigo-500/10 rounded-full filter blur-3xl -z-10"></div>
+                <div class="absolute -top-20 left-1/4 w-72 md:w-96 h-72 md:h-96 bg-pink-500/5 rounded-full filter blur-3xl -z-10"></div>
+                <div class="absolute top-10 right-1/4 w-72 md:w-96 h-72 md:h-96 bg-indigo-500/5 rounded-full filter blur-3xl -z-10"></div>
 
                 <!-- Text Presentation Frame -->
                 <div class="lg:col-span-7 space-y-5 md:space-y-7 text-center lg:text-left">
-                    <span class="inline-block bg-gradient-to-r from-pink-500/10 to-indigo-500/10 border border-pink-500/20 px-4 py-2 rounded-full text-[10px] md:text-xs font-extrabold tracking-widest uppercase text-pink-400">
+                    <span class="inline-block bg-gradient-to-r from-pink-500/10 to-indigo-500/10 border border-pink-500/20 px-4 py-2 rounded-full text-[10px] md:text-xs font-extrabold tracking-widest uppercase text-pink-600">
                         ⚡ OWN YOUR CONTENT. OWN YOUR VALUE.
                     </span>
-                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-none text-glow">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-none text-slate-800 text-glow">
                         Where Passion Meets <br class="hidden md:inline">
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">True Connection</span>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600">True Connection</span>
                     </h1>
-                    <p class="text-gray-400 text-sm md:text-base lg:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+                    <p class="text-slate-500 text-sm md:text-base lg:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
                         Welcome to **Fanzones**, the leading open social-subscription web system built on high-speed ImgBB CDN hosting and synchronized real-time interactions. Share, unlock, and save exclusive media securely [1].
                     </p>
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-4 justify-center lg:justify-start">
@@ -291,7 +337,7 @@
                         <button onclick="navigateTo('feed')" class="w-full sm:px-14 py-5 bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white font-black text-sm uppercase tracking-wider rounded-full hover:opacity-95 transition transform hover:scale-[1.03] shadow-2xl shadow-pink-500/30">
                             Launch Live Feed
                         </button>
-                        <button onclick="navigateTo('dashboard')" class="w-full sm:px-14 py-5 bg-gray-900/60 border border-gray-800 hover:border-pink-500/30 text-white font-black text-sm uppercase tracking-wider rounded-full hover:bg-gray-800 transition transform hover:scale-[1.03]">
+                        <button onclick="navigateTo('dashboard')" class="w-full sm:px-14 py-5 bg-white border border-slate-200 text-slate-800 font-black text-sm uppercase tracking-wider rounded-full hover:bg-slate-50 transition transform hover:scale-[1.03] shadow-md">
                             Create Creator Desk
                         </button>
                     </div>
@@ -299,103 +345,103 @@
 
                 <!-- Graphics Mockup Card Panel -->
                 <div class="lg:col-span-5 flex justify-center">
-                    <div class="glass-panel p-5 md:p-6 rounded-[32px] w-full max-w-sm space-y-5 border border-gray-800/60 shadow-2xl transform lg:rotate-2 hover:rotate-0 transition duration-500 relative">
-                        <div class="absolute -top-3 -right-3 bg-indigo-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full border border-indigo-500/50">
+                    <div class="glass-panel p-5 md:p-6 rounded-[32px] w-full max-w-sm space-y-5 border border-white/60 shadow-xl transform lg:rotate-2 hover:rotate-0 transition duration-500 relative">
+                        <div class="absolute -top-3 -right-3 bg-indigo-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full border border-indigo-500/50 shadow-md">
                             FEATURED MOCKUP
                         </div>
                         <div class="flex items-center space-x-3">
                             <div class="h-12 w-12 bg-gradient-to-tr from-pink-500 to-indigo-500 rounded-2xl flex items-center justify-center text-sm font-black text-white">FC</div>
                             <div>
                                 <div class="flex items-center space-x-1">
-                                    <h3 class="text-sm font-bold text-white">@aurora_sky</h3>
-                                    <i class="fa-solid fa-circle-check text-blue-400 text-[11px]"></i>
+                                    <h3 class="text-sm font-bold text-slate-800">@aurora_sky</h3>
+                                    <i class="fa-solid fa-circle-check text-blue-500 text-[11px]"></i>
                                 </div>
-                                <p class="text-[10px] text-gray-500 font-bold">250+ Exclusive Uploads</p>
+                                <p class="text-[10px] text-slate-400 font-bold">250+ Exclusive Uploads</p>
                             </div>
                         </div>
-                        <div class="aspect-square rounded-2xl bg-gray-950 relative overflow-hidden">
+                        <div class="aspect-square rounded-2xl bg-slate-50 relative overflow-hidden shadow-inner">
                             <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover premium-blur">
                             <div class="absolute inset-0 flex flex-col items-center justify-center space-y-2">
-                                <div class="h-10 w-10 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full flex items-center justify-center text-base"><i class="fa-solid fa-lock"></i></div>
-                                <span class="text-[10px] font-black uppercase tracking-wider text-amber-300">Unlock for 15 Coins</span>
+                                <div class="h-10 w-10 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-full flex items-center justify-center text-base"><i class="fa-solid fa-lock"></i></div>
+                                <span class="text-[10px] font-black uppercase tracking-wider text-amber-600">Unlock for 15 Coins</span>
                             </div>
                         </div>
-                        <div class="flex items-center justify-between text-xs text-gray-400">
-                            <span class="flex items-center space-x-1 text-pink-500 font-bold"><i class="fa-solid fa-heart"></i> <span>1.2k Likes</span></span>
-                            <span class="text-gray-500 text-[10px]">Mockup Sandbox</span>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span class="flex items-center space-x-1 text-pink-600 font-bold"><i class="fa-solid fa-heart"></i> <span>1.2k Likes</span></span>
+                            <span class="text-slate-400 text-[10px]">Mockup Sandbox</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- "Discover Genres" Showroom Grid -->
-            <div class="space-y-6 pt-10 border-t border-gray-900">
+            <div class="space-y-6 pt-10 border-t border-slate-200">
                 <div class="text-center space-y-2">
-                    <span class="text-[10px] font-black text-pink-500 uppercase tracking-widest">CHOOSE YOUR VIBE</span>
-                    <h2 class="text-3xl md:text-5xl font-black">Top Popular Genres</h2>
-                    <p class="text-gray-400 text-xs md:text-sm max-w-xl mx-auto">Explore some of our active global creator setups specializing in various aesthetic domains.</p>
+                    <span class="text-[10px] font-black text-pink-600 uppercase tracking-widest">CHOOSE YOUR VIBE</span>
+                    <h2 class="text-3xl md:text-5xl font-black text-slate-800">Top Popular Genres</h2>
+                    <p class="text-slate-500 text-xs md:text-sm max-w-xl mx-auto">Explore some of our active global creator setups specializing in various aesthetic domains.</p>
                 </div>
 
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     <!-- Genre Item 1 -->
-                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-pink-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between">
+                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-pink-500/30 hover:shadow-2xl transition duration-300 flex flex-col justify-between">
                         <div class="space-y-3">
-                            <div class="h-10 w-10 bg-pink-500/10 text-pink-400 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-camera-retro"></i></div>
-                            <h3 class="text-xl font-bold">Fashion & Glamour</h3>
-                            <p class="text-gray-400 text-xs leading-relaxed">Experience model portfolios, runway diaries, and exclusive outfits shared by premium creators.</p>
+                            <div class="h-10 w-10 bg-pink-500/10 text-pink-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-camera-retro"></i></div>
+                            <h3 class="text-xl font-bold text-slate-800">Fashion & Glamour</h3>
+                            <p class="text-slate-500 text-xs leading-relaxed">Experience model portfolios, runway diaries, and exclusive outfits shared by premium creators.</p>
                         </div>
-                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-pink-500 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Fashion streams</span> <i class="fa-solid fa-arrow-right"></i></button>
+                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-pink-600 hover:text-pink-700 transition flex items-center space-x-1.5 pt-4"><span>Browse Fashion streams</span> <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
 
                     <!-- Genre Item 2 -->
-                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-purple-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between">
+                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-purple-500/30 hover:shadow-2xl transition duration-300 flex flex-col justify-between">
                         <div class="space-y-3">
-                            <div class="h-10 w-10 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-paintbrush"></i></div>
-                            <h3 class="text-xl font-bold">Cosplay & Concept Art</h3>
-                            <p class="text-gray-400 text-xs leading-relaxed">Unlock high-definition conceptual designs, cosplay shoots, and beautiful digital illustration portfolios.</p>
+                            <div class="h-10 w-10 bg-purple-500/10 text-purple-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-paintbrush"></i></div>
+                            <h3 class="text-xl font-bold text-slate-800">Cosplay & Concept Art</h3>
+                            <p class="text-slate-500 text-xs leading-relaxed">Unlock high-definition conceptual designs, cosplay shoots, and beautiful digital illustration portfolios.</p>
                         </div>
-                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-purple-400 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Cosplay files</span> <i class="fa-solid fa-arrow-right"></i></button>
+                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-purple-600 hover:text-purple-700 transition flex items-center space-x-1.5 pt-4"><span>Browse Cosplay files</span> <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
 
                     <!-- Genre Item 3 -->
-                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-indigo-500/20 hover:shadow-xl transition duration-300 flex flex-col justify-between md:col-span-2 lg:col-span-1">
+                    <div class="glass-panel p-6 rounded-3xl space-y-4 hover:border-indigo-500/30 hover:shadow-2xl transition duration-300 flex flex-col justify-between md:col-span-2 lg:col-span-1">
                         <div class="space-y-3">
-                            <div class="h-10 w-10 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-dumbbell"></i></div>
-                            <h3 class="text-xl font-bold">Fitness & Lifestyle</h3>
-                            <p class="text-gray-400 text-xs leading-relaxed">Unlock complete healthy meal plans, hardcore home workout routines, and fitness lifestyle visual updates.</p>
+                            <div class="h-10 w-10 bg-indigo-500/10 text-indigo-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-dumbbell"></i></div>
+                            <h3 class="text-xl font-bold text-slate-800">Fitness & Lifestyle</h3>
+                            <p class="text-slate-500 text-xs leading-relaxed">Unlock complete healthy meal plans, hardcore home workout routines, and fitness lifestyle visual updates.</p>
                         </div>
-                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-indigo-400 hover:text-white transition flex items-center space-x-1.5 pt-4"><span>Browse Workout vlogs</span> <i class="fa-solid fa-arrow-right"></i></button>
+                        <button onclick="navigateTo('feed')" class="text-xs font-bold text-indigo-400 hover:text-indigo-700 transition flex items-center space-x-1.5 pt-4"><span>Browse Workout vlogs</span> <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
 
             <!-- "Operation Timeline" Info Steps -->
-            <div class="space-y-8 pt-10 border-t border-gray-900">
+            <div class="space-y-8 pt-10 border-t border-slate-200">
                 <div class="text-center space-y-2">
-                    <h2 class="text-3xl font-black">Platform Operations</h2>
-                    <p class="text-gray-400 text-sm">Deploying your portfolio or stream active takes less than 2 minutes.</p>
+                    <h2 class="text-3xl font-black text-slate-800">Platform Operations</h2>
+                    <p class="text-slate-500 text-sm">Deploying your portfolio or stream active takes less than 2 minutes.</p>
                 </div>
 
                 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
-                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">01</span>
-                        <h4 class="text-sm font-bold text-pink-500 mb-2 uppercase tracking-wide">Claim Handle</h4>
-                        <p class="text-gray-400 text-xs">Instantly write a pseudonym or nickname to define your session profile name.</p>
+                    <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm relative">
+                        <span class="absolute top-4 right-4 text-slate-200 text-3xl font-black text-glow">01</span>
+                        <h4 class="text-sm font-bold text-pink-600 mb-2 uppercase tracking-wide">Claim Handle</h4>
+                        <p class="text-slate-500 text-xs">Instantly write a pseudonym or nickname to define your session profile name.</p>
                     </div>
-                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
-                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">02</span>
-                        <h4 class="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-wide">Acquire Coins</h4>
-                        <p class="text-gray-400 text-xs">New visitor sessions automatically get 200 free coins to unlock premium locked assets on feed.</p>
+                    <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm relative">
+                        <span class="absolute top-4 right-4 text-slate-200 text-3xl font-black text-glow">02</span>
+                        <h4 class="text-sm font-bold text-indigo-600 mb-2 uppercase tracking-wide">Acquire Coins</h4>
+                        <p class="text-slate-500 text-xs">New visitor sessions automatically get 200 free coins to unlock premium locked assets on feed.</p>
                     </div>
-                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
-                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">03</span>
-                        <h4 class="text-sm font-bold text-purple-400 mb-2 uppercase tracking-wide">Cloud Publishing</h4>
-                        <p class="text-gray-400 text-xs">Directly upload images via ImgBB secure cloud API to establish high-speed storage links.</p>
+                    <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm relative">
+                        <span class="absolute top-4 right-4 text-slate-200 text-3xl font-black text-glow">03</span>
+                        <h4 class="text-sm font-bold text-purple-600 mb-2 uppercase tracking-wide">Cloud Publishing</h4>
+                        <p class="text-slate-500 text-xs">Directly upload images via ImgBB secure cloud API to establish high-speed storage links.</p>
                     </div>
-                    <div class="p-6 bg-gray-950 rounded-2xl border border-gray-900 relative">
-                        <span class="absolute top-4 right-4 text-gray-800 text-3xl font-black">04</span>
-                        <h4 class="text-sm font-bold text-teal-400 mb-2 uppercase tracking-wide">Earn & Unlock</h4>
-                        <p class="text-gray-400 text-xs">Publish locked images to let other users unlock them using coins, boosting your profile metrics.</p>
+                    <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm relative">
+                        <span class="absolute top-4 right-4 text-slate-200 text-3xl font-black text-glow">04</span>
+                        <h4 class="text-sm font-bold text-teal-600 mb-2 uppercase tracking-wide">Earn & Unlock</h4>
+                        <p class="text-slate-500 text-xs">Publish locked images to let other users unlock them using coins, boosting your profile metrics.</p>
                     </div>
                 </div>
             </div>
@@ -406,7 +452,7 @@
             
             <!-- Horizontal Scrollable Stories Tray -->
             <div class="space-y-3">
-                <h3 class="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center">
+                <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 flex items-center">
                     <i class="fa-solid fa-circle-notch text-pink-500 mr-2 animate-spin"></i>Recent Creator Stories
                 </h3>
                 <div class="flex items-center space-x-4 overflow-x-auto no-scrollbar py-2" id="stories-tray">
@@ -415,7 +461,7 @@
             </div>
 
             <!-- REAL-TIME LIVE NOW BROADCAST SECTION -->
-            <div id="live-section-wrapper" class="hidden space-y-4 pb-6 border-b border-gray-900">
+            <div id="live-section-wrapper" class="hidden space-y-4 pb-6 border-b border-slate-200">
                 <h3 class="text-sm font-black uppercase tracking-widest text-red-500 flex items-center">
                     <span class="relative flex h-3 w-3 mr-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -431,13 +477,13 @@
             </div>
 
             <!-- Feed Header & Filter Controls -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-900 pb-4 gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-4 gap-4">
                 <div>
-                    <h2 class="text-2xl font-black">Live Streams Feed</h2>
-                    <p class="text-gray-400 text-sm">Explore images, captions, and lock systems published by creators.</p>
+                    <h2 class="text-2xl font-black text-slate-800">Live Streams Feed</h2>
+                    <p class="text-slate-500 text-sm">Explore images, captions, and lock systems published by creators.</p>
                 </div>
                 <div>
-                    <input type="text" id="feed-search" oninput="filterFeed()" placeholder="Search handles..." class="bg-gray-900 border border-gray-800 focus:border-pink-500 text-xs px-4 py-2.5 rounded-full text-white outline-none w-full sm:w-56 transition">
+                    <input type="text" id="feed-search" oninput="filterFeed()" placeholder="Search handles..." class="bg-white border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-xs px-4 py-2.5 rounded-full text-slate-800 outline-none w-full sm:w-56 transition shadow-sm">
                 </div>
             </div>
 
@@ -446,27 +492,28 @@
                 <!-- Loading State placeholder -->
                 <div class="col-span-full py-12 text-center">
                     <div class="animate-spin inline-block w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mb-3"></div>
-                    <p class="text-gray-400 text-sm">Syncing live nodes...</p>
+                    <p class="text-slate-500 text-sm">Syncing live nodes...</p>
                 </div>
             </div>
         </section>
 
         <!-- VIEW 3: BOOKMARKS / SAVED POSTS -->
         <section id="view-bookmarks" class="view hidden-view space-y-6">
-            <div class="border-b border-gray-900 pb-4">
-                <h2 class="text-2xl font-black">My Saved Vault</h2>
-                <p class="text-gray-400 text-sm">Exclusive contents bookmarked by you for private session retrieval.</p>
+            <div class="border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-black text-slate-800">My Saved Vault</h2>
+                <p class="text-slate-500 text-sm">Exclusive contents bookmarked by you for private session retrieval.</p>
             </div>
+            <!-- Dynamic bookmarks loaded via JS into dedicated layout container -->
             <div id="bookmarks-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                <p class="text-gray-500 text-sm col-span-full text-center py-12">No bookmarked items found.</p>
+                <p class="text-slate-400 text-sm col-span-full text-center py-12">No bookmarked items found.</p>
             </div>
         </section>
 
         <!-- VIEW 4: CREATOR PUBLISH DESK -->
         <section id="view-dashboard" class="view hidden-view max-w-2xl mx-auto space-y-8">
-            <div class="border-b border-gray-900 pb-4">
-                <h2 class="text-2xl font-black">Creator Studio Desk</h2>
-                <p class="text-gray-400 text-sm">Publish interactive feeds or stories securely over ImgBB CDN API.</p>
+            <div class="border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-black text-slate-800">Creator Studio Desk</h2>
+                <p class="text-slate-500 text-sm">Publish interactive feeds or stories securely over ImgBB CDN API.</p>
             </div>
 
             <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-6">
@@ -474,60 +521,60 @@
                     
                     <!-- Content Toggle Options -->
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Upload Scope Type</label>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Upload Scope Type</label>
                         <div class="grid grid-cols-2 gap-3">
-                            <button type="button" id="type-post-btn" onclick="setUploadType('post')" class="bg-pink-600 border border-pink-500 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition">Normal Feed Post</button>
-                            <button type="button" id="type-story-btn" onclick="setUploadType('story')" class="bg-gray-900 border border-gray-800 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-gray-400 transition">Image Story</button>
+                            <button type="button" id="type-post-btn" onclick="setUploadType('post')" class="bg-pink-600 border border-pink-500 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition text-white shadow-md">Normal Feed Post</button>
+                            <button type="button" id="type-story-btn" onclick="setUploadType('story')" class="bg-white border border-slate-200 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-400 transition shadow-sm">Image Story</button>
                         </div>
                     </div>
 
                     <!-- Meta details fields -->
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Creator Handle ID</label>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Creator Handle ID</label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 text-sm font-semibold">@</span>
-                                <input type="text" id="post-author" required placeholder="your_handle" class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl pl-8 pr-4 py-3.5 text-sm text-white focus:outline-none transition">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 text-sm font-semibold">@</span>
+                                <input type="text" id="post-author" required placeholder="your_handle" class="w-full bg-white border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 rounded-2xl pl-8 pr-4 py-3.5 text-sm text-slate-800 focus:outline-none transition shadow-sm">
                             </div>
                         </div>
 
                         <!-- Caption container -->
                         <div id="caption-field-container">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Caption Description</label>
-                            <textarea id="post-caption" rows="3" placeholder="Write premium details about this visual file..." class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3.5 text-sm text-white focus:outline-none transition resize-none"></textarea>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Caption Description</label>
+                            <textarea id="post-caption" rows="3" placeholder="Write premium details about this visual file..." class="w-full bg-white border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 rounded-2xl px-4 py-3.5 text-sm text-slate-800 focus:outline-none transition resize-none shadow-sm"></textarea>
                         </div>
 
                         <!-- Locks configuration system -->
                         <div id="premium-toggle-container" class="space-y-4">
-                            <div class="flex items-center justify-between bg-gray-950/60 p-4 rounded-2xl border border-gray-900">
+                            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                                 <div>
-                                    <h4 class="text-xs font-bold">Lock this Post? (Premium Mode)</h4>
-                                    <p class="text-[10px] text-gray-500 mt-0.5">Users will spend virtual coins to see this image file.</p>
+                                    <h4 class="text-xs font-bold text-slate-800">Lock this Post? (Premium Mode)</h4>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">Users will spend virtual coins to see this image file.</p>
                                 </div>
                                 <input type="checkbox" id="premium-checkbox" onchange="togglePremiumDetails()" class="w-5 h-5 accent-pink-500 rounded cursor-pointer">
                             </div>
 
                             <div id="premium-details" class="hidden">
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Unlock Coin Cost</label>
-                                <input type="number" id="post-coin-price" min="5" max="100" value="15" class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none transition">
-                                <p class="text-[10px] text-gray-500 mt-1">Provide a cost between 5 and 100 coins.</p>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Unlock Coin Cost</label>
+                                <input type="number" id="post-coin-price" min="5" max="100" value="15" class="w-full bg-white border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 rounded-2xl px-4 py-3 text-sm text-slate-800 focus:outline-none transition shadow-sm">
+                                <p class="text-[10px] text-slate-400 mt-1">Provide a cost between 5 and 100 coins.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Media Upload Drag & Drop container -->
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Upload Visual File</label>
-                        <div class="border-2 border-dashed border-gray-800 hover:border-pink-500/50 rounded-2xl p-10 text-center cursor-pointer relative transition duration-300" onclick="document.getElementById('post-image').click()">
-                            <i class="fa-solid fa-cloud-arrow-up text-4xl text-gray-600 mb-3" id="upload-icon"></i>
-                            <p class="text-sm font-bold text-gray-300" id="upload-text">Browse image from disk storage</p>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Upload Visual File</label>
+                        <div class="border-2 border-dashed border-slate-200 bg-white hover:border-pink-500/50 rounded-2xl p-10 text-center cursor-pointer relative transition duration-300 shadow-sm" onclick="document.getElementById('post-image').click()">
+                            <i class="fa-solid fa-cloud-arrow-up text-4xl text-slate-400 mb-3" id="upload-icon"></i>
+                            <p class="text-sm font-bold text-slate-500" id="upload-text">Browse image from disk storage</p>
                             <input type="file" id="post-image" accept="image/*" class="hidden" onchange="previewFile(event)">
                         </div>
                         <div id="preview-container" class="mt-4 hidden relative">
-                            <button type="button" onclick="clearSelectedFile(event)" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full text-xs transition shadow-md">
+                            <button type="button" onclick="clearSelectedFile(event)" class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-xs transition shadow-md">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
-                            <img id="image-preview" src="#" alt="Preview" class="max-h-72 w-full mx-auto rounded-xl object-cover border border-gray-800">
+                            <img id="image-preview" src="#" alt="Preview" class="max-h-72 w-full mx-auto rounded-xl object-cover border border-slate-200 shadow-md">
                         </div>
                     </div>
 
@@ -543,15 +590,15 @@
             
             <!-- Dashboard Info Header -->
             <div class="glass-panel p-6 md:p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-center gap-6">
-                <div class="absolute -right-16 -top-16 w-48 h-48 bg-indigo-500/10 rounded-full filter blur-2xl"></div>
+                <div class="absolute -right-16 -top-16 w-48 h-48 bg-indigo-500/5 rounded-full filter blur-2xl"></div>
 
                 <div class="h-20 w-20 md:h-24 md:w-24 bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-600 rounded-3xl flex items-center justify-center text-white text-3xl md:text-4xl shadow-xl">
                     <i class="fa-solid fa-user-astronaut"></i>
                 </div>
                 <div class="text-center md:text-left flex-grow space-y-2 w-full">
                     <div class="flex flex-col md:flex-row items-center md:space-x-3 gap-2 justify-center md:justify-start">
-                        <h2 class="text-xl md:text-2xl font-black text-white" id="profile-display-name">Alex Carter</h2>
-                        <span class="bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase px-2.5 py-1 rounded border border-blue-500/20 flex items-center">
+                        <h2 class="text-xl md:text-2xl font-black text-slate-800" id="profile-display-name">Alex Carter</h2>
+                        <span class="bg-blue-500/10 text-blue-600 text-[10px] font-black uppercase px-2.5 py-1 rounded border border-blue-500/20 flex items-center">
                             <i class="fa-solid fa-circle-check mr-1 text-xs"></i> Verified Creator
                         </span>
                     </div>
@@ -559,36 +606,36 @@
                     <!-- Custom Local Storage Profile configuration -->
                     <div class="space-y-3 pt-2">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <input type="text" id="edit-display-name" placeholder="Display Name" oninput="saveLocalProfile()" class="bg-gray-950 border border-gray-800 text-xs px-3 py-2.5 rounded-lg text-white outline-none w-full">
-                            <input type="text" id="edit-bio" placeholder="Bio details (e.g., Artist & Model)" oninput="saveLocalProfile()" class="bg-gray-950 border border-gray-800 text-xs px-3 py-2.5 rounded-lg text-white outline-none w-full">
+                            <input type="text" id="edit-display-name" placeholder="Display Name" oninput="saveLocalProfile()" class="bg-white border border-slate-200 text-xs px-3 py-2.5 rounded-lg text-slate-800 outline-none w-full shadow-sm focus:border-indigo-500">
+                            <input type="text" id="edit-bio" placeholder="Bio details (e.g., Artist & Model)" oninput="saveLocalProfile()" class="bg-white border border-slate-200 text-xs px-3 py-2.5 rounded-lg text-slate-800 outline-none w-full shadow-sm focus:border-indigo-500">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- LIVE STUDIO BROADCAST CONTROL CARD -->
-            <div class="glass-panel p-6 md:p-8 rounded-3xl border border-red-500/20 relative space-y-4">
+            <div class="glass-panel p-6 md:p-8 rounded-3xl border border-red-500/20 relative space-y-4 shadow-xl">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-black text-white flex items-center">
+                    <h3 class="text-lg font-black text-slate-800 flex items-center">
                         <span class="relative flex h-3 w-3 mr-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                         </span>
                         Live Broadcast Studio Control (लाइव ब्रॉडकास्ट सेटअप)
                     </h3>
-                    <span id="live-status-badge" class="bg-gray-800 text-gray-400 text-[10px] font-black uppercase px-2.5 py-1 rounded-full">Offline</span>
+                    <span id="live-status-badge" class="bg-slate-100 text-slate-400 text-[10px] font-black uppercase px-2.5 py-1 rounded-full border border-slate-200">Offline</span>
                 </div>
 
                 <!-- Go Live Setup Form -->
                 <form id="live-setup-form" onsubmit="startLiveStream(event)" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Live Stream Title</label>
-                            <input type="text" id="live-title" required placeholder="e.g., Q&A and VIP Behind the Scenes!" class="w-full bg-gray-950 border border-gray-800 focus:border-red-500 rounded-xl px-4 py-3 text-xs text-white focus:outline-none transition">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Live Stream Title</label>
+                            <input type="text" id="live-title" required placeholder="e.g., Q&A and VIP Behind the Scenes!" class="w-full bg-white border border-slate-200 focus:border-red-500 rounded-xl px-4 py-3 text-xs text-slate-800 focus:outline-none transition shadow-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Stream Category</label>
-                            <select id="live-category" class="w-full bg-gray-950 border border-gray-800 focus:border-red-500 rounded-xl px-4 py-3 text-xs text-white focus:outline-none transition">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Stream Category</label>
+                            <select id="live-category" class="w-full bg-white border border-slate-200 focus:border-red-500 rounded-xl px-4 py-3 text-xs text-slate-800 focus:outline-none transition shadow-sm">
                                 <option value="Fashion & Glamour">Fashion & Glamour</option>
                                 <option value="Cosplay & Concept Art">Cosplay & Concept Art</option>
                                 <option value="Fitness & Lifestyle">Fitness & Lifestyle</option>
@@ -599,56 +646,56 @@
 
                     <!-- Stream cover toggle modes -->
                     <div class="space-y-2">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Broadcast Cover / Thumbnail Source</label>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Broadcast Cover / Thumbnail Source</label>
                         <div class="grid grid-cols-2 gap-3 mb-2">
-                            <button type="button" id="cover-src-upload-btn" onclick="setCoverSource('upload')" class="bg-pink-600 py-3 rounded-xl text-xs font-extrabold transition text-white uppercase tracking-wider">Upload New</button>
-                            <button type="button" id="cover-src-existing-btn" onclick="setCoverSource('existing')" class="bg-gray-900 border border-gray-800 text-gray-400 py-3 rounded-xl text-xs font-extrabold transition uppercase tracking-wider">Choose Existing</button>
+                            <button type="button" id="cover-src-upload-btn" onclick="setCoverSource('upload')" class="bg-pink-600 py-3 rounded-xl text-xs font-extrabold transition text-white uppercase tracking-wider shadow-md">Upload New</button>
+                            <button type="button" id="cover-src-existing-btn" onclick="setCoverSource('existing')" class="bg-white border border-slate-200 text-slate-400 py-3 rounded-xl text-xs font-extrabold transition uppercase tracking-wider shadow-sm">Choose Existing</button>
                         </div>
                         
                         <!-- Upload Container Option -->
                         <div id="cover-upload-container">
-                            <div class="border border-dashed border-gray-800 hover:border-red-500/50 rounded-xl p-6 text-center cursor-pointer relative transition" onclick="document.getElementById('live-thumbnail-input').click()">
-                                <i class="fa-solid fa-camera text-2xl text-gray-500 mb-2"></i>
-                                <p class="text-xs text-gray-400" id="live-upload-text">Click to browse broadcast cover/thumbnail</p>
+                            <div class="border border-dashed border-slate-200 hover:border-red-500/50 rounded-xl bg-white p-6 text-center cursor-pointer relative transition shadow-sm" onclick="document.getElementById('live-thumbnail-input').click()">
+                                <i class="fa-solid fa-camera text-2xl text-slate-400 mb-2"></i>
+                                <p class="text-xs text-slate-500" id="live-upload-text">Click to browse broadcast cover/thumbnail</p>
                                 <input type="file" id="live-thumbnail-input" accept="image/*" class="hidden" onchange="previewLiveThumbnail(event)">
                             </div>
                         </div>
 
                         <!-- Dropdown Select Option for Existing Images -->
                         <div id="cover-existing-container" class="hidden">
-                            <select id="live-existing-cover-select" onchange="selectExistingCover(this.value)" class="w-full bg-gray-950 border border-gray-800 focus:border-red-500 rounded-xl px-4 py-3 text-xs text-white focus:outline-none transition">
+                            <select id="live-existing-cover-select" onchange="selectExistingCover(this.value)" class="w-full bg-white border border-slate-200 focus:border-red-500 rounded-xl px-4 py-3 text-xs text-slate-800 focus:outline-none transition shadow-sm">
                                 <option value="">-- Select an image you uploaded previously --</option>
                             </select>
                         </div>
 
                         <div id="live-preview-container" class="mt-3 hidden relative">
-                            <img id="live-image-preview" src="#" alt="Live Preview" class="h-40 w-full object-cover rounded-xl border border-gray-800">
+                            <img id="live-image-preview" src="#" alt="Live Preview" class="h-40 w-full object-cover rounded-xl border border-slate-200 shadow-md">
                         </div>
                     </div>
 
-                    <button type="submit" id="go-live-btn" class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:opacity-90 text-white font-extrabold uppercase tracking-wider py-5 rounded-xl text-sm transition shadow-lg flex items-center justify-center transform scale-[1.01] hover:scale-[1.02]">
+                    <button type="submit" id="go-live-btn" class="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:opacity-90 text-white font-extrabold uppercase tracking-wider py-5 rounded-xl text-sm transition shadow-lg flex items-center justify-center transform scale-[1.01] hover:scale-[1.02]">
                         <i class="fa-solid fa-tower-broadcast mr-2 text-base"></i>Launch Live Broadcast Now
                     </button>
                 </form>
 
                 <!-- Active Stream Controls -->
                 <div id="live-active-panel" class="hidden space-y-4">
-                    <div class="bg-red-500/10 border-2 border-red-500 p-5 rounded-2xl text-center">
+                    <div class="bg-red-500/10 border border-red-500/20 p-5 rounded-2xl text-center shadow-inner">
                         <p class="text-xs font-black uppercase tracking-widest text-red-500 animate-pulse mb-1">⚡ YOU ARE CURRENTLY STREAMING LIVE (आप लाइव हैं - सब आपको देख सकते हैं)</p>
-                        <h4 class="text-sm font-bold text-white" id="active-live-title-display">Broadcast Title</h4>
+                        <h4 class="text-sm font-bold text-slate-800" id="active-live-title-display">Broadcast Title</h4>
                     </div>
 
                     <!-- Live webcam display feed with Camera Flip controls (Enhanced to high-end vertical 9:16 portrait preview) -->
-                    <div class="relative rounded-[32px] overflow-hidden aspect-[9/16] max-w-[280px] mx-auto bg-black border border-red-500/30 shadow-2xl">
+                    <div class="relative rounded-[32px] overflow-hidden aspect-[9/16] max-w-[280px] mx-auto bg-slate-100 border border-red-500/30 shadow-2xl">
                         <video id="broadcaster-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
                         
                         <!-- Flip Camera overlay button -->
-                        <button onclick="toggleCameraFacing()" class="absolute top-3 right-3 bg-black/70 hover:bg-black/90 text-white px-3.5 py-2 rounded-xl text-[10px] flex items-center justify-center transition border border-white/10 font-extrabold uppercase tracking-wider z-20">
+                        <button onclick="toggleCameraFacing()" class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-800 px-3.5 py-2 rounded-xl text-[10px] flex items-center justify-center transition border border-slate-100 font-extrabold uppercase tracking-wider z-20 shadow-md">
                             <i class="fa-solid fa-camera-rotate mr-1.5 text-xs"></i> Flip
                         </button>
                         
                         <!-- Custom aesthetic overlay indicator to look like phone broadcast UI -->
-                        <div class="absolute bottom-4 left-4 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-md flex items-center space-x-1 z-20 uppercase tracking-widest">
+                        <div class="absolute bottom-4 left-4 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-md flex items-center space-x-1 z-20 uppercase tracking-widest shadow-md">
                             <span class="h-1.5 w-1.5 bg-white rounded-full animate-pulse"></span>
                             <span>REC</span>
                         </div>
@@ -660,33 +707,33 @@
                     </button>
 
                     <!-- Terminate Stream Action Button -->
-                    <button onclick="endLiveStream()" class="w-full bg-red-950/40 hover:bg-red-900 text-red-500 hover:text-white border-2 border-red-600 font-extrabold uppercase tracking-wider py-5 rounded-xl text-sm transition flex items-center justify-center transform hover:scale-[1.02]">
+                    <button onclick="endLiveStream()" class="w-full bg-red-50/10 hover:bg-red-500 hover:text-white text-red-600 border border-red-200 font-extrabold uppercase tracking-wider py-5 rounded-xl text-sm transition flex items-center justify-center transform hover:scale-[1.02] shadow-sm">
                         <i class="fa-solid fa-phone-slash mr-2 text-base"></i>Terminate Live Stream / Go Offline
                     </button>
                 </div>
             </div>
 
             <!-- API CONFIGURATION / PLATFORM SETTINGS CARD -->
-            <div class="glass-panel p-6 md:p-8 rounded-3xl border border-pink-500/20 relative space-y-4">
-                <h3 class="text-lg font-black text-white flex items-center">
+            <div class="glass-panel p-6 md:p-8 rounded-3xl border border-pink-500/20 relative space-y-4 shadow-xl">
+                <h3 class="text-lg font-black text-slate-800 flex items-center">
                     <i class="fa-solid fa-sliders mr-2 text-pink-500"></i> Platform Settings / API कॉन्फ़िगरेशन
                 </h3>
-                <p class="text-xs text-gray-400 leading-relaxed">
-                    यदि डिफ़ॉल्ट ImgBB API सीमा समाप्त हो जाती है या थंबनेल अपलोड करने में कोई एरर आता है, तो आप यहाँ अपनी खुद की **ImgBB API Key** पेस्ट कर सकते हैं। यह 100% फ्री है: <a href="https://api.imgbb.com/" target="_blank" class="text-pink-400 underline hover:text-pink-300">api.imgbb.com</a> पर जाएं, अकाउंट बनाएं और 1 सेकंड में अपनी चाबी प्राप्त करें।
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    यदि डिफ़ॉल्ट ImgBB API सीमा समाप्त हो जाती है या थंबनेल अपलोड करने में कोई एरर आता है, तो आप यहाँ अपनी खुद की **ImgBB API Key** पेस्ट कर सकते हैं। यह 100% फ्री है: <a href="https://api.imgbb.com/" target="_blank" class="text-pink-400 underline hover:text-pink-600">api.imgbb.com</a> पर जाएं, अकाउंट बनाएं और 1 सेकंड में अपनी चाबी प्राप्त करें।
                 </p>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Custom ImgBB API Key (वैकल्पिक)</label>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Custom ImgBB API Key (वैकल्पिक)</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 text-sm"><i class="fa-solid fa-key"></i></span>
-                            <input type="text" id="custom-imgbb-key" placeholder="Paste your ImgBB v1 API key here..." class="w-full bg-gray-950 border border-gray-800 focus:border-pink-500 rounded-xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none transition">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 text-sm"><i class="fa-solid fa-key"></i></span>
+                            <input type="text" id="custom-imgbb-key" placeholder="Paste your ImgBB v1 API key here..." class="w-full bg-white border border-slate-200 focus:border-pink-500 rounded-xl pl-11 pr-4 py-3 text-xs text-slate-800 focus:outline-none transition shadow-sm">
                         </div>
                     </div>
                     <div class="flex gap-3">
-                        <button onclick="saveCustomApiKey()" class="bg-pink-600 hover:bg-pink-700 text-white font-extrabold uppercase px-6 py-2.5 rounded-xl text-xs tracking-wider transition">
+                        <button onclick="saveCustomApiKey()" class="bg-pink-600 hover:bg-pink-700 text-white font-extrabold uppercase px-6 py-2.5 rounded-xl text-xs tracking-wider transition shadow-md">
                             Save API Key
                         </button>
-                        <button onclick="clearCustomApiKey()" class="bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-400 hover:text-white font-extrabold uppercase px-6 py-2.5 rounded-xl text-xs tracking-wider transition">
+                        <button onclick="clearCustomApiKey()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-400 hover:text-slate-600 font-extrabold uppercase px-6 py-2.5 rounded-xl text-xs tracking-wider transition shadow-sm">
                             Reset to Default
                         </button>
                     </div>
@@ -695,11 +742,11 @@
 
             <!-- Profile uploaded items grid -->
             <div>
-                <h3 class="text-xl font-black mb-4 flex items-center">
+                <h3 class="text-xl font-black mb-4 flex items-center text-slate-800">
                     <i class="fa-solid fa-folder-open text-pink-500 mr-2"></i>My Uploaded Assets
                 </h3>
                 <div id="profile-posts-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    <p class="text-gray-500 text-sm col-span-full">Nothing posted from this device session yet.</p>
+                    <p class="text-slate-400 text-sm col-span-full">Nothing posted from this device session yet.</p>
                 </div>
             </div>
         </section>
@@ -707,35 +754,35 @@
     </main>
 
     <!-- Native App Style Sticky Bottom Navigation Bar -->
-    <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-[#030712]/95 border-t border-gray-900 backdrop-blur-lg z-40 px-4 py-2 flex justify-around items-center shadow-2xl">
-        <button onclick="navigateTo('home')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+    <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 border-t border-slate-100 backdrop-blur-lg z-40 px-4 py-2 flex justify-around items-center shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+        <button onclick="navigateTo('home')" class="flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-pink-600 transition-colors py-1">
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[9px] font-bold">Home</span>
         </button>
-        <button onclick="navigateTo('feed')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+        <button onclick="navigateTo('feed')" class="flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-pink-600 transition-colors py-1">
             <i class="fa-solid fa-compass text-lg"></i>
             <span class="text-[9px] font-bold">Feed</span>
         </button>
-        <button onclick="navigateTo('dashboard')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+        <button onclick="navigateTo('dashboard')" class="flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-pink-600 transition-colors py-1">
             <i class="fa-solid fa-circle-plus text-lg text-pink-500"></i>
             <span class="text-[9px] font-bold">Publish</span>
         </button>
-        <button onclick="navigateTo('bookmarks')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+        <button onclick="navigateTo('bookmarks')" class="flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-pink-600 transition-colors py-1">
             <i class="fa-solid fa-bookmark text-lg"></i>
             <span class="text-[9px] font-bold">Saved</span>
         </button>
-        <button onclick="navigateTo('profile')" class="flex flex-col items-center justify-center space-y-1 text-gray-500 hover:text-pink-500 transition-colors py-1">
+        <button onclick="navigateTo('profile')" class="flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-pink-600 transition-colors py-1">
             <i class="fa-solid fa-user-astronaut text-lg"></i>
             <span class="text-[9px] font-bold">My Studio</span>
         </button>
     </nav>
 
     <!-- Desktop Persistent Footer -->
-    <footer class="hidden lg:block border-t border-gray-900 bg-gray-950 py-10 mt-16 text-center text-xs text-gray-500 font-medium">
+    <footer class="hidden lg:block border-t border-slate-100 bg-white py-10 mt-16 text-center text-xs text-slate-400 font-medium shadow-inner">
         <div class="max-w-7xl mx-auto px-6 space-y-2">
             <p>&copy; 2026 Fanzones Studio Network. All rights reserved.</p>
-            <p class="text-gray-600 flex justify-center items-center gap-1.5">
-                Powered securely by <span class="text-pink-500 font-bold">ImgBB CDN</span> and <span class="text-indigo-400 font-bold">Firebase DB Engine</span>
+            <p class="text-slate-400 flex justify-center items-center gap-1.5">
+                Powered securely by <span class="text-pink-500 font-bold">ImgBB CDN</span> and <span class="text-indigo-600 font-bold">Firebase DB Engine</span>
             </p>
         </div>
     </footer>
@@ -825,11 +872,23 @@
         let currentFacingMode = 'user'; // 'user' represents front, 'environment' represents back
         let liveFrameInterval = null; // High dynamic snapshot streaming loop variable
 
+        // Standard WebRTC STUN configurations for peer-to-peer visual handshake
+        const rtcConfig = {
+            iceServers: [
+                { urls: "stun:stun.l.google.com:19302" },
+                { urls: "stun:stun1.l.google.com:19302" }
+            ]
+        };
+
+        // Track live WebRTC peer connections
+        let activePeerConnections = {}; // Broadcaster tracking active viewer streams
+        let viewerPC = null; // Viewer tracking connection to broadcaster
+
         // Global Toast engine definitions
         window.showToast = function(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const bgClass = type === 'success' ? 'bg-indigo-600' : type === 'error' ? 'bg-red-600' : 'bg-gray-800';
+            const bgClass = type === 'success' ? 'bg-indigo-600' : type === 'error' ? 'bg-red-600' : 'bg-slate-700';
             const iconClass = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-bell';
             
             toast.className = `${bgClass} text-white text-xs font-bold px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transform translate-y-2 opacity-0 transition-all duration-300 pointer-events-auto`;
@@ -975,13 +1034,13 @@
             const premiumToggle = document.getElementById('premium-toggle-container');
 
             if (type === 'story') {
-                storyBtn.className = "bg-pink-600 border border-pink-500 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition text-white";
-                postBtn.className = "bg-gray-900 border border-gray-800 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-gray-400 transition";
+                storyBtn.className = "bg-pink-600 border border-pink-500 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition text-white shadow-md";
+                postBtn.className = "bg-white border border-slate-200 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-400 transition shadow-sm";
                 captionField.classList.add('hidden');
                 premiumToggle.classList.add('hidden');
             } else {
-                postBtn.className = "bg-pink-600 border border-pink-500 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition text-white";
-                storyBtn.className = "bg-gray-900 border border-gray-800 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-gray-400 transition";
+                postBtn.className = "bg-pink-600 border border-pink-500 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition text-white shadow-md";
+                storyBtn.className = "bg-white border border-slate-200 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-400 transition shadow-sm";
                 captionField.classList.remove('hidden');
                 premiumToggle.classList.remove('hidden');
             }
@@ -1153,6 +1212,7 @@
                 addNotification(`Unlocked premium asset for ${coinPrice} Coins.`);
                 showToast('Post unlocked successfully!', 'success');
                 renderFeedUI(activeFeedPosts);
+                renderBookmarks();
             }
         };
 
@@ -1168,6 +1228,7 @@
             }
             localStorage.setItem('savedPosts', JSON.stringify(bookmarks));
             renderFeedUI(activeFeedPosts);
+            renderBookmarks();
         };
 
         // Live stories listener
@@ -1179,7 +1240,7 @@
             const data = snapshot.val();
 
             if (!data) {
-                tray.innerHTML = `<p class="text-[11px] text-gray-500 italic pl-1 py-1">No active stories found.</p>`;
+                tray.innerHTML = `<p class="text-[11px] text-slate-400 italic pl-1 py-1">No active stories found.</p>`;
                 return;
             }
 
@@ -1189,12 +1250,12 @@
                 bubble.className = "flex flex-col items-center space-y-1 cursor-pointer flex-shrink-0 group";
                 bubble.onclick = () => openStoryViewer(story.imageUrl, story.authorName);
                 bubble.innerHTML = `
-                    <div class="h-14 w-14 md:h-16 md:w-16 p-[3px] rounded-full bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-500 transition transform group-hover:scale-105">
-                        <div class="h-full w-full bg-gray-900 rounded-full flex items-center justify-center border border-gray-900 overflow-hidden">
+                    <div class="h-14 w-14 md:h-16 md:w-16 p-[3px] rounded-full bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-500 transition transform group-hover:scale-105 shadow-md">
+                        <div class="h-full w-full bg-white rounded-full flex items-center justify-center border border-white overflow-hidden">
                             <img src="${story.imageUrl}" class="h-full w-full object-cover">
                         </div>
                     </div>
-                    <span class="text-[9px] md:text-[10px] text-gray-400 truncate w-14 md:w-16 text-center">@${escapeHTML(story.authorName)}</span>
+                    <span class="text-[9px] md:text-[10px] text-slate-500 font-semibold truncate w-14 md:w-16 text-center">@${escapeHTML(story.authorName)}</span>
                 `;
                 tray.appendChild(bubble);
             });
@@ -1268,7 +1329,75 @@
             }
             activeFeedPosts = Object.entries(data).reverse().map(([id, val]) => ({ id, ...val }));
             renderFeedUI(activeFeedPosts);
+            renderBookmarks();
         });
+
+        // Unified layout template render function for both Feed and Bookmarks views
+        function buildPostHTML(post, isSaved, isLocked, dateText, commentsHTML) {
+            return `
+                <div class="p-4 flex items-center space-x-3 border-b border-slate-100 bg-slate-50/40">
+                    <div class="h-10 w-10 bg-gradient-to-tr from-pink-500 to-indigo-500 rounded-2xl flex items-center justify-center text-xs font-black text-white shadow-sm">
+                        ${(post.authorName || 'CR').substring(0, 2).toUpperCase()}
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="text-sm font-bold text-slate-800">@${escapeHTML(post.authorName || 'anonymous')}</h4>
+                        <p class="text-[9px] text-slate-400 font-bold">${dateText}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        ${post.isPremium ? '<span class="bg-amber-500/10 text-amber-600 px-2.5 py-1 rounded text-[10px] font-bold border border-amber-500/10">Premium</span>' : ''}
+                        <button onclick="toggleBookmark('${post.id}')" class="${isSaved ? 'text-pink-600' : 'text-slate-300 hover:text-slate-600'} text-sm transition">
+                            <i class="fa-solid fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Post Asset Container -->
+                <div class="aspect-square bg-slate-100 relative overflow-hidden flex items-center justify-center shadow-inner">
+                    <img src="${post.imageUrl}" class="w-full h-full object-cover ${isLocked ? 'premium-blur' : ''}" loading="lazy">
+                    
+                    ${isLocked ? `
+                    <div class="absolute inset-0 bg-white/60 backdrop-blur-md flex flex-col items-center justify-center space-y-3 p-4">
+                        <div class="h-12 w-12 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center border border-amber-500/20 text-xl animate-pulse">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-700">Locked subscription image file</p>
+                        <button onclick="unlockPremiumPost('${post.id}', ${post.coinPrice})" class="bg-amber-500 hover:bg-amber-600 text-white font-black text-xs uppercase px-7 py-3.5 rounded-full transition shadow-lg shadow-amber-500/20 flex items-center space-x-2 transform hover:scale-[1.03]">
+                            <i class="fa-solid fa-coins"></i> <span>Unlock for ${post.coinPrice} Coins</span>
+                        </button>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <!-- Metadata Details -->
+                <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                    <p class="text-slate-600 text-sm">${escapeHTML(post.caption || '')}</p>
+                    
+                    <div class="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
+                        <button onclick="likePost('${post.id}')" class="hover:text-pink-600 transition flex items-center space-x-1 font-bold">
+                            <i class="fa-solid fa-heart text-pink-500 animate-pulse"></i>
+                            <span>${post.likesCount || 0} Likes</span>
+                        </button>
+                        <span class="text-slate-400 flex items-center space-x-1">
+                            <i class="fa-solid fa-comment"></i>
+                            <span>${post.comments ? Object.keys(post.comments).length : 0} Comments</span>
+                        </span>
+                    </div>
+
+                    <!-- Comment module -->
+                    <div class="space-y-2">
+                        <div class="max-h-24 overflow-y-auto space-y-1.5 no-scrollbar">
+                            ${commentsHTML}
+                        </div>
+                        <form onsubmit="submitComment(event, '${post.id}')" class="flex items-center space-x-2 pt-1">
+                            <input type="text" id="comment-input-${post.id}" required placeholder="Add commentary..." class="flex-grow bg-slate-50 border border-slate-100 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-[11px] px-3 py-2.5 rounded-xl text-slate-800 outline-none transition shadow-sm">
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 rounded-xl text-xs transition shadow-md">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
 
         function renderFeedUI(posts) {
             const feedContainer = document.getElementById('feed-container');
@@ -1278,8 +1407,8 @@
             if (posts.length === 0) {
                 feedContainer.innerHTML = `
                     <div class="col-span-full text-center py-12">
-                        <i class="fa-regular fa-folder-open text-4xl text-gray-700 mb-3"></i>
-                        <p class="text-gray-400">No active posts currently live.</p>
+                        <i class="fa-regular fa-folder-open text-4xl text-slate-300 mb-3"></i>
+                        <p class="text-slate-400">No active posts currently live.</p>
                     </div>
                 `;
                 return;
@@ -1297,81 +1426,19 @@
                 if (post.comments) {
                     Object.values(post.comments).forEach(c => {
                         commentsHTML += `
-                            <div class="bg-gray-950 p-2.5 rounded-xl border border-gray-900/60 text-xs">
-                                <span class="font-bold text-pink-400">@${escapeHTML(c.author)}:</span>
-                                <span class="text-gray-300 ml-1">${escapeHTML(c.text)}</span>
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs">
+                                <span class="font-bold text-pink-600">@${escapeHTML(c.author)}:</span>
+                                <span class="text-slate-600 ml-1">${escapeHTML(c.text)}</span>
                             </div>
                         `;
                     });
                 } else {
-                    commentsHTML = `<p class="text-[11px] text-gray-600 italic px-1">No comments posted yet.</p>`;
+                    commentsHTML = `<p class="text-[11px] text-slate-400 italic px-1">No comments posted yet.</p>`;
                 }
 
                 const card = document.createElement('div');
-                card.className = "glass-panel rounded-3xl overflow-hidden flex flex-col shadow-xl";
-                card.innerHTML = `
-                    <div class="p-4 flex items-center space-x-3 border-b border-gray-900 bg-gray-900/10">
-                        <div class="h-10 w-10 bg-gradient-to-tr from-pink-500 to-indigo-500 rounded-2xl flex items-center justify-center text-xs font-black text-white">
-                            ${(post.authorName || 'CR').substring(0, 2).toUpperCase()}
-                        </div>
-                        <div class="flex-grow">
-                            <h4 class="text-sm font-bold text-white">@${escapeHTML(post.authorName || 'anonymous')}</h4>
-                            <p class="text-[9px] text-gray-500 font-bold">${dateText}</p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            ${post.isPremium ? '<span class="bg-amber-500/15 text-amber-500 px-2.5 py-1 rounded text-[10px] font-bold">Premium</span>' : ''}
-                            <button onclick="toggleBookmark('${post.id}')" class="${isSaved ? 'text-pink-500' : 'text-gray-500 hover:text-white'} text-sm transition">
-                                <i class="fa-solid fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Post Asset Container -->
-                    <div class="aspect-square bg-gray-950 relative overflow-hidden flex items-center justify-center">
-                        <img src="${post.imageUrl}" class="w-full h-full object-cover ${isLocked ? 'premium-blur' : ''}" loading="lazy">
-                        
-                        ${isLocked ? `
-                        <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center space-y-3 p-4">
-                            <div class="h-12 w-12 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center border border-amber-500/40 text-xl animate-pulse">
-                                <i class="fa-solid fa-lock"></i>
-                            </div>
-                            <p class="text-xs font-bold text-gray-200">Locked subscription image file</p>
-                            <button onclick="unlockPremiumPost('${post.id}', ${post.coinPrice})" class="bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs uppercase px-7 py-3.5 rounded-full transition shadow-lg shadow-amber-500/20 flex items-center space-x-2 transform hover:scale-[1.03]">
-                                <i class="fa-solid fa-coins"></i> <span>Unlock for ${post.coinPrice} Coins</span>
-                            </button>
-                        </div>
-                        ` : ''}
-                    </div>
-
-                    <!-- Metadata Details -->
-                    <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
-                        <p class="text-gray-300 text-sm">${escapeHTML(post.caption || '')}</p>
-                        
-                        <div class="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-900/60">
-                            <button onclick="likePost('${post.id}')" class="hover:text-pink-500 transition flex items-center space-x-1 font-bold">
-                                <i class="fa-solid fa-heart text-pink-500"></i>
-                                <span>${post.likesCount || 0} Likes</span>
-                            </button>
-                            <span class="text-gray-500 flex items-center space-x-1">
-                                <i class="fa-solid fa-comment"></i>
-                                <span>${post.comments ? Object.keys(post.comments).length : 0} Comments</span>
-                            </span>
-                        </div>
-
-                        <!-- Comment module -->
-                        <div class="space-y-2">
-                            <div class="max-h-24 overflow-y-auto space-y-1.5 no-scrollbar">
-                                ${commentsHTML}
-                            </div>
-                            <form onsubmit="submitComment(event, '${post.id}')" class="flex items-center space-x-2 pt-1">
-                                <input type="text" id="comment-input-${post.id}" required placeholder="Add commentary..." class="flex-grow bg-gray-950/80 border border-gray-900 focus:border-indigo-500 text-[11px] px-3 py-2.5 rounded-xl text-white outline-none transition">
-                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 rounded-xl text-xs transition">
-                                    <i class="fa-solid fa-paper-plane"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                `;
+                card.className = "glass-panel rounded-3xl overflow-hidden flex flex-col shadow-lg border border-white";
+                card.innerHTML = buildPostHTML(post, isSaved, isLocked, dateText, commentsHTML);
                 feedContainer.appendChild(card);
             });
         }
@@ -1387,7 +1454,7 @@
             renderFeedUI(filtered);
         };
 
-        // Bookmarks controller
+        // Bookmarks controller with proper dedicated selector rendering fix
         window.renderBookmarks = function() {
             const container = document.getElementById('bookmarks-container');
             if (!container) return;
@@ -1397,10 +1464,41 @@
             const bookmarkedPosts = activeFeedPosts.filter(post => savedList.includes(post.id));
 
             if (bookmarkedPosts.length === 0) {
-                container.innerHTML = `<p class="text-gray-500 text-sm col-span-full text-center py-12">Your bookmarks vault is empty.</p>`;
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fa-regular fa-bookmark text-4xl text-slate-300 mb-3"></i>
+                        <p class="text-slate-400 text-sm">Your bookmarks vault is empty.</p>
+                    </div>
+                `;
                 return;
             }
-            renderFeedUI(bookmarkedPosts);
+
+            const unlockedList = JSON.parse(localStorage.getItem('unlockedPosts') || '[]');
+
+            bookmarkedPosts.forEach(post => {
+                const dateText = new Date(post.timestamp).toLocaleDateString();
+                const isSaved = true;
+                const isLocked = post.isPremium && !unlockedList.includes(post.id);
+
+                let commentsHTML = '';
+                if (post.comments) {
+                    Object.values(post.comments).forEach(c => {
+                        commentsHTML += `
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs">
+                                <span class="font-bold text-pink-600">@${escapeHTML(c.author)}:</span>
+                                <span class="text-slate-600 ml-1">${escapeHTML(c.text)}</span>
+                            </div>
+                        `;
+                    });
+                } else {
+                    commentsHTML = `<p class="text-[11px] text-slate-400 italic px-1">No comments posted yet.</p>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = "glass-panel rounded-3xl overflow-hidden flex flex-col shadow-lg border border-white";
+                card.innerHTML = buildPostHTML(post, isSaved, isLocked, dateText, commentsHTML);
+                container.appendChild(card);
+            });
         };
 
         // System Logs alerts
@@ -1436,15 +1534,15 @@
             if (!list) return;
             list.innerHTML = '';
             if (notifications.length === 0) {
-                list.innerHTML = `<p class="text-gray-500 italic text-center py-4">No recent activity logs.</p>`;
+                list.innerHTML = `<p class="text-slate-400 italic text-center py-4">No recent activity logs.</p>`;
                 return;
             }
             notifications.forEach(n => {
                 const item = document.createElement('div');
-                item.className = "bg-gray-950 p-2.5 rounded-xl border border-gray-800 flex justify-between items-center";
+                item.className = "bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex justify-between items-center";
                 item.innerHTML = `
-                    <span class="text-gray-300">${escapeHTML(n.message)}</span>
-                    <span class="text-[9px] text-gray-500">${n.timestamp}</span>
+                    <span class="text-slate-600">${escapeHTML(n.message)}</span>
+                    <span class="text-[9px] text-slate-400">${n.timestamp}</span>
                 `;
                 list.appendChild(item);
             });
@@ -1493,15 +1591,15 @@
                         if (myUploadedIds.includes(postId)) {
                             userPostCount++;
                             const card = document.createElement('div');
-                            card.className = "glass-panel rounded-2xl overflow-hidden flex flex-col shadow-md";
+                            card.className = "glass-panel rounded-2xl overflow-hidden flex flex-col shadow-md border border-white";
                             card.innerHTML = `
-                                <div class="aspect-video bg-gray-950 overflow-hidden">
+                                <div class="aspect-video bg-slate-100 overflow-hidden shadow-inner">
                                     <img src="${post.imageUrl}" alt="Uploaded Visual" class="object-cover w-full h-full">
                                 </div>
                                 <div class="p-4 flex flex-col justify-between flex-grow">
-                                    <p class="text-xs text-gray-300 line-clamp-2">${escapeHTML(post.caption || '')}</p>
-                                    <div class="flex items-center justify-between text-[9px] text-gray-500 pt-2 border-t border-gray-900 mt-2">
-                                        <span><i class="fa-solid fa-heart text-pink-500"></i> ${post.likesCount || 0} Likes</span>
+                                    <p class="text-xs text-slate-600 line-clamp-2">${escapeHTML(post.caption || '')}</p>
+                                    <div class="flex items-center justify-between text-[9px] text-slate-400 pt-2 border-t border-slate-100 mt-2">
+                                        <span><i class="fa-solid fa-heart text-pink-500 animate-pulse"></i> ${post.likesCount || 0} Likes</span>
                                         <span>${post.isPremium ? 'Premium (Locked)' : 'Free'}</span>
                                     </div>
                                 </div>
@@ -1512,7 +1610,7 @@
                 }
 
                 if (userPostCount === 0) {
-                    profileContainer.innerHTML = `<p class="text-gray-500 text-sm col-span-full">You haven't posted any assets from this device session.</p>`;
+                    profileContainer.innerHTML = `<p class="text-slate-400 text-sm col-span-full">You haven't posted any assets from this device session.</p>`;
                 }
             });
         }
@@ -1551,9 +1649,18 @@
                     
                     // Direct dynamic player play execution
                     broadcasterVideo.load();
-                    await broadcasterVideo.play();
-                    console.log("Broadcaster webcam initialized and streaming.");
+                    await broadcasterVideo.play().catch(e => console.log(e));
                 }
+
+                // Bind stream to invisible persistent element to guarantee unhindered feed uploads
+                const persistentVideo = document.getElementById('persistent-broadcaster-video');
+                if (persistentVideo) {
+                    persistentVideo.srcObject = localMediaStream;
+                    persistentVideo.load();
+                    await persistentVideo.play().catch(e => console.log(e));
+                    console.log("Persistent video transmitter initialized.");
+                }
+
             } catch (error) {
                 console.error('Camera access denied or unsupported on this platform: ', error);
                 showToast('Camera access blocked/unsupported. Going live in Thumbnail-only mode.', 'error');
@@ -1564,6 +1671,10 @@
             if (localMediaStream) {
                 localMediaStream.getTracks().forEach(track => track.stop());
                 localMediaStream = null;
+            }
+            const persistentVideo = document.getElementById('persistent-broadcaster-video');
+            if (persistentVideo) {
+                persistentVideo.srcObject = null;
             }
         }
 
@@ -1586,13 +1697,13 @@
             previewContainer.classList.add('hidden');
 
             if (source === 'upload') {
-                uploadBtn.className = "bg-pink-600 py-3 rounded-xl text-xs font-extrabold transition text-white uppercase tracking-wider";
-                existingBtn.className = "bg-gray-900 border border-gray-800 text-gray-400 py-3 rounded-xl text-xs font-extrabold transition uppercase tracking-wider";
+                uploadBtn.className = "bg-pink-600 py-3 rounded-xl text-xs font-extrabold transition text-white uppercase tracking-wider shadow-md";
+                existingBtn.className = "bg-white border border-slate-200 text-slate-400 py-3 rounded-xl text-xs font-extrabold transition uppercase tracking-wider shadow-sm";
                 uploadContainer.classList.remove('hidden');
                 existingContainer.classList.add('hidden');
             } else {
-                existingBtn.className = "bg-pink-600 py-3 rounded-xl text-xs font-extrabold transition text-white uppercase tracking-wider";
-                uploadBtn.className = "bg-gray-900 border border-gray-800 text-gray-400 py-3 rounded-xl text-xs font-extrabold transition uppercase tracking-wider";
+                existingBtn.className = "bg-pink-600 py-3 rounded-xl text-xs font-extrabold transition text-white uppercase tracking-wider shadow-md";
+                uploadBtn.className = "bg-white border border-slate-200 text-slate-400 py-3 rounded-xl text-xs font-extrabold transition uppercase tracking-wider shadow-sm";
                 uploadContainer.classList.add('hidden');
                 existingContainer.classList.remove('hidden');
                 populateExistingCoversDropdown();
@@ -1679,6 +1790,59 @@
             }
         }
 
+        // Broadcaster setup WebRTC peer signaling listener
+        function setupBroadcasterSignaling(liveId) {
+            const signalingRef = ref(database, `livestreams/${liveId}/signaling`);
+            onValue(signalingRef, (snapshot) => {
+                const data = snapshot.val();
+                if (!data) return;
+                Object.entries(data).forEach(([viewerId, signal]) => {
+                    if (activePeerConnections[viewerId]) return; // Connection setup already running
+                    setupBroadcasterPeerConnection(liveId, viewerId, signal.offer);
+                });
+            });
+        }
+
+        async function setupBroadcasterPeerConnection(liveId, viewerId, offerStr) {
+            if (!localMediaStream) return;
+            const pc = new RTCPeerConnection(rtcConfig);
+            activePeerConnections[viewerId] = pc;
+
+            localMediaStream.getTracks().forEach(track => {
+                pc.addTrack(track, localMediaStream);
+            });
+
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    const candRef = ref(database, `livestreams/${liveId}/signaling/${viewerId}/broadcasterCandidates`);
+                    push(candRef, JSON.stringify(event.candidate));
+                }
+            };
+
+            try {
+                await pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(offerStr)));
+                const answer = await pc.createAnswer();
+                await pc.setLocalDescription(answer);
+
+                set(ref(database, `livestreams/${liveId}/signaling/${viewerId}/answer`), JSON.stringify(answer));
+
+                // Read incoming candidates from viewer
+                const viewerCandRef = ref(database, `livestreams/${liveId}/signaling/${viewerId}/viewerCandidates`);
+                onValue(viewerCandRef, (snapshot) => {
+                    const val = snapshot.val();
+                    if (val) {
+                        Object.values(val).forEach(candStr => {
+                            try {
+                                pc.addIceCandidate(new RTCIceCandidate(JSON.parse(candStr)));
+                            } catch(e) {}
+                        });
+                    }
+                });
+            } catch (err) {
+                console.error("Signaling pairing failed: ", err);
+            }
+        }
+
         // START LIVE STREAM LOGIC
         window.startLiveStream = async function(e) {
             e.preventDefault();
@@ -1759,7 +1923,10 @@
                 // Trigger camera video capture safely [1]
                 await startWebcamStream(); 
 
-                // High fidelity canvas snapshot sync loop (Starts pushing base64 frames to DB)
+                // Setup live multi-peer signaling listener channels
+                setupBroadcasterSignaling(activeLiveId);
+
+                // High fidelity canvas snapshot sync loop (Fallback to push base64 frames to DB)
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
 
@@ -1767,8 +1934,9 @@
                     clearInterval(liveFrameInterval);
                 }
 
+                // Optimized to 400ms update rate (Ultra fast response, looks like live video to viewers)
                 liveFrameInterval = setInterval(async () => {
-                    const videoEl = document.getElementById('broadcaster-video');
+                    const videoEl = document.getElementById('persistent-broadcaster-video');
                     if (videoEl && localMediaStream && activeLiveId) {
                         try {
                             const vWidth = videoEl.videoWidth;
@@ -1799,8 +1967,8 @@
                                 
                                 ctx.drawImage(videoEl, sX, sY, sW, sH, 0, 0, canvas.width, canvas.height);
                                 
-                                // Compress snapshot quality (35% quality) to bypass large payload lag over RTDB
-                                const base64Frame = canvas.toDataURL('image/jpeg', 0.35);
+                                // Compress snapshot quality (25% quality) to bypass large payload lag over RTDB
+                                const base64Frame = canvas.toDataURL('image/jpeg', 0.25);
                                 
                                 // Write updated frame dynamically
                                 const frameRef = ref(database, `livestreams/${activeLiveId}/liveFrame`);
@@ -1810,7 +1978,7 @@
                             console.error('Frame streaming failure: ', err);
                         }
                     }
-                }, 1000); 
+                }, 400); 
 
                 addNotification(`You are now broadcasting live: "${title}"`);
                 showToast('Your broadcast is live now!', 'success');
@@ -1840,6 +2008,10 @@
                         liveFrameInterval = null;
                     }
 
+                    // Close down all broadcaster signaling channels cleanly
+                    Object.values(activePeerConnections).forEach(pc => pc.close());
+                    activePeerConnections = {};
+
                     const streamRef = ref(database, `livestreams/${activeLiveId}`);
                     // Completely remove from database to clean node
                     await set(streamRef, null);
@@ -1866,13 +2038,13 @@
             if (isLive) {
                 setupForm.classList.add('hidden');
                 activePanel.classList.remove('hidden');
-                badge.className = "bg-red-600 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full animate-pulse";
+                badge.className = "bg-red-600 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full animate-pulse shadow-sm";
                 badge.textContent = "LIVE NOW";
                 displayTitle.textContent = title;
             } else {
                 setupForm.classList.remove('hidden');
                 activePanel.classList.add('hidden');
-                badge.className = "bg-gray-800 text-gray-400 text-[10px] font-black uppercase px-2.5 py-1 rounded-full";
+                badge.className = "bg-slate-100 text-slate-400 text-[10px] font-black uppercase px-2.5 py-1 rounded-full border border-slate-200";
                 badge.textContent = "Offline";
                 displayTitle.textContent = '';
             }
@@ -1886,6 +2058,7 @@
                     if (data && data.active) {
                         toggleLiveUI(true, data.title);
                         startWebcamStream();
+                        setupBroadcasterSignaling(activeLiveId);
                     } else {
                         localStorage.removeItem('fanzones_active_live_id');
                         activeLiveId = null;
@@ -1923,10 +2096,81 @@
         let activeLiveViewerId = null;
         let activeLiveViewerListener = null;
 
+        // WebRTC Viewer Connection Initializer
+        async function setupViewerWebRTC(liveId) {
+            if (viewerPC) {
+                viewerPC.close();
+                viewerPC = null;
+            }
+
+            const viewerId = localStorage.getItem('fanzones_viewer_id') || 'viewer_' + Math.random().toString(36).substring(2, 11);
+            localStorage.setItem('fanzones_viewer_id', viewerId);
+
+            const pc = new RTCPeerConnection(rtcConfig);
+            viewerPC = pc;
+
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    const candRef = ref(database, `livestreams/${liveId}/signaling/${viewerId}/viewerCandidates`);
+                    push(candRef, JSON.stringify(event.candidate));
+                }
+            };
+
+            pc.ontrack = (event) => {
+                const videoEl = document.getElementById('live-viewer-video');
+                const mainImg = document.getElementById('live-viewer-main-img');
+                if (videoEl && event.streams && event.streams[0]) {
+                    videoEl.srcObject = event.streams[0];
+                    videoEl.classList.remove('hidden');
+                    mainImg.classList.add('hidden'); // Hide fallback image frame
+                    console.log("WebRTC video linked successfully.");
+                }
+            };
+
+            try {
+                const offer = await pc.createOffer({ offerToReceiveVideo: true });
+                await pc.setLocalDescription(offer);
+
+                set(ref(database, `livestreams/${liveId}/signaling/${viewerId}/offer`), JSON.stringify(offer));
+
+                // Listen for Answer
+                const answerRef = ref(database, `livestreams/${liveId}/signaling/${viewerId}/answer`);
+                onValue(answerRef, (snapshot) => {
+                    const ansStr = snapshot.val();
+                    if (ansStr) {
+                        pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(ansStr)));
+                    }
+                });
+
+                // Listen for ICE Candidates
+                const broadcasterCandRef = ref(database, `livestreams/${liveId}/signaling/${viewerId}/broadcasterCandidates`);
+                onValue(broadcasterCandRef, (snapshot) => {
+                    const val = snapshot.val();
+                    if (val) {
+                        Object.values(val).forEach(candStr => {
+                            try {
+                                pc.addIceCandidate(new RTCIceCandidate(JSON.parse(candStr)));
+                            } catch(e) {}
+                        });
+                    }
+                });
+            } catch (err) {
+                console.warn("WebRTC initialization failed, falling back to Canvas snapshot stream mode: ", err);
+            }
+        }
+
         window.openLiveViewer = function(liveId, title, author, thumbnailUrl) {
             // Unsubscribe existing listener first if any
             if (activeLiveViewerListener && typeof activeLiveViewerListener === 'function') {
                 activeLiveViewerListener();
+            }
+
+            // Kill existing remote WebRTC sessions
+            if (viewerPC) {
+                viewerPC.close();
+                viewerPC = null;
+                document.getElementById('live-viewer-video').classList.add('hidden');
+                document.getElementById('live-viewer-main-img').classList.remove('hidden');
             }
 
             activeLiveViewerId = liveId;
@@ -1935,14 +2179,20 @@
             const bgImg = document.getElementById('live-viewer-feed-bg');
             const titleEl = document.getElementById('live-viewer-title');
             const authorEl = document.getElementById('live-viewer-author');
+            const catEl = document.getElementById('live-viewer-category-badge');
+            const avEl = document.getElementById('live-viewer-avatar');
 
             mainImg.src = thumbnailUrl;
             bgImg.src = thumbnailUrl;
             titleEl.textContent = title;
             authorEl.textContent = `@${author}`;
+            avEl.textContent = author.substring(0, 2).toUpperCase();
 
             // Make stream overlay view visible
             modal.classList.remove('hidden');
+
+            // Boot WebRTC visual handshaker channels
+            setupViewerWebRTC(liveId);
 
             // Establish listener node for continuous chat & dynamic frame updates
             const chatRef = ref(database, `livestreams/${liveId}`);
@@ -1950,7 +2200,8 @@
             activeLiveViewerListener = onValue(chatRef, (snapshot) => {
                 const data = snapshot.val();
                 const chatBox = document.getElementById('live-viewer-chat-box');
-                if (!chatBox) return;
+                const mChatBox = document.getElementById('live-viewer-mobile-chat-box');
+                if (!chatBox || !mChatBox) return;
 
                 if (!data) {
                     // Broadcaster stopped live stream, close overlay player
@@ -1959,35 +2210,41 @@
                     return;
                 }
 
-                // If real-time canvas frame update is pushed by the broadcaster, display it instantly!
-                if (data.liveFrame) {
-                    mainImg.src = data.liveFrame;
-                    bgImg.src = data.liveFrame;
-                } else {
-                    mainImg.src = data.thumbnailUrl || thumbnailUrl;
-                    bgImg.src = data.thumbnailUrl || thumbnailUrl;
+                if (catEl) catEl.textContent = data.category || 'Glamour';
+
+                // If remote WebRTC stream hasn't kicked off yet, update Canvas snapshot frame dynamically
+                if (document.getElementById('live-viewer-video').classList.contains('hidden')) {
+                    if (data.liveFrame) {
+                        mainImg.src = data.liveFrame;
+                        bgImg.src = data.liveFrame;
+                    } else {
+                        mainImg.src = data.thumbnailUrl || thumbnailUrl;
+                        bgImg.src = data.thumbnailUrl || thumbnailUrl;
+                    }
                 }
 
                 let chatBoxHTML = '';
                 if (data.comments) {
                     Object.values(data.comments).forEach(comment => {
                         chatBoxHTML += `
-                            <div class="bg-gray-900/60 p-2.5 rounded-xl border border-gray-800 flex flex-col space-y-1">
+                            <div class="bg-slate-800/60 p-2.5 rounded-xl border border-white/5 flex flex-col space-y-1 shadow-sm">
                                 <div class="flex justify-between items-center">
-                                    <span class="font-extrabold text-red-400">@${escapeHTML(comment.author)}</span>
-                                    <span class="text-[8px] text-gray-500">${new Date(comment.timestamp || Date.now()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                                    <span class="font-black text-red-400">@${escapeHTML(comment.author)}</span>
+                                    <span class="text-[8px] text-gray-400">${new Date(comment.timestamp || Date.now()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                                 </div>
-                                <span class="text-gray-300 break-all text-[11px]">${escapeHTML(comment.text)}</span>
+                                <span class="text-gray-200 break-all text-[11px] font-medium">${escapeHTML(comment.text)}</span>
                             </div>
                         `;
                     });
                 } else {
-                    chatBoxHTML = `<p class="text-[10px] text-gray-600 italic text-center py-8">No live chat yet. Say something beautiful!</p>`;
+                    chatBoxHTML = `<p class="text-[10px] text-gray-400 italic text-center py-8">No live chat yet. Say something beautiful!</p>`;
                 }
 
                 if (chatBox.innerHTML !== chatBoxHTML) {
                     chatBox.innerHTML = chatBoxHTML;
                     chatBox.scrollTop = chatBox.scrollHeight;
+                    mChatBox.innerHTML = chatBoxHTML;
+                    mChatBox.scrollTop = mChatBox.scrollHeight;
                 }
             });
         };
@@ -1995,6 +2252,16 @@
         window.closeLiveViewer = function() {
             const modal = document.getElementById('live-viewer-modal');
             if (modal) modal.classList.add('hidden');
+            
+            // Terminate active WebRTC stream tracks cleanly
+            if (viewerPC) {
+                viewerPC.close();
+                viewerPC = null;
+            }
+            document.getElementById('live-viewer-video').srcObject = null;
+            document.getElementById('live-viewer-video').classList.add('hidden');
+            document.getElementById('live-viewer-main-img').classList.remove('hidden');
+
             activeLiveViewerId = null;
             if (activeLiveViewerListener && typeof activeLiveViewerListener === 'function') {
                 activeLiveViewerListener();
@@ -2002,6 +2269,7 @@
             }
         };
 
+        // Standard Desktop Form comment trigger
         window.submitLiveViewerComment = function(e) {
             e.preventDefault();
             if (!activeLiveViewerId) return;
@@ -2024,6 +2292,28 @@
             });
         };
 
+        // Mobile Form comment trigger
+        window.submitLiveViewerCommentMobile = function(e) {
+            e.preventDefault();
+            if (!activeLiveViewerId) return;
+
+            const inputField = document.getElementById('live-viewer-mobile-chat-input');
+            const text = inputField.value.trim();
+            const commentAuthor = localStorage.getItem('profile_display_name') || localStorage.getItem('lastUsedName') || 'GuestViewer';
+
+            if (!text) return;
+
+            const chatRef = ref(database, `livestreams/${activeLiveViewerId}/comments`);
+            const newChatRef = push(chatRef);
+
+            set(newChatRef, {
+                author: commentAuthor,
+                text: text,
+                timestamp: Date.now()
+            }).then(() => {
+                inputField.value = '';
+            });
+        };
 
         // Real-time Global Live Streams Feed Observer
         const liveStreamsRef = ref(database, 'livestreams');
@@ -2076,23 +2366,23 @@
                         `;
                     });
                 } else {
-                    chatHTML = `<p class="text-[9px] text-gray-500 italic px-1">No live chat yet. Say something!</p>`;
+                    chatHTML = `<p class="text-[9px] text-slate-400 italic px-1">No live chat yet. Say something!</p>`;
                 }
 
                 // If card does not exist, create it as a highly responsive 9:16 portrait interface
                 if (!card) {
                     card = document.createElement('div');
-                    card.className = "bg-gradient-to-b from-red-950/30 to-gray-950 border border-red-500/20 rounded-[32px] overflow-hidden shadow-2xl relative flex flex-col aspect-[9/16] justify-between live-pulse-border cursor-pointer transform hover:scale-[1.02] transition duration-300 max-w-[340px] mx-auto w-full";
+                    card.className = "bg-white border border-slate-100 rounded-[32px] overflow-hidden shadow-xl relative flex flex-col aspect-[9/16] justify-between live-pulse-border cursor-pointer transform hover:scale-[1.02] transition duration-300 max-w-[340px] mx-auto w-full";
                     card.setAttribute('data-live-id', liveId);
                     card.setAttribute('onclick', `openLiveViewer('${liveId}', '${escapeHTML(live.title)}', '${escapeHTML(live.authorName)}', '${live.thumbnailUrl}')`);
                     
                     card.innerHTML = `
                         <!-- Overlay Badges at Top -->
                         <div class="absolute top-4 inset-x-4 flex items-center justify-between z-20 pointer-events-none">
-                            <span class="bg-red-600 text-white font-black text-[9px] uppercase px-2.5 py-1 rounded-full flex items-center gap-1 animate-pulse shadow-lg">
+                            <span class="bg-red-600 text-white font-black text-[9px] uppercase px-2.5 py-1 rounded-full flex items-center gap-1 animate-pulse shadow-md">
                                 <span class="h-1.5 w-1.5 bg-white rounded-full"></span> LIVE
                             </span>
-                            <span class="bg-black/60 backdrop-blur-md text-gray-300 text-[9px] font-bold px-2.5 py-1 rounded-full category-badge">
+                            <span class="bg-white/95 text-slate-700 text-[9px] font-bold px-2.5 py-1 rounded-full category-badge shadow-sm">
                                 ${escapeHTML(live.category)}
                             </span>
                         </div>
@@ -2100,8 +2390,8 @@
                         <!-- Full Bleed Stream Video Frame -->
                         <img src="${displayImage}" class="absolute inset-0 w-full h-full object-cover live-frame-img z-0">
 
-                        <!-- Aesthetic Dark Gradient overlay to make text pop -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 pointer-events-none rounded-[32px]"></div>
+                        <!-- Aesthetic Gradient overlay to make text pop -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent z-10 pointer-events-none rounded-[32px]"></div>
 
                         <!-- Floating Live details & Interactive glass panel at bottom of the 9:16 Screen -->
                         <div class="relative mt-auto p-4 space-y-3 z-20 flex flex-col justify-end w-full">
@@ -2120,7 +2410,7 @@
 
                             <!-- Translucent Live chat preview container -->
                             <div class="space-y-1.5" onclick="event.stopPropagation()">
-                                <div class="max-h-20 overflow-y-auto space-y-1 no-scrollbar bg-black/50 backdrop-blur-md p-2 rounded-xl border border-white/10 chat-box" id="live-chat-box-${liveId}">
+                                <div class="max-h-20 overflow-y-auto space-y-1 no-scrollbar bg-black/40 backdrop-blur-md p-2 rounded-xl border border-white/10 chat-box" id="live-chat-box-${liveId}">
                                     ${chatHTML}
                                 </div>
                             </div>
