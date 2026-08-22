@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamX - Admin Control Dashboard</title>
+    <!-- Google Fonts Imports for Premium Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #030303;
+            --card-bg: #0d0d0f;
+            --accent-gradient: linear-gradient(135deg, #ff007f, #e11d48, #ff5e00);
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Bar Style */
+        header {
+            background-color: rgba(3, 3, 3, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            text-decoration: none;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1.5px;
+        }
+
+        .logo span {
+            color: var(--text-main);
+            -webkit-text-fill-color: var(--text-main);
+        }
+
+        .badge {
+            background: rgba(255, 0, 127, 0.15);
+            color: #ff007f;
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .view-gallery-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            color: var(--text-main);
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-gallery-btn:hover {
+            border-color: #ff007f;
+            background-color: rgba(255, 0, 127, 0.05);
+            color: #ff007f;
+        }
+
+        /* Dashboard Core Grid Layout */
+        main {
+            max-width: 1400px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 3fr 2fr;
+            }
+        }
+
+        /* Admin Panels Styling */
+        .admin-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-title::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 20px;
+            background: var(--accent-gradient);
+            border-radius: 4px;
+        }
+
+        /* Form Controls Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: #060608;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            outline: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #ff007f;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);
+        }
+
+        /* Dropzones Style */
+        .upload-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .upload-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .file-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #060608;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .file-zone:hover {
+            border-color: #ff007f;
+            background-color: rgba(255, 0, 127, 0.02);
+        }
+
+        .file-zone svg {
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            transition: color 0.3s;
+        }
+
+        .file-zone:hover svg {
+            color: #ff007f;
+        }
+
+        .file-zone span {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Dual Upload Tracking System */
+        .upload-status {
+            background-color: #060608;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .status-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        .progress-block {
+            margin-bottom: 14px;
+        }
+
+        .progress-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .progress-bar-bg {
+            background-color: #1a1a1f;
+            border-radius: 10px;
+            height: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: var(--accent-gradient);
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* Buttons Styling */
+        .submit-btn {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);
+        }
+
+        .submit-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(255, 0, 127, 0.45);
+        }
+
+        .submit-btn:disabled {
+            background: #27272a;
+            color: #71717a;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Compact Lists / Inventories style */
+        .category-add-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .inline-btn {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 0 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .inline-btn:hover {
+            opacity: 0.95;
+        }
+
+        .inventory-list {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            background-color: #060608;
+            border-radius: 12px;
+        }
+
+        .inventory-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .inventory-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .item-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .delete-btn {
+            background-color: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--danger-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background-color: var(--danger-color);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        /* Large Video Inventory List style */
+        .large-inventory {
+            max-height: 400px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #060608;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="header-container">
+            <div class="logo-group">
+                <a href="#" class="logo">Stream<span>X</span></a>
+                <span class="badge">Admin Hub</span>
+            </div>
+            <a href="index.html" class="view-gallery-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                View Live Gallery
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Body -->
+    <main>
+        <div class="dashboard-grid">
+            
+            <!-- Left Side: Video Upload Control Panel -->
+            <div class="left-column">
+                <div class="admin-card">
+                    <div class="card-title">Publish New Video</div>
+                    <form id="videoUploadForm">
+                        
+                        <div class="form-group">
+                            <label for="videoTitle">Video Title</label>
+                            <input type="text" id="videoTitle" placeholder="e.g. Mastering Modern CSS Grid & Flexbox" required>
+                        </div>
+
+                        <div class="upload-row">
+                            <div class="form-group">
+                                <label for="videoCategory">Select Category</label>
+                                <select id="videoCategory" required>
+                                    <option value="" disabled selected>Choose a category...</option>
+                                    <!-- Dynamic options injected via JS -->
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoDuration">Video Duration</label>
+                                <input type="text" id="videoDuration" placeholder="e.g. 15:40" required>
+                            </div>
+                        </div>
+
+                        <!-- Dropzone Files Selection -->
+                        <div class="upload-row">
+                            <!-- Custom Thumbnail Picker -->
+                            <div class="form-group">
+                                <label>Custom Thumbnail File</label>
+                                <div class="file-zone" onclick="document.getElementById('thumbnailFile').click()">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span id="thumbnailLabel">Choose Image File (.jpg, .png)</span>
+                                </div>
+                                <input type="file" id="thumbnailFile" class="file-input" accept="image/png, image/jpeg, image/webp" required>
+                            </div>
+
+                            <!-- Custom Video Picker -->
+                            <div class="form-group">
+                                <label>Video File Asset</label>
+                                <div class="file-zone" onclick="document.getElementById('videoFile').click()">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span id="videoLabel">Choose Video File (.mp4, .webm)</span>
+                                </div>
+                                <input type="file" id="videoFile" class="file-input" accept="video/mp4, video/webm" required>
+                            </div>
+                        </div>
+
+                        <!-- Dual Asset Upload Status Progress bars -->
+                        <div class="upload-status" id="uploadStatusSection">
+                            <div class="status-title">Asset Upload Pipelines</div>
+                            
+                            <!-- Thumbnail Pipe -->
+                            <div class="progress-block">
+                                <div class="progress-label">
+                                    <span>Thumbnail Image Upload</span>
+                                    <span id="thumbProgressPercent">0%</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" id="thumbProgressBar"></div>
+                                </div>
+                            </div>
+
+                            <!-- Video Pipe -->
+                            <div class="progress-block">
+                                <div class="progress-label">
+                                    <span>Video Streaming File Upload</span>
+                                    <span id="videoProgressPercent">0%</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" id="videoProgressBar"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="publishBtn">Publish to Gallery</button>
+                    </form>
+                </div>
+
+                <!-- Video Inventory Management List -->
+                <div class="admin-card">
+                    <div class="card-title">Uploaded Video Inventory</div>
+                    <div class="inventory-list large-inventory" id="videoInventory">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Category Administration Area -->
+            <div class="right-column">
+                <div class="admin-card">
+                    <div class="card-title">Manage Custom Categories</div>
+                    
+                    <!-- Create New Category -->
+                    <form id="categoryCreateForm" class="category-add-form">
+                        <input type="text" id="newCategoryName" placeholder="New Category Name (e.g. Comedy)" required>
+                        <button type="submit" class="inline-btn">Create</button>
+                    </form>
+
+                    <!-- Category Inventory -->
+                    <div class="inventory-list" id="categoryInventory">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Information -->
+    <footer>
+        <p>&copy; 2026 StreamX Control Room. All rights reserved.</p>
+    </footer>
+
+    <!-- FIREBASE AND CLOUDINARY LOGIC SYSTEM INTEGRATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            getDocs, 
+            deleteDoc,
+            query, 
+            orderBy, 
+            serverTimestamp,
+            doc
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Your Exact Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDm9kd5XneXxdFEqfVgCY-lkc8s2JlDdiA",
+            authDomain: "fanzoen.firebaseapp.com",
+            projectId: "fanzoen",
+            storageBucket: "fanzoen.firebasestorage.app",
+            messagingSenderId: "30619278684",
+            appId: "1:30619278684:web:e28f09397392892c3c7599",
+            measurementId: "G-R8H7B5SS23"
+        };
+
+        // Cloudinary Unsigned Configuration
+        const CLOUD_NAME = "u7xejevg";
+        const UPLOAD_PRESET = "Naneght";
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Core local array states
+        let localCategories = [];
+        let localVideos = [];
+
+        // DOM elements selections
+        const videoCategorySelect = document.getElementById('videoCategory');
+        const thumbnailFileInput = document.getElementById('thumbnailFile');
+        const thumbnailLabel = document.getElementById('thumbnailLabel');
+        const videoFileInput = document.getElementById('videoFile');
+        const videoLabel = document.getElementById('videoLabel');
+
+        const uploadStatusSection = document.getElementById('uploadStatusSection');
+        const thumbProgressBar = document.getElementById('thumbProgressBar');
+        const thumbProgressPercent = document.getElementById('thumbProgressPercent');
+        const videoProgressBar = document.getElementById('videoProgressBar');
+        const videoProgressPercent = document.getElementById('videoProgressPercent');
+        const publishBtn = document.getElementById('publishBtn');
+
+        const videoUploadForm = document.getElementById('videoUploadForm');
+        const categoryCreateForm = document.getElementById('categoryCreateForm');
+        const newCategoryInput = document.getElementById('newCategoryName');
+        
+        const videoInventoryList = document.getElementById('videoInventory');
+        const categoryInventoryList = document.getElementById('categoryInventory');
+
+        // File Selection visual helpers
+        thumbnailFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                thumbnailLabel.textContent = `Selected: ${e.target.files[0].name}`;
+            } else {
+                thumbnailLabel.textContent = "Choose Image File (.jpg, .png)";
+            }
+        });
+
+        videoFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                videoLabel.textContent = `Selected: ${e.target.files[0].name}`;
+            } else {
+                videoLabel.textContent = "Choose Video File (.mp4, .webm)";
+            }
+        });
+
+        // 1. Fetch Categories and Render Select dropzone & Categories List
+        async function fetchCategories() {
+            try {
+                const q = query(collection(db, "categories"), orderBy("createdAt", "asc"));
+                const querySnapshot = await getDocs(q);
+                localCategories = [];
+                
+                querySnapshot.forEach((doc) => {
+                    localCategories.push({ id: doc.id, ...doc.data() });
+                });
+
+                renderCategoryUI();
+            } catch (err) {
+                console.error("Error reading categories: ", err);
+            }
+        }
+
+        function renderCategoryUI() {
+            // Populate Create video upload Category select drop-down list
+            videoCategorySelect.innerHTML = `<option value="" disabled selected>Choose a category...</option>`;
+            localCategories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.name;
+                option.textContent = cat.name;
+                videoCategorySelect.appendChild(option);
+            });
+
+            // Populate Management Inventory List UI
+            categoryInventoryList.innerHTML = '';
+            if (localCategories.length === 0) {
+                categoryInventoryList.innerHTML = `<div style="padding:15px; color:var(--text-muted); font-size:13px; text-align:center;">No custom categories created yet.</div>`;
+                return;
+            }
+
+            localCategories.forEach(cat => {
+                const div = document.createElement('div');
+                div.className = 'inventory-item';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <span class="item-name">${cat.name}</span>
+                        <span class="item-meta">Dynamic Category Element</span>
+                    </div>
+                    <button class="delete-btn" data-id="${cat.id}">Delete</button>
+                `;
+                
+                div.querySelector('.delete-btn').addEventListener('click', () => deleteCategoryElement(cat.id));
+                categoryInventoryList.appendChild(div);
+            });
+        }
+
+        // Add Category handler
+        categoryCreateForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = newCategoryInput.value.trim();
+            if (!name) return;
+
+            try {
+                await addDoc(collection(db, "categories"), {
+                    name: name,
+                    createdAt: serverTimestamp()
+                });
+                newCategoryInput.value = '';
+                await fetchCategories();
+            } catch (err) {
+                alert("Failed to add category: " + err.message);
+            }
+        });
+
+        // Delete Category handler
+        async function deleteCategoryElement(id) {
+            if (!confirm("Are you sure you want to delete this category?")) return;
+            try {
+                await deleteDoc(doc(db, "categories", id));
+                await fetchCategories();
+            } catch (err) {
+                alert("Failed to delete category: " + err.message);
+            }
+        }
+
+        // 2. Fetch and Render Video Inventory
+        async function fetchVideos() {
+            try {
+                const q = query(collection(db, "videos"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                localVideos = [];
+                
+                querySnapshot.forEach((doc) => {
+                    localVideos.push({ id: doc.id, ...doc.data() });
+                });
+
+                renderVideoInventoryUI();
+            } catch (err) {
+                console.error("Error reading videos: ", err);
+            }
+        }
+
+        function renderVideoInventoryUI() {
+            videoInventoryList.innerHTML = '';
+            if (localVideos.length === 0) {
+                videoInventoryList.innerHTML = `<div style="padding:20px; color:var(--text-muted); font-size:13px; text-align:center;">No videos published in catalog yet.</div>`;
+                return;
+            }
+
+            localVideos.forEach(v => {
+                const div = document.createElement('div');
+                div.className = 'inventory-item';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <span class="item-name" style="max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${v.title}</span>
+                        <span class="item-meta">Category: ${v.category} • Duration: ${v.duration}</span>
+                    </div>
+                    <button class="delete-btn" data-id="${v.id}">Delete</button>
+                `;
+                
+                div.querySelector('.delete-btn').addEventListener('click', () => deleteVideoElement(v.id));
+                videoInventoryList.appendChild(div);
+            });
+        }
+
+        // Delete Video handler
+        async function deleteVideoElement(id) {
+            if (!confirm("Are you sure you want to permanently delete this video from the database?")) return;
+            try {
+                await deleteDoc(doc(db, "videos", id));
+                await fetchVideos();
+            } catch (err) {
+                alert("Failed to delete video: " + err.message);
+            }
+        }
+
+        // 3. Dual Asset Cloudinary uploading & Firestore publishing
+        videoUploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('videoTitle').value.trim();
+            const category = videoCategorySelect.value;
+            const duration = document.getElementById('videoDuration').value.trim();
+            const imageFile = thumbnailFileInput.files[0];
+            const videoFile = videoFileInput.files[0];
+
+            if (!imageFile || !videoFile) {
+                alert("Both a custom thumbnail and a video file must be selected.");
+                return;
+            }
+
+            // Lock UI elements
+            publishBtn.disabled = true;
+            publishBtn.textContent = "Processing Assets...";
+            uploadStatusSection.style.display = "block";
+
+            try {
+                // Task 1: Upload Custom Thumbnail image to Cloudinary (Asset route /image/)
+                const thumbUrl = await uploadAssetPipeline(imageFile, "image", (percent) => {
+                    thumbProgressBar.style.width = percent + '%';
+                    thumbProgressPercent.textContent = percent + '%';
+                });
+
+                // Task 2: Upload Video asset file to Cloudinary (Asset route /video/)
+                const videoUrl = await uploadAssetPipeline(videoFile, "video", (percent) => {
+                    videoProgressBar.style.width = percent + '%';
+                    videoProgressPercent.textContent = percent + '%';
+                });
+
+                // Task 3: Commit document to Firestore videos collection
+                await addDoc(collection(db, "videos"), {
+                    title: title,
+                    category: category,
+                    videoUrl: videoUrl,
+                    thumbnailUrl: thumbUrl,
+                    duration: duration,
+                    views: 0,
+                    createdAt: serverTimestamp()
+                });
+
+                alert("Success! Your video and custom thumbnail are fully published.");
+                resetUploadFormLayout();
+                await fetchVideos();
+            } catch (error) {
+                alert("Publish failed: " + error.message);
+                publishBtn.disabled = false;
+                publishBtn.textContent = "Publish to Gallery";
+            }
+        });
+
+        // Promise wrapper around XMLHttprequest to track real-time upload status
+        function uploadAssetPipeline(file, resourceType, onProgressCallback) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', UPLOAD_PRESET);
+
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`, true);
+
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percentComplete = Math.round((e.loaded / e.total) * 100);
+                        onProgressCallback(percentComplete);
+                    }
+                };
+
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        resolve(response.secure_url);
+                    } else {
+                        console.error(`Cloudinary upload failed: ${xhr.responseText}`);
+                        reject(new Error(`Cloudinary uploading failed for resource type: ${resourceType}`));
+                    }
+                };
+
+                xhr.onerror = () => {
+                    reject(new Error("Network error encountered during pipeline upload."));
+                };
+
+                xhr.send(formData);
+            });
+        }
+
+        // Clean form layout reset
+        function resetUploadFormLayout() {
+            videoUploadForm.reset();
+            thumbnailLabel.textContent = "Choose Image File (.jpg, .png)";
+            videoLabel.textContent = "Choose Video File (.mp4, .webm)";
+            
+            uploadStatusSection.style.display = "none";
+            thumbProgressBar.style.width = "0%";
+            thumbProgressPercent.textContent = "0%";
+            videoProgressBar.style.width = "0%";
+            videoProgressPercent.textContent = "0%";
+            
+            publishBtn.disabled = false;
+            publishBtn.textContent = "Publish to Gallery";
+        }
+
+        // Initial system starts
+        async function runDashboard() {
+            await fetchCategories();
+            await fetchVideos();
+        }
+
+        runDashboard();
+    </script>
+</body>
+</html>
