@@ -548,6 +548,32 @@
             max-height: 450px;
         }
 
+        /* Gatekeeper Modal Screen Layout styling */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #030303;
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .auth-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            padding: 32px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9), var(--inner-glow);
+            text-align: center;
+        }
+
         /* Footer */
         footer {
             background-color: #060608;
@@ -564,6 +590,50 @@
     </style>
 </head>
 <body>
+
+    <!-- Global Gatekeeper Password Protection Screen Overlay -->
+    <div id="adminGatekeeper" class="auth-overlay">
+        <div class="auth-container">
+            <div class="logo" style="font-size: 34px; display: inline-block; margin-bottom: 12px;">Fanzones<span> Admin</span></div>
+            
+            <!-- Loading Database Config State -->
+            <div id="gatekeeperLoading">
+                <p style="color: var(--text-muted); font-size: 14px;">Initializing platform security configuration...</p>
+                <div style="margin-top: 20px; color: #ff007f; font-weight: 700;">Please wait...</div>
+            </div>
+
+            <!-- First-Time Security Setup State -->
+            <div id="gatekeeperSetup" style="display: none; text-align: left;">
+                <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 20px; text-align: center;">First-Time Configuration: Please create a global security password to lock the Admin Panel for all devices.</p>
+                <form id="gatekeeperSetupForm">
+                    <div class="form-group">
+                        <label for="setupAdminPass">Create Admin Password</label>
+                        <input type="password" id="setupAdminPass" placeholder="Enter secure password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="setupAdminPassConfirm">Confirm Admin Password</label>
+                        <input type="password" id="setupAdminPassConfirm" placeholder="Confirm secure password" required>
+                    </div>
+                    <button type="submit" class="submit-btn" style="margin-top: 10px;">Set Password & Initialize</button>
+                </form>
+            </div>
+
+            <!-- Unlock Panel Login State -->
+            <div id="gatekeeperLogin" style="display: none; text-align: left;">
+                <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 20px; text-align: center;">Enter the global admin security password to access control options.</p>
+                <form id="gatekeeperLoginForm">
+                    <div class="form-group">
+                        <label for="loginAdminPass">Admin Security Password</label>
+                        <input type="password" id="loginAdminPass" placeholder="Enter dashboard password" required>
+                    </div>
+                    <div id="loginErrorMessage" style="color: var(--danger-color); font-size: 12px; margin-top: -10px; margin-bottom: 15px; font-weight: 600; display: none;">
+                        Incorrect password! Access denied.
+                    </div>
+                    <button type="submit" class="submit-btn" style="margin-top: 10px;">Unlock Admin Panel</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Header Section -->
     <header>
@@ -640,7 +710,7 @@
 
         <div class="dashboard-grid">
             
-            <!-- Left Side: Video Upload Control Panel -->
+            <!-- Left Side: Video Upload Control Panel & Inventory list -->
             <div class="left-column">
                 <div class="admin-card">
                     <div class="card-title">
@@ -741,8 +811,10 @@
                 </div>
             </div>
 
-            <!-- Right Side: Category Administration Area -->
+            <!-- Right Side: Category, Users, & Password Control Area -->
             <div class="right-column">
+                
+                <!-- Category Management card -->
                 <div class="admin-card">
                     <div class="card-title">
                         <div class="card-title-left">Manage Custom Categories</div>
@@ -758,6 +830,43 @@
                     <div class="inventory-list" id="categoryInventory">
                         <!-- Loaded dynamically via JS -->
                     </div>
+                </div>
+
+                <!-- Registered Users Management Directory -->
+                <div class="admin-card">
+                    <div class="card-title">
+                        <div class="card-title-left">Registered Users Database</div>
+                    </div>
+                    <!-- Live Search Users -->
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <input type="text" id="userSearch" placeholder="Search registered users by name, email or phone...">
+                    </div>
+                    <!-- Users Inventory -->
+                    <div class="inventory-list" id="usersInventory" style="max-height: 350px;">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- Admin Security Settings: Global Password Change Card -->
+                <div class="admin-card">
+                    <div class="card-title">
+                        <div class="card-title-left">Admin Security Settings</div>
+                    </div>
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Admin Password</label>
+                            <input type="password" id="currentPassword" placeholder="Enter current dashboard password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Admin Password</label>
+                            <input type="password" id="newPassword" placeholder="Enter new secure password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPasswordConfirm">Confirm New Password</label>
+                            <input type="password" id="newPasswordConfirm" placeholder="Confirm new password" required>
+                        </div>
+                        <button type="submit" class="submit-btn" id="updatePasswordBtn">Update Password</button>
+                    </form>
                 </div>
             </div>
 
@@ -781,7 +890,9 @@
             query, 
             orderBy, 
             serverTimestamp,
-            doc
+            doc,
+            getDoc,
+            setDoc
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Your Exact Firebase Configuration
@@ -803,9 +914,14 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Security Firestore Document Path
+        const adminAuthDocRef = doc(db, "admin_settings", "auth");
+        let correctAdminPassword = "";
+
         // Core local array states
         let localCategories = [];
         let localVideos = [];
+        let localUsers = [];
 
         // DOM elements selections
         const videoCategorySelect = document.getElementById('videoCategory');
@@ -824,9 +940,11 @@
         const videoUploadForm = document.getElementById('videoUploadForm');
         const categoryCreateForm = document.getElementById('categoryCreateForm');
         const newCategoryInput = document.getElementById('newCategoryName');
+        const changePasswordForm = document.getElementById('changePasswordForm');
         
         const videoInventoryList = document.getElementById('videoInventory');
         const categoryInventoryList = document.getElementById('categoryInventory');
+        const usersInventoryList = document.getElementById('usersInventory');
 
         // File Selection visual helpers
         thumbnailFileInput.addEventListener('change', (e) => {
@@ -844,6 +962,129 @@
                 videoLabel.textContent = "Choose Video File (.mp4, .webm)";
             }
         });
+
+        // ================= SECURITY & GATEKEEPER PASSWORDS SYSTEM =================
+
+        async function checkAdminPasswordConfig() {
+            try {
+                const docSnap = await getDoc(adminAuthDocRef);
+                if (docSnap.exists()) {
+                    correctAdminPassword = docSnap.data().password;
+                    showGatekeeperLogin();
+                } else {
+                    showGatekeeperSetup();
+                }
+            } catch (err) {
+                console.error("Error reading platform security config: ", err);
+                alert("Database security initialization failed. Please reload or check your connection.");
+            }
+        }
+
+        function checkSession() {
+            if (sessionStorage.getItem('fanzones_admin_authenticated') === 'true') {
+                document.getElementById('adminGatekeeper').style.display = 'none';
+                runDashboard();
+            } else {
+                document.getElementById('adminGatekeeper').style.display = 'flex';
+                checkAdminPasswordConfig();
+            }
+        }
+
+        function showGatekeeperSetup() {
+            document.getElementById('gatekeeperLoading').style.display = 'none';
+            document.getElementById('gatekeeperSetup').style.display = 'block';
+            document.getElementById('gatekeeperLogin').style.display = 'none';
+        }
+
+        function showGatekeeperLogin() {
+            document.getElementById('gatekeeperLoading').style.display = 'none';
+            document.getElementById('gatekeeperSetup').style.display = 'none';
+            document.getElementById('gatekeeperLogin').style.display = 'block';
+        }
+
+        // First time Admin password setup submission
+        document.getElementById('gatekeeperSetupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pass = document.getElementById('setupAdminPass').value;
+            const confirmPass = document.getElementById('setupAdminPassConfirm').value;
+
+            if (pass !== confirmPass) {
+                alert("Setup passwords do not match!");
+                return;
+            }
+
+            try {
+                await setDoc(adminAuthDocRef, {
+                    password: pass,
+                    createdAt: serverTimestamp()
+                });
+                
+                alert("Admin Security password successfully configured globally!");
+                sessionStorage.setItem('fanzones_admin_authenticated', 'true');
+                document.getElementById('adminGatekeeper').style.display = 'none';
+                runDashboard();
+            } catch (err) {
+                alert("Failed to initialize security key: " + err.message);
+            }
+        });
+
+        // Verification Admin Login submission
+        document.getElementById('gatekeeperLoginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const enteredPass = document.getElementById('loginAdminPass').value;
+            const errorMsg = document.getElementById('loginErrorMessage');
+
+            if (enteredPass === correctAdminPassword) {
+                sessionStorage.setItem('fanzones_admin_authenticated', 'true');
+                document.getElementById('adminGatekeeper').style.display = 'none';
+                runDashboard();
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('loginAdminPass').value = '';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 4000);
+            }
+        });
+
+        // In-Dashboard password update
+        changePasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const currentPass = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const newPassConfirm = document.getElementById('newPasswordConfirm').value;
+
+            if (newPass !== newPassConfirm) {
+                alert("New passwords do not match!");
+                return;
+            }
+
+            try {
+                const docSnap = await getDoc(adminAuthDocRef);
+                if (docSnap.exists()) {
+                    const storedPass = docSnap.data().password;
+                    if (currentPass !== storedPass) {
+                        alert("Incorrect current password validation!");
+                        return;
+                    }
+
+                    await setDoc(adminAuthDocRef, {
+                        password: newPass
+                    });
+
+                    alert("Admin password updated successfully across all mobile and desktop devices!");
+                    changePasswordForm.reset();
+                    correctAdminPassword = newPass; // Update local cache state
+                } else {
+                    alert("Security configurations not initialized correctly.");
+                }
+            } catch (err) {
+                alert("Error updating security password: " + err.message);
+            }
+        });
+
+
+        // ================= PLATFORM DATA DIRECTORIES =================
 
         // 1. Fetch Categories and Render Select dropzone & Categories List
         async function fetchCategories() {
@@ -988,6 +1229,100 @@
             }
         }
 
+        // 3. Registered Users Directory loader
+        async function fetchUsers() {
+            try {
+                // Read Firestore database registrations
+                const querySnapshot = await getDocs(collection(db, "users"));
+                localUsers = [];
+                
+                querySnapshot.forEach((doc) => {
+                    localUsers.push({ id: doc.id, source: 'firestore', ...doc.data() });
+                });
+
+                // Read Fallback localized LocalStorage account registers
+                const localDbUsers = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
+                localDbUsers.forEach(localU => {
+                    const exists = localUsers.some(u => u.phone === localU.phone || u.email === localU.email);
+                    if (!exists) {
+                        localUsers.push({ id: localU.phone, source: 'local', ...localU });
+                    }
+                });
+
+                renderUsersUI();
+                calculateAnalytics();
+            } catch (err) {
+                console.error("Error reading user registrations: ", err);
+                const localDbUsers = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
+                localUsers = localDbUsers.map(u => ({ id: u.phone, source: 'local', ...u }));
+                renderUsersUI();
+                calculateAnalytics();
+            }
+        }
+
+        function renderUsersUI(searchFilter = '') {
+            usersInventoryList.innerHTML = '';
+
+            const filtered = localUsers.filter(u => 
+                (u.name && u.name.toLowerCase().includes(searchFilter.toLowerCase().trim())) ||
+                (u.email && u.email.toLowerCase().includes(searchFilter.toLowerCase().trim())) ||
+                (u.phone && u.phone.toLowerCase().includes(searchFilter.toLowerCase().trim()))
+            );
+
+            if (filtered.length === 0) {
+                usersInventoryList.innerHTML = `<div style="padding:20px; color:var(--text-muted); font-size:13px; text-align:center;">No matching users registered yet.</div>`;
+                return;
+            }
+
+            filtered.forEach(u => {
+                const div = document.createElement('div');
+                div.className = 'inventory-item-rich';
+                div.innerHTML = `
+                    <img class="inventory-thumb" style="width:44px; height:44px; border-radius:50%; object-fit:cover;" src="${u.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}" alt="${u.name}">
+                    <div class="inventory-details">
+                        <span class="inventory-title" style="font-size:14px;">${u.name || 'Anonymous Fanzone User'}</span>
+                        <span class="inventory-meta" style="font-size:11px; line-height:1.4;">
+                            Phone: ${u.phone || 'N/A'}<br>
+                            Email: ${u.email || 'N/A'}<br>
+                            Bio: <span style="color: var(--text-main); font-style: italic;">"${u.bio || 'Proud Fanzones Member'}"</span>
+                        </span>
+                    </div>
+                    <button class="delete-btn" style="align-self: center;">Delete</button>
+                `;
+                
+                div.querySelector('.delete-btn').addEventListener('click', () => deleteUserElement(u));
+                usersInventoryList.appendChild(div);
+            });
+        }
+
+        // Live User Search Handler inside user directories
+        document.getElementById('userSearch').addEventListener('input', (e) => {
+            renderUsersUI(e.target.value);
+        });
+
+        // Delete User accounts handler
+        async function deleteUserElement(user) {
+            if (!confirm(`Are you sure you want to permanently delete user "${user.name}"?`)) return;
+            try {
+                if (user.source === 'firestore') {
+                    await deleteDoc(doc(db, "users", user.id));
+                }
+                
+                // Keep localized database mirrors clean
+                let usersList = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
+                usersList = usersList.filter(u => u.phone !== user.phone && u.email !== user.email);
+                localStorage.setItem('fanzones_users_db', JSON.stringify(usersList));
+
+                alert(`User "${user.name}" has been successfully deleted.`);
+                await fetchUsers();
+            } catch (err) {
+                alert("Failed to delete user profile: " + err.message);
+            }
+        }
+
+
+        // ================= DUAL ASSETS DIRECT RELEASES SYSTEM =================
+
         // 3. Dual Asset Cloudinary uploading & Firestore publishing
         videoUploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1098,9 +1433,6 @@
             // Calculate sum of views across video database
             const sumOfViews = localVideos.reduce((acc, current) => acc + (parseInt(current.views) || 0), 0);
             
-            // Extract local storage user registration totals
-            const localUsers = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
-            
             document.getElementById('statTotalVideos').textContent = localVideos.length;
             document.getElementById('statTotalCategories').textContent = localCategories.length;
             document.getElementById('statTotalViews').textContent = formatViews(sumOfViews);
@@ -1118,13 +1450,17 @@
             return num;
         }
 
-        // Initial system starts
+        // Initial system starts after validating password sessions
         async function runDashboard() {
             await fetchCategories();
             await fetchVideos();
+            await fetchUsers();
         }
 
-        runDashboard();
+        // Window load initial security gates trigger check
+        window.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+        });
     </script>
 </body>
 </html>
