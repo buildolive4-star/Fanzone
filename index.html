@@ -605,7 +605,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* HIGHLY ADVANCED CONTROLS SYSTEM */
@@ -1045,11 +1045,15 @@
                 <button type="submit" class="profile-save-btn" style="margin-top: 22px;">Access Account</button>
             </form>
 
-            <!-- Sign Up Form Interface -->
+            <!-- Sign Up Form Interface with Email Field -->
             <form id="registerForm" class="auth-form">
                 <div class="profile-form-group">
                     <label for="regName">Display Name</label>
                     <input type="text" id="regName" placeholder="Enter full name" required>
+                </div>
+                <div class="profile-form-group" style="margin-top: 10px;">
+                    <label for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" placeholder="Enter email address" required>
                 </div>
                 <div class="profile-form-group" style="margin-top: 10px;">
                     <label for="regPhone">Phone Number</label>
@@ -1173,6 +1177,20 @@
                                 <option value="1.5">1.5x</option>
                                 <option value="2">2.0x</option>
                             </select>
+
+                            <!-- Zoom Out Button (-) -->
+                            <button class="control-btn" id="zoomOutBtn" title="Zoom Out">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path d="M5 12h14" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+
+                            <!-- Zoom In Button (+) -->
+                            <button class="control-btn" id="zoomInBtn" title="Zoom In">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
 
                             <!-- Rotate Button -->
                             <button class="control-btn" id="rotateBtn" title="Rotate Video">
@@ -1323,6 +1341,8 @@
         const currentTimeText = document.getElementById('currentTime');
         const totalDurationText = document.getElementById('totalDuration');
         const speedSelect = document.getElementById('speedSelect');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
         const rotateBtn = document.getElementById('rotateBtn');
         const pipBtn = document.getElementById('pipBtn');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -1336,8 +1356,12 @@
         const profileBioInput = document.getElementById('profileBio');
         const headerAvatar = document.getElementById('headerAvatar');
 
-        // Rotation Tracker
+        // Rotation & Zoom State configuration
         let currentRotation = 0;
+        let currentZoom = 1.0;
+        const maxZoom = 3.0;
+        const minZoom = 0.5;
+        const zoomStep = 0.25;
 
         // AUTH CONTROL LOGIC GLOBALS
         window.switchAuthTab = function(type) {
@@ -1370,22 +1394,27 @@
             }
         }
 
-        // SignUp submit handler
+        // SignUp submit handler with Email address storage support
         document.getElementById('registerForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
             const pass = document.getElementById('regPass').value;
 
             let usersList = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
             
-            // Check if phone already registered
+            // Check if phone or email already registered
             if (usersList.some(user => user.phone === phone)) {
                 alert("This phone number is already registered. Please log in.");
                 return;
             }
+            if (usersList.some(user => user.email === email)) {
+                alert("This email address is already registered. Please log in.");
+                return;
+            }
 
-            const newUser = { name, phone, pass, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80", bio: "Proud Fanzones Member" };
+            const newUser = { name, email, phone, pass, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80", bio: "Proud Fanzones Member" };
             usersList.push(newUser);
             localStorage.setItem('fanzones_users_db', JSON.stringify(usersList));
             localStorage.setItem('fanzones_logged_user', JSON.stringify(newUser));
@@ -1831,6 +1860,15 @@
             }, 250);
         }
 
+        // Integrated transform renderer to combine both Zooming and Rotating states
+        function updateVideoTransform() {
+            let rotationScale = 1.0;
+            if (currentRotation === 90 || currentRotation === 270) {
+                rotationScale = 0.5625; // standard scaling to contain wide ratios inside a strict 16:9 box
+            }
+            mainVideoPlayer.style.transform = `rotate(${currentRotation}deg) scale(${rotationScale * currentZoom})`;
+        }
+
         function initCustomPlayer() {
             // Track pointer movement inside the video viewport wrapper
             videoWrapper.addEventListener('mousemove', showPlayerControls);
@@ -1950,17 +1988,28 @@
                 mainVideoPlayer.playbackRate = parseFloat(speedSelect.value);
             });
 
+            // ZOOM-IN Video logic
+            zoomInBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (currentZoom < maxZoom) {
+                    currentZoom += zoomStep;
+                    updateVideoTransform();
+                }
+            });
+
+            // ZOOM-OUT Video logic
+            zoomOutBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (currentZoom > minZoom) {
+                    currentZoom -= zoomStep;
+                    updateVideoTransform();
+                }
+            });
+
             // Rotate video canvas interaction rule
             rotateBtn.addEventListener('click', () => {
                 currentRotation = (currentRotation + 90) % 360;
-                
-                // When rotated 90 or 270 degrees, apply uniform scale down 
-                // to maintain canvas safety and stop aspect overflow
-                if (currentRotation === 90 || currentRotation === 270) {
-                    mainVideoPlayer.style.transform = `rotate(${currentRotation}deg) scale(0.5625)`;
-                } else {
-                    mainVideoPlayer.style.transform = `rotate(${currentRotation}deg) scale(1)`;
-                }
+                updateVideoTransform();
             });
 
             // PiP
@@ -2016,9 +2065,10 @@
             bufferBar.style.width = "0%";
             currentProgressBar.style.width = "0%";
             
-            // Reset player canvas transforms
+            // Reset player scale & rotation transforms
             currentRotation = 0;
-            mainVideoPlayer.style.transform = "rotate(0deg) scale(1)";
+            currentZoom = 1.0;
+            updateVideoTransform();
 
             mainVideoPlayer.load();
             mainVideoPlayer.play();
