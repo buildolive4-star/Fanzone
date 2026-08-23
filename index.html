@@ -27,6 +27,10 @@
             margin: 0;
             padding: 0;
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         body {
@@ -35,6 +39,71 @@
             padding-bottom: 70px; /* Highly optimized safe space for mobile bottom nav */
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            transition: filter 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Blackout protection for Screen Recording / Focus loss */
+        .blackout-active {
+            filter: blur(60px) !important;
+            background-color: #000000 !important;
+        }
+
+        /* Fully Secure Login/Signup Overlay */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #030303;
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .auth-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            padding: 28px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.85), var(--inner-glow);
+            text-align: center;
+            animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            color: var(--text-muted);
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            font-size: 13.5px;
+            transition: all 0.2s;
+        }
+
+        .auth-tab.active {
+            color: #fff;
+            border-bottom: 2px solid #ff007f;
+        }
+
+        .auth-form {
+            display: none;
+            text-align: left;
+        }
+
+        .auth-form.active {
+            display: block;
         }
 
         /* Highly Compact Top Header */
@@ -536,6 +605,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* HIGHLY ADVANCED CONTROLS SYSTEM */
@@ -951,6 +1021,49 @@
 </head>
 <body>
 
+    <!-- Premium Login and SignUp Auth Modal -->
+    <div id="authScreen" class="auth-overlay">
+        <div class="auth-container">
+            <div class="logo" style="font-size: 32px; display: inline-block; margin-bottom: 15px;">Fanzones</div>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 20px;">Premium Video Access Gateway</p>
+            
+            <div class="auth-tabs">
+                <div id="tabLogin" class="auth-tab active" onclick="switchAuthTab('login')">LOG IN</div>
+                <div id="tabRegister" class="auth-tab" onclick="switchAuthTab('register')">SIGN UP</div>
+            </div>
+
+            <!-- Log In Form Interface -->
+            <form id="loginForm" class="auth-form active">
+                <div class="profile-form-group">
+                    <label for="loginPhone">Phone Number</label>
+                    <input type="tel" id="loginPhone" placeholder="Enter phone number" required>
+                </div>
+                <div class="profile-form-group" style="margin-top: 10px;">
+                    <label for="loginPass">Password</label>
+                    <input type="password" id="loginPass" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="profile-save-btn" style="margin-top: 22px;">Access Account</button>
+            </form>
+
+            <!-- Sign Up Form Interface -->
+            <form id="registerForm" class="auth-form">
+                <div class="profile-form-group">
+                    <label for="regName">Display Name</label>
+                    <input type="text" id="regName" placeholder="Enter full name" required>
+                </div>
+                <div class="profile-form-group" style="margin-top: 10px;">
+                    <label for="regPhone">Phone Number</label>
+                    <input type="tel" id="regPhone" placeholder="Enter mobile number" required>
+                </div>
+                <div class="profile-form-group" style="margin-top: 10px;">
+                    <label for="regPass">Secure Password</label>
+                    <input type="password" id="regPass" placeholder="Create new password" required>
+                </div>
+                <button type="submit" class="profile-save-btn" style="margin-top: 22px;">Create Account</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Compact Widescreen Navigation Header -->
     <header>
         <div class="header-container">
@@ -1014,8 +1127,8 @@
             <button class="player-close" onclick="closePlayerModal()">&times;</button>
             
             <div class="video-wrapper" id="videoWrapper">
-                <!-- disabled download option, context menu, right click -->
-                <video id="mainVideoPlayer" controlsList="nodownload" oncontextmenu="return false;"></video>
+                <!-- disabled download option, context menu, right click, dragging -->
+                <video id="mainVideoPlayer" controlsList="nodownload" oncontextmenu="return false;" ondragstart="return false;" disablePictureInPicture></video>
                 
                 <!-- Double-tap seeking splash indicators -->
                 <div class="seek-splash left" id="seekSplashLeft">-10s</div>
@@ -1060,6 +1173,13 @@
                                 <option value="1.5">1.5x</option>
                                 <option value="2">2.0x</option>
                             </select>
+
+                            <!-- Rotate Button -->
+                            <button class="control-btn" id="rotateBtn" title="Rotate Video">
+                                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M15.55 5.55L11 1v4.07C7.38 5.61 4.78 8.44 4.14 12H6.1c.55-2.43 2.5-4.32 4.9-4.87V11l4.55-4.55zM19.86 12h-1.96c-.55 2.43-2.5 4.32-4.9 4.87V13l-4.55 4.55 4.55 4.55v-4.07c3.62-.54 6.22-3.37 6.86-6.93z"/>
+                                </svg>
+                            </button>
 
                             <button class="control-btn" id="pipBtn" title="Picture-in-Picture">
                                 <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"/></svg>
@@ -1111,6 +1231,7 @@
                     <textarea id="profileBio" rows="3" placeholder="Enter short bio..."></textarea>
                 </div>
                 <button type="submit" class="profile-save-btn">Save Changes</button>
+                <button type="button" class="profile-save-btn" style="background: #27272a; box-shadow: none; margin-top: 8px; border: 1px solid var(--border-color);" onclick="logoutUser()">Log Out</button>
             </form>
         </div>
     </div>
@@ -1202,6 +1323,7 @@
         const currentTimeText = document.getElementById('currentTime');
         const totalDurationText = document.getElementById('totalDuration');
         const speedSelect = document.getElementById('speedSelect');
+        const rotateBtn = document.getElementById('rotateBtn');
         const pipBtn = document.getElementById('pipBtn');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
         const seekSplashLeft = document.getElementById('seekSplashLeft');
@@ -1213,6 +1335,152 @@
         const profileNameInput = document.getElementById('profileName');
         const profileBioInput = document.getElementById('profileBio');
         const headerAvatar = document.getElementById('headerAvatar');
+
+        // Rotation Tracker
+        let currentRotation = 0;
+
+        // AUTH CONTROL LOGIC GLOBALS
+        window.switchAuthTab = function(type) {
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            if (type === 'login') {
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            } else {
+                tabRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+        };
+
+        // Complete user session handling
+        function evaluateUserSession() {
+            const authenticatedUser = localStorage.getItem('fanzones_logged_user');
+            const authScreen = document.getElementById('authScreen');
+            if (authenticatedUser) {
+                authScreen.style.display = 'none';
+            } else {
+                authScreen.style.display = 'flex';
+            }
+        }
+
+        // SignUp submit handler
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const pass = document.getElementById('regPass').value;
+
+            let usersList = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
+            
+            // Check if phone already registered
+            if (usersList.some(user => user.phone === phone)) {
+                alert("This phone number is already registered. Please log in.");
+                return;
+            }
+
+            const newUser = { name, phone, pass, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80", bio: "Proud Fanzones Member" };
+            usersList.push(newUser);
+            localStorage.setItem('fanzones_users_db', JSON.stringify(usersList));
+            localStorage.setItem('fanzones_logged_user', JSON.stringify(newUser));
+
+            // Populate current app profile details
+            localStorage.setItem('fanzones_profile', JSON.stringify({
+                name: newUser.name,
+                bio: newUser.bio,
+                avatar: newUser.avatar
+            }));
+
+            alert("Account registered successfully!");
+            evaluateUserSession();
+            loadUserProfile();
+        });
+
+        // Login submit handler
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('loginPhone').value.trim();
+            const pass = document.getElementById('loginPass').value;
+
+            let usersList = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
+            const matchedUser = usersList.find(user => user.phone === phone && user.pass === pass);
+
+            if (matchedUser) {
+                localStorage.setItem('fanzones_logged_user', JSON.stringify(matchedUser));
+                
+                // Sync session details to active layout profile context
+                localStorage.setItem('fanzones_profile', JSON.stringify({
+                    name: matchedUser.name,
+                    bio: matchedUser.bio || "Proud Fanzones Member",
+                    avatar: matchedUser.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
+                }));
+
+                evaluateUserSession();
+                loadUserProfile();
+            } else {
+                alert("Incorrect mobile number or password credentials!");
+            }
+        });
+
+        window.logoutUser = function() {
+            localStorage.removeItem('fanzones_logged_user');
+            evaluateUserSession();
+            closeProfileModal();
+        };
+
+        // ANTI-SCREEN RECORDING & SHIELD SYSTEM
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Keyboard safety hotkeys block rules
+        window.addEventListener('keydown', (e) => {
+            if (
+                e.key === 'PrintScreen' || 
+                e.keyCode === 44 ||
+                e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || 
+                (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S' || e.key === 'p' || e.key === 'P'))
+            ) {
+                e.preventDefault();
+                alert("Protected Platform Content. Capture and downloads are prohibited!");
+                return false;
+            }
+        });
+
+        // Trigger heavy black blur overlay when focus shifts or screen capture triggers
+        window.addEventListener('blur', () => {
+            document.body.classList.add('blackout-active');
+            if (mainVideoPlayer) mainVideoPlayer.pause();
+        });
+
+        window.addEventListener('focus', () => {
+            document.body.classList.remove('blackout-active');
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                document.body.classList.add('blackout-active');
+                if (mainVideoPlayer) mainVideoPlayer.pause();
+            } else {
+                document.body.classList.remove('blackout-active');
+            }
+        });
+
+        // Clipboard flushing defense on printscreen up-clicks
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                navigator.clipboard.writeText('');
+                document.body.classList.add('blackout-active');
+                setTimeout(() => {
+                    document.body.classList.remove('blackout-active');
+                }, 1200);
+            }
+        });
 
         // 1. Load Profile Settings from LocalStorage
         function loadUserProfile() {
@@ -1251,6 +1519,24 @@
 
             localStorage.setItem('fanzones_profile', JSON.stringify(payload));
             headerAvatar.src = avatarUrl;
+            
+            // Sync current stored local logged-in credentials as well
+            let loggedInSession = JSON.parse(localStorage.getItem('fanzones_logged_user'));
+            if(loggedInSession) {
+                loggedInSession.name = payload.name;
+                loggedInSession.avatar = payload.avatar;
+                loggedInSession.bio = payload.bio;
+                localStorage.setItem('fanzones_logged_user', JSON.stringify(loggedInSession));
+
+                // Also update stored db list
+                let usersList = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
+                let idx = usersList.findIndex(u => u.phone === loggedInSession.phone);
+                if (idx !== -1) {
+                    usersList[idx] = loggedInSession;
+                    localStorage.setItem('fanzones_users_db', JSON.stringify(usersList));
+                }
+            }
+
             closeProfileModal();
         });
 
@@ -1473,7 +1759,7 @@
                         <div class="bookmark-icon-btn ${isSaved ? 'saved' : ''}" data-id="${video.id}" title="${isSaved ? 'Remove from Saved' : 'Save Video'}">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.5"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         </div>
-                        <img src="${video.thumbnailUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=640&q=80'}" alt="${video.title}" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=640&q=80'">
+                        <img src="${video.thumbnailUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=640&q=80'}" alt="${video.title}" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=640&q=80'" ondragstart="return false;">
                         <span class="duration-badge">${video.duration || '00:00'}</span>
                     </div>
                     <div class="video-details">
@@ -1664,6 +1950,19 @@
                 mainVideoPlayer.playbackRate = parseFloat(speedSelect.value);
             });
 
+            // Rotate video canvas interaction rule
+            rotateBtn.addEventListener('click', () => {
+                currentRotation = (currentRotation + 90) % 360;
+                
+                // When rotated 90 or 270 degrees, apply uniform scale down 
+                // to maintain canvas safety and stop aspect overflow
+                if (currentRotation === 90 || currentRotation === 270) {
+                    mainVideoPlayer.style.transform = `rotate(${currentRotation}deg) scale(0.5625)`;
+                } else {
+                    mainVideoPlayer.style.transform = `rotate(${currentRotation}deg) scale(1)`;
+                }
+            });
+
             // PiP
             pipBtn.addEventListener('click', async () => {
                 try {
@@ -1717,6 +2016,10 @@
             bufferBar.style.width = "0%";
             currentProgressBar.style.width = "0%";
             
+            // Reset player canvas transforms
+            currentRotation = 0;
+            mainVideoPlayer.style.transform = "rotate(0deg) scale(1)";
+
             mainVideoPlayer.load();
             mainVideoPlayer.play();
 
@@ -1801,6 +2104,7 @@
 
         // Initialization execution hooks
         async function init() {
+            evaluateUserSession();
             loadUserProfile();
             initCustomPlayer();
             await loadCategories();
