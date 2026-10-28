@@ -591,40 +591,18 @@
 </head>
 <body>
 
-    <!-- Global Gatekeeper Password Protection Screen Overlay -->
+    <!-- Simplified Global Gatekeeper Password Protection (Password: 1234) -->
     <div id="adminGatekeeper" class="auth-overlay">
         <div class="auth-container">
             <div class="logo" style="font-size: 34px; display: inline-block; margin-bottom: 12px;">Fanzones<span> Admin</span></div>
             
-            <!-- Loading Database Config State -->
-            <div id="gatekeeperLoading">
-                <p style="color: var(--text-muted); font-size: 14px;">Initializing platform security configuration...</p>
-                <div style="margin-top: 20px; color: #ff007f; font-weight: 700;">Please wait...</div>
-            </div>
-
-            <!-- First-Time Security Setup State -->
-            <div id="gatekeeperSetup" style="display: none; text-align: left;">
-                <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 20px; text-align: center;">First-Time Configuration: Please create a global security password to lock the Admin Panel for all devices.</p>
-                <form id="gatekeeperSetupForm">
-                    <div class="form-group">
-                        <label for="setupAdminPass">Create Admin Password</label>
-                        <input type="password" id="setupAdminPass" placeholder="Enter secure password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="setupAdminPassConfirm">Confirm Admin Password</label>
-                        <input type="password" id="setupAdminPassConfirm" placeholder="Confirm secure password" required>
-                    </div>
-                    <button type="submit" class="submit-btn" style="margin-top: 10px;">Set Password & Initialize</button>
-                </form>
-            </div>
-
             <!-- Unlock Panel Login State -->
-            <div id="gatekeeperLogin" style="display: none; text-align: left;">
-                <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 20px; text-align: center;">Enter the global admin security password to access control options.</p>
+            <div id="gatekeeperLogin" style="text-align: left;">
+                <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 20px; text-align: center;">Enter the admin security password to access control options.</p>
                 <form id="gatekeeperLoginForm">
                     <div class="form-group">
                         <label for="loginAdminPass">Admin Security Password</label>
-                        <input type="password" id="loginAdminPass" placeholder="Enter dashboard password" required>
+                        <input type="password" id="loginAdminPass" placeholder="Enter password (1234)" required>
                     </div>
                     <div id="loginErrorMessage" style="color: var(--danger-color); font-size: 12px; margin-top: -10px; margin-bottom: 15px; font-weight: 600; display: none;">
                         Incorrect password! Access denied.
@@ -663,7 +641,7 @@
                 </div>
                 <div class="stat-info">
                     <span class="stat-val" id="statTotalVideos">0</span>
-                    <span class="stat-lbl">Total Videos</span>
+                    <span class="stat-lbl">Standard Videos</span>
                 </div>
             </div>
 
@@ -680,17 +658,16 @@
                 </div>
             </div>
 
-            <!-- Views Card -->
+            <!-- Premium Episodes Card (Replaced Views Card to track new content) -->
             <div class="stat-card">
                 <div class="stat-icon">
                     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
                 <div class="stat-info">
-                    <span class="stat-val" id="statTotalViews">0</span>
-                    <span class="stat-lbl">Total Views</span>
+                    <span class="stat-val" id="statTotalEpisodes">0</span>
+                    <span class="stat-lbl">Premium Episodes</span>
                 </div>
             </div>
 
@@ -712,9 +689,84 @@
             
             <!-- Left Side: Video Upload Control Panel & Inventory list -->
             <div class="left-column">
+                
+                <!-- NEW: Publish Premium Episode Card -->
+                <div class="admin-card" style="border-color: rgba(255, 0, 127, 0.4); box-shadow: 0 10px 30px rgba(255, 0, 127, 0.1);">
+                    <div class="card-title">
+                        <div class="card-title-left">Publish Premium Episode</div>
+                        <span class="badge" style="font-size: 9px;">Subscription Only</span>
+                    </div>
+                    <form id="episodeUploadForm">
+                        
+                        <div class="form-group">
+                            <label for="epTitle">Episode Title</label>
+                            <input type="text" id="epTitle" placeholder="e.g. Episode 1: The Beginning" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="epDuration">Episode Duration</label>
+                            <input type="text" id="epDuration" placeholder="e.g. 45:30" required>
+                        </div>
+
+                        <div class="upload-row">
+                            <div class="form-group">
+                                <label for="epThumbUrl">Direct Thumbnail Link (Optional)</label>
+                                <input type="url" id="epThumbUrl" placeholder="Paste direct image link here...">
+                            </div>
+                            <div class="form-group">
+                                <label for="epVideoUrl">Direct Video Link (Optional)</label>
+                                <input type="url" id="epVideoUrl" placeholder="Paste direct video .mp4 link here...">
+                            </div>
+                        </div>
+
+                        <!-- Dropzone Files Selection (Fallback if Links are empty) -->
+                        <div class="upload-row">
+                            <div class="form-group">
+                                <label>Or Upload Thumbnail Image</label>
+                                <div class="file-zone" onclick="document.getElementById('epThumbFile').click()">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    <span id="epThumbLabel">Choose Image File</span>
+                                </div>
+                                <input type="file" id="epThumbFile" class="file-input" accept="image/png, image/jpeg, image/webp">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Or Upload Video File</label>
+                                <div class="file-zone" onclick="document.getElementById('epVideoFile').click()">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    <span id="epVideoLabel">Choose Video File</span>
+                                </div>
+                                <input type="file" id="epVideoFile" class="file-input" accept="video/mp4, video/webm">
+                            </div>
+                        </div>
+
+                        <!-- Upload Status bars for Episode -->
+                        <div class="upload-status" id="epUploadStatusSection">
+                            <div class="status-title">Episode Upload Pipelines</div>
+                            <div class="progress-block">
+                                <div class="progress-label">
+                                    <span>Thumbnail Upload</span>
+                                    <span id="epThumbProgressPercent">0%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" id="epThumbProgressBar"></div></div>
+                            </div>
+                            <div class="progress-block">
+                                <div class="progress-label">
+                                    <span>Video File Upload</span>
+                                    <span id="epVideoProgressPercent">0%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" id="epVideoProgressBar"></div></div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="publishEpBtn">Publish Premium Episode</button>
+                    </form>
+                </div>
+
+                <!-- Existing Standard Video Publish Card -->
                 <div class="admin-card">
                     <div class="card-title">
-                        <div class="card-title-left">Publish New Video</div>
+                        <div class="card-title-left">Publish Free Standard Video</div>
                     </div>
                     <form id="videoUploadForm">
                         
@@ -740,7 +792,6 @@
 
                         <!-- Dropzone Files Selection -->
                         <div class="upload-row">
-                            <!-- Custom Thumbnail Picker -->
                             <div class="form-group">
                                 <label>Custom Thumbnail File</label>
                                 <div class="file-zone" onclick="document.getElementById('thumbnailFile').click()">
@@ -752,7 +803,6 @@
                                 <input type="file" id="thumbnailFile" class="file-input" accept="image/png, image/jpeg, image/webp" required>
                             </div>
 
-                            <!-- Custom Video Picker -->
                             <div class="form-group">
                                 <label>Video File Asset</label>
                                 <div class="file-zone" onclick="document.getElementById('videoFile').click()">
@@ -765,11 +815,9 @@
                             </div>
                         </div>
 
-                        <!-- Dual Asset Upload Status Progress bars -->
                         <div class="upload-status" id="uploadStatusSection">
                             <div class="status-title">Asset Upload Pipelines</div>
                             
-                            <!-- Thumbnail Pipe -->
                             <div class="progress-block">
                                 <div class="progress-label">
                                     <span>Thumbnail Image Upload</span>
@@ -780,7 +828,6 @@
                                 </div>
                             </div>
 
-                            <!-- Video Pipe -->
                             <div class="progress-block">
                                 <div class="progress-label">
                                     <span>Video Streaming File Upload</span>
@@ -792,18 +839,27 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="submit-btn" id="publishBtn">Publish to Gallery</button>
+                        <button type="submit" class="submit-btn" id="publishBtn">Publish Standard Video</button>
                     </form>
+                </div>
+
+                <!-- NEW Episode Inventory Management List -->
+                <div class="admin-card">
+                    <div class="card-title">
+                        <div class="card-title-left">Premium Episodes Inventory</div>
+                    </div>
+                    <div class="inventory-list" id="episodeInventory" style="max-height: 300px;">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
                 </div>
 
                 <!-- Video Inventory Management List -->
                 <div class="admin-card">
                     <div class="card-title">
-                        <div class="card-title-left">Uploaded Video Inventory</div>
+                        <div class="card-title-left">Standard Videos Inventory</div>
                     </div>
-                    <!-- Live Search inside inventory -->
                     <div class="form-group" style="margin-bottom: 15px;">
-                        <input type="text" id="inventorySearch" placeholder="Search catalog by video title...">
+                        <input type="text" id="inventorySearch" placeholder="Search standard video catalog...">
                     </div>
                     <div class="inventory-list large-inventory" id="videoInventory">
                         <!-- Loaded dynamically via JS -->
@@ -814,19 +870,35 @@
             <!-- Right Side: Category, Users, & Password Control Area -->
             <div class="right-column">
                 
+                <!-- NEW Content Top Thumbnail Update Card -->
+                <div class="admin-card">
+                    <div class="card-title">
+                        <div class="card-title-left">Content Section Cover Image</div>
+                    </div>
+                    <form id="updateCoverForm">
+                        <div class="form-group">
+                            <label>Update Series Cover Banner Link</label>
+                            <input type="url" id="coverImageLink" placeholder="Paste direct image link for top banner" required>
+                        </div>
+                        <button type="submit" class="submit-btn" id="updateCoverBtn">Save Cover Image</button>
+                        
+                        <div style="margin-top: 15px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color);">
+                            <img id="currentCoverPreview" src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&w=1200&q=80" style="width: 100%; height: auto; display: block;" alt="Cover Preview">
+                        </div>
+                    </form>
+                </div>
+
                 <!-- Category Management card -->
                 <div class="admin-card">
                     <div class="card-title">
                         <div class="card-title-left">Manage Custom Categories</div>
                     </div>
                     
-                    <!-- Create New Category -->
                     <form id="categoryCreateForm" class="category-add-form">
                         <input type="text" id="newCategoryName" placeholder="New Category Name (e.g. Comedy)" required>
                         <button type="submit" class="inline-btn">Create</button>
                     </form>
 
-                    <!-- Category Inventory -->
                     <div class="inventory-list" id="categoryInventory">
                         <!-- Loaded dynamically via JS -->
                     </div>
@@ -837,36 +909,12 @@
                     <div class="card-title">
                         <div class="card-title-left">Registered Users Database</div>
                     </div>
-                    <!-- Live Search Users -->
                     <div class="form-group" style="margin-bottom: 15px;">
                         <input type="text" id="userSearch" placeholder="Search registered users by name, email or phone...">
                     </div>
-                    <!-- Users Inventory -->
                     <div class="inventory-list" id="usersInventory" style="max-height: 350px;">
                         <!-- Loaded dynamically via JS -->
                     </div>
-                </div>
-
-                <!-- Admin Security Settings: Global Password Change Card -->
-                <div class="admin-card">
-                    <div class="card-title">
-                        <div class="card-title-left">Admin Security Settings</div>
-                    </div>
-                    <form id="changePasswordForm">
-                        <div class="form-group">
-                            <label for="currentPassword">Current Admin Password</label>
-                            <input type="password" id="currentPassword" placeholder="Enter current dashboard password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newPassword">New Admin Password</label>
-                            <input type="password" id="newPassword" placeholder="Enter new secure password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newPasswordConfirm">Confirm New Password</label>
-                            <input type="password" id="newPasswordConfirm" placeholder="Confirm new password" required>
-                        </div>
-                        <button type="submit" class="submit-btn" id="updatePasswordBtn">Update Password</button>
-                    </form>
                 </div>
             </div>
 
@@ -914,22 +962,21 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Security Firestore Document Path
-        const adminAuthDocRef = doc(db, "admin_settings", "auth");
-        let correctAdminPassword = "";
-
         // Core local array states
         let localCategories = [];
         let localVideos = [];
+        let localEpisodes = [];
         let localUsers = [];
 
-        // DOM elements selections
+        // Simple Fixed Password Configuration Rule requested by user
+        const adminFixedPassword = "1234";
+
+        // DOM elements selections for standard video
         const videoCategorySelect = document.getElementById('videoCategory');
         const thumbnailFileInput = document.getElementById('thumbnailFile');
         const thumbnailLabel = document.getElementById('thumbnailLabel');
         const videoFileInput = document.getElementById('videoFile');
         const videoLabel = document.getElementById('videoLabel');
-
         const uploadStatusSection = document.getElementById('uploadStatusSection');
         const thumbProgressBar = document.getElementById('thumbProgressBar');
         const thumbProgressPercent = document.getElementById('thumbProgressPercent');
@@ -937,10 +984,25 @@
         const videoProgressPercent = document.getElementById('videoProgressPercent');
         const publishBtn = document.getElementById('publishBtn');
 
+        // DOM elements selections for Episodes
+        const episodeUploadForm = document.getElementById('episodeUploadForm');
+        const epThumbFileInput = document.getElementById('epThumbFile');
+        const epThumbLabel = document.getElementById('epThumbLabel');
+        const epVideoFileInput = document.getElementById('epVideoFile');
+        const epVideoLabel = document.getElementById('epVideoLabel');
+        const epUploadStatusSection = document.getElementById('epUploadStatusSection');
+        const epThumbProgressBar = document.getElementById('epThumbProgressBar');
+        const epThumbProgressPercent = document.getElementById('epThumbProgressPercent');
+        const epVideoProgressBar = document.getElementById('epVideoProgressBar');
+        const epVideoProgressPercent = document.getElementById('epVideoProgressPercent');
+        const publishEpBtn = document.getElementById('publishEpBtn');
+        const episodeInventoryList = document.getElementById('episodeInventory');
+
+        // Other Forms
         const videoUploadForm = document.getElementById('videoUploadForm');
         const categoryCreateForm = document.getElementById('categoryCreateForm');
         const newCategoryInput = document.getElementById('newCategoryName');
-        const changePasswordForm = document.getElementById('changePasswordForm');
+        const updateCoverForm = document.getElementById('updateCoverForm');
         
         const videoInventoryList = document.getElementById('videoInventory');
         const categoryInventoryList = document.getElementById('categoryInventory');
@@ -948,37 +1010,27 @@
 
         // File Selection visual helpers
         thumbnailFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                thumbnailLabel.textContent = `Selected: ${e.target.files[0].name}`;
-            } else {
-                thumbnailLabel.textContent = "Choose Image File (.jpg, .png, .webp)";
-            }
+            if (e.target.files.length > 0) thumbnailLabel.textContent = `Selected: ${e.target.files[0].name}`;
+            else thumbnailLabel.textContent = "Choose Image File (.jpg, .png, .webp)";
         });
 
         videoFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                videoLabel.textContent = `Selected: ${e.target.files[0].name}`;
-            } else {
-                videoLabel.textContent = "Choose Video File (.mp4, .webm)";
-            }
+            if (e.target.files.length > 0) videoLabel.textContent = `Selected: ${e.target.files[0].name}`;
+            else videoLabel.textContent = "Choose Video File (.mp4, .webm)";
         });
 
-        // ================= SECURITY & GATEKEEPER PASSWORDS SYSTEM =================
+        epThumbFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) epThumbLabel.textContent = `Selected: ${e.target.files[0].name}`;
+            else epThumbLabel.textContent = "Choose Image File";
+        });
 
-        async function checkAdminPasswordConfig() {
-            try {
-                const docSnap = await getDoc(adminAuthDocRef);
-                if (docSnap.exists()) {
-                    correctAdminPassword = docSnap.data().password;
-                    showGatekeeperLogin();
-                } else {
-                    showGatekeeperSetup();
-                }
-            } catch (err) {
-                console.error("Error reading platform security config: ", err);
-                alert("Database security initialization failed. Please reload or check your connection.");
-            }
-        }
+        epVideoFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) epVideoLabel.textContent = `Selected: ${e.target.files[0].name}`;
+            else epVideoLabel.textContent = "Choose Video File";
+        });
+
+
+        // ================= SIMPLE SECURITY SYSTEM ("keval password dale 1234") =================
 
         function checkSession() {
             if (sessionStorage.getItem('fanzones_admin_authenticated') === 'true') {
@@ -986,55 +1038,16 @@
                 runDashboard();
             } else {
                 document.getElementById('adminGatekeeper').style.display = 'flex';
-                checkAdminPasswordConfig();
             }
         }
 
-        function showGatekeeperSetup() {
-            document.getElementById('gatekeeperLoading').style.display = 'none';
-            document.getElementById('gatekeeperSetup').style.display = 'block';
-            document.getElementById('gatekeeperLogin').style.display = 'none';
-        }
-
-        function showGatekeeperLogin() {
-            document.getElementById('gatekeeperLoading').style.display = 'none';
-            document.getElementById('gatekeeperSetup').style.display = 'none';
-            document.getElementById('gatekeeperLogin').style.display = 'block';
-        }
-
-        // First time Admin password setup submission
-        document.getElementById('gatekeeperSetupForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const pass = document.getElementById('setupAdminPass').value;
-            const confirmPass = document.getElementById('setupAdminPassConfirm').value;
-
-            if (pass !== confirmPass) {
-                alert("Setup passwords do not match!");
-                return;
-            }
-
-            try {
-                await setDoc(adminAuthDocRef, {
-                    password: pass,
-                    createdAt: serverTimestamp()
-                });
-                
-                alert("Admin Security password successfully configured globally!");
-                sessionStorage.setItem('fanzones_admin_authenticated', 'true');
-                document.getElementById('adminGatekeeper').style.display = 'none';
-                runDashboard();
-            } catch (err) {
-                alert("Failed to initialize security key: " + err.message);
-            }
-        });
-
-        // Verification Admin Login submission
+        // Verification Admin Login submission (Fixed to 1234)
         document.getElementById('gatekeeperLoginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const enteredPass = document.getElementById('loginAdminPass').value;
             const errorMsg = document.getElementById('loginErrorMessage');
 
-            if (enteredPass === correctAdminPassword) {
+            if (enteredPass === adminFixedPassword) {
                 sessionStorage.setItem('fanzones_admin_authenticated', 'true');
                 document.getElementById('adminGatekeeper').style.display = 'none';
                 runDashboard();
@@ -1047,65 +1060,23 @@
             }
         });
 
-        // In-Dashboard password update
-        changePasswordForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const currentPass = document.getElementById('currentPassword').value;
-            const newPass = document.getElementById('newPassword').value;
-            const newPassConfirm = document.getElementById('newPasswordConfirm').value;
-
-            if (newPass !== newPassConfirm) {
-                alert("New passwords do not match!");
-                return;
-            }
-
-            try {
-                const docSnap = await getDoc(adminAuthDocRef);
-                if (docSnap.exists()) {
-                    const storedPass = docSnap.data().password;
-                    if (currentPass !== storedPass) {
-                        alert("Incorrect current password validation!");
-                        return;
-                    }
-
-                    await setDoc(adminAuthDocRef, {
-                        password: newPass
-                    });
-
-                    alert("Admin password updated successfully across all mobile and desktop devices!");
-                    changePasswordForm.reset();
-                    correctAdminPassword = newPass; // Update local cache state
-                } else {
-                    alert("Security configurations not initialized correctly.");
-                }
-            } catch (err) {
-                alert("Error updating security password: " + err.message);
-            }
-        });
-
 
         // ================= PLATFORM DATA DIRECTORIES =================
 
-        // 1. Fetch Categories and Render Select dropzone & Categories List
+        // 1. Fetch Categories
         async function fetchCategories() {
             try {
                 const q = query(collection(db, "categories"), orderBy("createdAt", "asc"));
                 const querySnapshot = await getDocs(q);
                 localCategories = [];
-                
-                querySnapshot.forEach((doc) => {
-                    localCategories.push({ id: doc.id, ...doc.data() });
-                });
-
+                querySnapshot.forEach((doc) => localCategories.push({ id: doc.id, ...doc.data() }));
                 renderCategoryUI();
-                calculateAnalytics();
             } catch (err) {
                 console.error("Error reading categories: ", err);
             }
         }
 
         function renderCategoryUI() {
-            // Populate Create video upload Category select drop-down list
             videoCategorySelect.innerHTML = `<option value="" disabled selected>Choose a category...</option>`;
             localCategories.forEach(cat => {
                 const option = document.createElement('option');
@@ -1114,7 +1085,6 @@
                 videoCategorySelect.appendChild(option);
             });
 
-            // Populate Management Inventory List UI
             categoryInventoryList.innerHTML = '';
             if (localCategories.length === 0) {
                 categoryInventoryList.innerHTML = `<div style="padding:15px; color:var(--text-muted); font-size:13px; text-align:center;">No custom categories created yet.</div>`;
@@ -1131,23 +1101,17 @@
                     </div>
                     <button class="delete-btn" data-id="${cat.id}">Delete</button>
                 `;
-                
                 div.querySelector('.delete-btn').addEventListener('click', () => deleteCategoryElement(cat.id));
                 categoryInventoryList.appendChild(div);
             });
         }
 
-        // Add Category handler
         categoryCreateForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = newCategoryInput.value.trim();
             if (!name) return;
-
             try {
-                await addDoc(collection(db, "categories"), {
-                    name: name,
-                    createdAt: serverTimestamp()
-                });
+                await addDoc(collection(db, "categories"), { name: name, createdAt: serverTimestamp() });
                 newCategoryInput.value = '';
                 await fetchCategories();
             } catch (err) {
@@ -1155,7 +1119,6 @@
             }
         });
 
-        // Delete Category handler
         async function deleteCategoryElement(id) {
             if (!confirm("Are you sure you want to delete this category?")) return;
             try {
@@ -1172,11 +1135,7 @@
                 const q = query(collection(db, "videos"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
                 localVideos = [];
-                
-                querySnapshot.forEach((doc) => {
-                    localVideos.push({ id: doc.id, ...doc.data() });
-                });
-
+                querySnapshot.forEach((doc) => localVideos.push({ id: doc.id, ...doc.data() }));
                 renderVideoInventoryUI();
                 calculateAnalytics();
             } catch (err) {
@@ -1186,13 +1145,10 @@
 
         function renderVideoInventoryUI(searchFilter = '') {
             videoInventoryList.innerHTML = '';
-            
-            const filtered = localVideos.filter(v => 
-                v.title.toLowerCase().includes(searchFilter.toLowerCase().trim())
-            );
+            const filtered = localVideos.filter(v => v.title.toLowerCase().includes(searchFilter.toLowerCase().trim()));
 
             if (filtered.length === 0) {
-                videoInventoryList.innerHTML = `<div style="padding:20px; color:var(--text-muted); font-size:13px; text-align:center;">No matching videos found in catalog.</div>`;
+                videoInventoryList.innerHTML = `<div style="padding:20px; color:var(--text-muted); font-size:13px; text-align:center;">No standard videos found.</div>`;
                 return;
             }
 
@@ -1203,24 +1159,21 @@
                     <img class="inventory-thumb" src="${v.thumbnailUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=640&q=80'}" alt="${v.title}">
                     <div class="inventory-details">
                         <span class="inventory-title" title="${v.title}">${v.title}</span>
-                        <span class="inventory-meta">Category: ${v.category} • Duration: ${v.duration} • Views: ${formatViews(v.views || 0)}</span>
+                        <span class="inventory-meta">Category: ${v.category} • Duration: ${v.duration}</span>
                     </div>
                     <button class="delete-btn" data-id="${v.id}">Delete</button>
                 `;
-                
                 div.querySelector('.delete-btn').addEventListener('click', () => deleteVideoElement(v.id));
                 videoInventoryList.appendChild(div);
             });
         }
 
-        // Live Search Handler inside the video inventory list
         document.getElementById('inventorySearch').addEventListener('input', (e) => {
             renderVideoInventoryUI(e.target.value);
         });
 
-        // Delete Video handler
         async function deleteVideoElement(id) {
-            if (!confirm("Are you sure you want to permanently delete this video from the database?")) return;
+            if (!confirm("Delete this standard video from database?")) return;
             try {
                 await deleteDoc(doc(db, "videos", id));
                 await fetchVideos();
@@ -1229,30 +1182,72 @@
             }
         }
 
-        // 3. Registered Users Directory loader
+
+        // 3. Fetch and Render Premium Episodes Inventory
+        async function fetchEpisodes() {
+            try {
+                const q = query(collection(db, "episodes"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                localEpisodes = [];
+                querySnapshot.forEach((doc) => localEpisodes.push({ id: doc.id, ...doc.data() }));
+                renderEpisodeInventoryUI();
+                calculateAnalytics();
+            } catch (err) {
+                console.error("Error reading episodes: ", err);
+            }
+        }
+
+        function renderEpisodeInventoryUI() {
+            episodeInventoryList.innerHTML = '';
+            if (localEpisodes.length === 0) {
+                episodeInventoryList.innerHTML = `<div style="padding:20px; color:var(--text-muted); font-size:13px; text-align:center;">No premium episodes uploaded yet.</div>`;
+                return;
+            }
+
+            localEpisodes.forEach(ep => {
+                const div = document.createElement('div');
+                div.className = 'inventory-item-rich';
+                div.innerHTML = `
+                    <img class="inventory-thumb" src="${ep.thumbnailUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=640&q=80'}" alt="${ep.title}">
+                    <div class="inventory-details">
+                        <span class="inventory-title" title="${ep.title}">${ep.title}</span>
+                        <span class="inventory-meta">Premium Episode • Duration: ${ep.duration}</span>
+                    </div>
+                    <button class="delete-btn" data-id="${ep.id}">Delete</button>
+                `;
+                div.querySelector('.delete-btn').addEventListener('click', () => deleteEpisodeElement(ep.id));
+                episodeInventoryList.appendChild(div);
+            });
+        }
+
+        async function deleteEpisodeElement(id) {
+            if (!confirm("Permanently delete this Premium Episode?")) return;
+            try {
+                await deleteDoc(doc(db, "episodes", id));
+                await fetchEpisodes();
+            } catch (err) {
+                alert("Failed to delete episode: " + err.message);
+            }
+        }
+
+
+        // 4. Fetch Users Directory
         async function fetchUsers() {
             try {
-                // Read Firestore database registrations
                 const querySnapshot = await getDocs(collection(db, "users"));
                 localUsers = [];
-                
-                querySnapshot.forEach((doc) => {
-                    localUsers.push({ id: doc.id, source: 'firestore', ...doc.data() });
-                });
+                querySnapshot.forEach((doc) => localUsers.push({ id: doc.id, source: 'firestore', ...doc.data() }));
 
-                // Read Fallback localized LocalStorage account registers
                 const localDbUsers = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
                 localDbUsers.forEach(localU => {
                     const exists = localUsers.some(u => u.phone === localU.phone || u.email === localU.email);
-                    if (!exists) {
-                        localUsers.push({ id: localU.phone, source: 'local', ...localU });
-                    }
+                    if (!exists) localUsers.push({ id: localU.phone, source: 'local', ...localU });
                 });
 
                 renderUsersUI();
                 calculateAnalytics();
             } catch (err) {
-                console.error("Error reading user registrations: ", err);
+                console.error("Error reading users: ", err);
                 const localDbUsers = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
                 localUsers = localDbUsers.map(u => ({ id: u.phone, source: 'local', ...u }));
                 renderUsersUI();
@@ -1262,7 +1257,6 @@
 
         function renderUsersUI(searchFilter = '') {
             usersInventoryList.innerHTML = '';
-
             const filtered = localUsers.filter(u => 
                 (u.name && u.name.toLowerCase().includes(searchFilter.toLowerCase().trim())) ||
                 (u.email && u.email.toLowerCase().includes(searchFilter.toLowerCase().trim())) ||
@@ -1280,40 +1274,28 @@
                 div.innerHTML = `
                     <img class="inventory-thumb" style="width:44px; height:44px; border-radius:50%; object-fit:cover;" src="${u.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}" alt="${u.name}">
                     <div class="inventory-details">
-                        <span class="inventory-title" style="font-size:14px;">${u.name || 'Anonymous Fanzone User'}</span>
+                        <span class="inventory-title" style="font-size:14px;">${u.name || 'Anonymous User'}</span>
                         <span class="inventory-meta" style="font-size:11px; line-height:1.4;">
                             Phone: ${u.phone || 'N/A'}<br>
-                            Email: ${u.email || 'N/A'}<br>
-                            Bio: <span style="color: var(--text-main); font-style: italic;">"${u.bio || 'Proud Fanzones Member'}"</span>
+                            Email: ${u.email || 'N/A'}
                         </span>
                     </div>
                     <button class="delete-btn" style="align-self: center;">Delete</button>
                 `;
-                
                 div.querySelector('.delete-btn').addEventListener('click', () => deleteUserElement(u));
                 usersInventoryList.appendChild(div);
             });
         }
 
-        // Live User Search Handler inside user directories
-        document.getElementById('userSearch').addEventListener('input', (e) => {
-            renderUsersUI(e.target.value);
-        });
+        document.getElementById('userSearch').addEventListener('input', (e) => renderUsersUI(e.target.value));
 
-        // Delete User accounts handler
         async function deleteUserElement(user) {
             if (!confirm(`Are you sure you want to permanently delete user "${user.name}"?`)) return;
             try {
-                if (user.source === 'firestore') {
-                    await deleteDoc(doc(db, "users", user.id));
-                }
-                
-                // Keep localized database mirrors clean
+                if (user.source === 'firestore') await deleteDoc(doc(db, "users", user.id));
                 let usersList = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
                 usersList = usersList.filter(u => u.phone !== user.phone && u.email !== user.email);
                 localStorage.setItem('fanzones_users_db', JSON.stringify(usersList));
-
-                alert(`User "${user.name}" has been successfully deleted.`);
                 await fetchUsers();
             } catch (err) {
                 alert("Failed to delete user profile: " + err.message);
@@ -1321,63 +1303,9 @@
         }
 
 
-        // ================= DUAL ASSETS DIRECT RELEASES SYSTEM =================
+        // ================= ASSET UPLOADING & PUBLISHING SYSTEM =================
 
-        // 3. Dual Asset Cloudinary uploading & Firestore publishing
-        videoUploadForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const title = document.getElementById('videoTitle').value.trim();
-            const category = videoCategorySelect.value;
-            const duration = document.getElementById('videoDuration').value.trim();
-            const imageFile = thumbnailFileInput.files[0];
-            const videoFile = videoFileInput.files[0];
-
-            if (!imageFile || !videoFile) {
-                alert("Both a custom thumbnail and a video file must be selected.");
-                return;
-            }
-
-            // Lock UI elements
-            publishBtn.disabled = true;
-            publishBtn.textContent = "Processing Assets...";
-            uploadStatusSection.style.display = "block";
-
-            try {
-                // Task 1: Upload Custom Thumbnail image to Cloudinary (Asset route /image/)
-                const thumbUrl = await uploadAssetPipeline(imageFile, "image", (percent) => {
-                    thumbProgressBar.style.width = percent + '%';
-                    thumbProgressPercent.textContent = percent + '%';
-                });
-
-                // Task 2: Upload Video asset file to Cloudinary (Asset route /video/)
-                const videoUrl = await uploadAssetPipeline(videoFile, "video", (percent) => {
-                    videoProgressBar.style.width = percent + '%';
-                    videoProgressPercent.textContent = percent + '%';
-                });
-
-                // Task 3: Commit document to Firestore videos collection
-                await addDoc(collection(db, "videos"), {
-                    title: title,
-                    category: category,
-                    videoUrl: videoUrl,
-                    thumbnailUrl: thumbUrl,
-                    duration: duration,
-                    views: 0,
-                    createdAt: serverTimestamp()
-                });
-
-                alert("Success! Your video and custom thumbnail are fully published.");
-                resetUploadFormLayout();
-                await fetchVideos();
-            } catch (error) {
-                alert("Publish failed: " + error.message);
-                publishBtn.disabled = false;
-                publishBtn.textContent = "Publish to Gallery";
-            }
-        });
-
-        // Promise wrapper around XMLHttprequest to track real-time upload status
+        // Helper: Cloudinary Upload Pipeline
         function uploadAssetPipeline(file, resourceType, onProgressCallback) {
             return new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
@@ -1399,65 +1327,177 @@
                         const response = JSON.parse(xhr.responseText);
                         resolve(response.secure_url);
                     } else {
-                        console.error(`Cloudinary upload failed: ${xhr.responseText}`);
                         reject(new Error(`Cloudinary uploading failed for resource type: ${resourceType}`));
                     }
                 };
-
-                xhr.onerror = () => {
-                    reject(new Error("Network error encountered during pipeline upload."));
-                };
-
+                xhr.onerror = () => reject(new Error("Network error encountered."));
                 xhr.send(formData);
             });
         }
 
-        // Clean form layout reset
-        function resetUploadFormLayout() {
-            videoUploadForm.reset();
-            thumbnailLabel.textContent = "Choose Image File (.jpg, .png, .webp)";
-            videoLabel.textContent = "Choose Video File (.mp4, .webm)";
+        // Standard Video Publish Submit
+        videoUploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('videoTitle').value.trim();
+            const category = videoCategorySelect.value;
+            const duration = document.getElementById('videoDuration').value.trim();
+            const imageFile = thumbnailFileInput.files[0];
+            const videoFile = videoFileInput.files[0];
+
+            if (!imageFile || !videoFile) {
+                alert("Both a custom thumbnail and a video file must be selected.");
+                return;
+            }
+
+            publishBtn.disabled = true;
+            publishBtn.textContent = "Processing Assets...";
+            uploadStatusSection.style.display = "block";
+
+            try {
+                const thumbUrl = await uploadAssetPipeline(imageFile, "image", (percent) => {
+                    thumbProgressBar.style.width = percent + '%';
+                    thumbProgressPercent.textContent = percent + '%';
+                });
+                const videoUrl = await uploadAssetPipeline(videoFile, "video", (percent) => {
+                    videoProgressBar.style.width = percent + '%';
+                    videoProgressPercent.textContent = percent + '%';
+                });
+
+                await addDoc(collection(db, "videos"), {
+                    title: title,
+                    category: category,
+                    videoUrl: videoUrl,
+                    thumbnailUrl: thumbUrl,
+                    duration: duration,
+                    views: 0,
+                    createdAt: serverTimestamp()
+                });
+
+                alert("Standard Video published successfully!");
+                videoUploadForm.reset();
+                uploadStatusSection.style.display = "none";
+                thumbnailLabel.textContent = "Choose Image File";
+                videoLabel.textContent = "Choose Video File";
+                publishBtn.disabled = false;
+                publishBtn.textContent = "Publish Standard Video";
+                await fetchVideos();
+            } catch (error) {
+                alert("Publish failed: " + error.message);
+                publishBtn.disabled = false;
+                publishBtn.textContent = "Publish Standard Video";
+            }
+        });
+
+        // Premium Episode Publish Submit (Supports Direct URL OR Upload)
+        episodeUploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('epTitle').value.trim();
+            const duration = document.getElementById('epDuration').value.trim();
             
-            uploadStatusSection.style.display = "none";
-            thumbProgressBar.style.width = "0%";
-            thumbProgressPercent.textContent = "0%";
-            videoProgressBar.style.width = "0%";
-            videoProgressPercent.textContent = "0%";
-            
-            publishBtn.disabled = false;
-            publishBtn.textContent = "Publish to Gallery";
+            // Direct links check
+            let thumbUrl = document.getElementById('epThumbUrl').value.trim();
+            let videoUrl = document.getElementById('epVideoUrl').value.trim();
+
+            const imageFile = epThumbFileInput.files[0];
+            const videoFile = epVideoFileInput.files[0];
+
+            // Validation: Must have either a link or a file for both
+            if (!thumbUrl && !imageFile) { alert("Please provide a thumbnail link OR upload an image."); return; }
+            if (!videoUrl && !videoFile) { alert("Please provide a video link OR upload a video file."); return; }
+
+            publishEpBtn.disabled = true;
+            publishEpBtn.textContent = "Processing Episode...";
+            if (imageFile || videoFile) epUploadStatusSection.style.display = "block"; // Only show status if actually uploading
+
+            try {
+                // If File is provided, it overrides the URL box
+                if (imageFile) {
+                    thumbUrl = await uploadAssetPipeline(imageFile, "image", (percent) => {
+                        epThumbProgressBar.style.width = percent + '%';
+                        epThumbProgressPercent.textContent = percent + '%';
+                    });
+                }
+                
+                if (videoFile) {
+                    videoUrl = await uploadAssetPipeline(videoFile, "video", (percent) => {
+                        epVideoProgressBar.style.width = percent + '%';
+                        epVideoProgressPercent.textContent = percent + '%';
+                    });
+                }
+
+                await addDoc(collection(db, "episodes"), {
+                    title: title,
+                    videoUrl: videoUrl,
+                    thumbnailUrl: thumbUrl,
+                    duration: duration,
+                    views: 0,
+                    createdAt: serverTimestamp()
+                });
+
+                alert("Premium Episode published successfully!");
+                episodeUploadForm.reset();
+                epUploadStatusSection.style.display = "none";
+                epThumbLabel.textContent = "Choose Image File";
+                epVideoLabel.textContent = "Choose Video File";
+                publishEpBtn.disabled = false;
+                publishEpBtn.textContent = "Publish Premium Episode";
+                await fetchEpisodes();
+            } catch (error) {
+                alert("Publish failed: " + error.message);
+                publishEpBtn.disabled = false;
+                publishEpBtn.textContent = "Publish Premium Episode";
+            }
+        });
+
+
+        // ================= CONTENT PAGE COVER IMAGE UPDATE =================
+        
+        async function loadCurrentCoverImage() {
+            try {
+                const docRef = doc(db, "settings", "contentPage");
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists() && docSnap.data().coverImage) {
+                    document.getElementById('currentCoverPreview').src = docSnap.data().coverImage;
+                    document.getElementById('coverImageLink').value = docSnap.data().coverImage;
+                }
+            } catch(e) {
+                console.error("Error reading cover image settings: ", e);
+            }
         }
 
-        // Calculate and display stats from current datasets
+        updateCoverForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newCoverUrl = document.getElementById('coverImageLink').value.trim();
+            if(!newCoverUrl) return;
+
+            try {
+                await setDoc(doc(db, "settings", "contentPage"), { coverImage: newCoverUrl }, { merge: true });
+                document.getElementById('currentCoverPreview').src = newCoverUrl;
+                alert("Series Cover Image updated successfully! Changes will reflect in the User Panel.");
+            } catch (err) {
+                alert("Failed to update cover image: " + err.message);
+            }
+        });
+
+
+        // Analytics update
         function calculateAnalytics() {
-            // Calculate sum of views across video database
-            const sumOfViews = localVideos.reduce((acc, current) => acc + (parseInt(current.views) || 0), 0);
-            
             document.getElementById('statTotalVideos').textContent = localVideos.length;
             document.getElementById('statTotalCategories').textContent = localCategories.length;
-            document.getElementById('statTotalViews').textContent = formatViews(sumOfViews);
+            document.getElementById('statTotalEpisodes').textContent = localEpisodes.length;
             document.getElementById('statTotalUsers').textContent = localUsers.length;
         }
 
-        // Helper metric views text layout formatting
-        function formatViews(num) {
-            if (num >= 1000000) {
-                return (num / 1000000).toFixed(1) + 'M';
-            }
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'K';
-            }
-            return num;
-        }
 
-        // Initial system starts after validating password sessions
+        // Run on Dashboard Init
         async function runDashboard() {
             await fetchCategories();
             await fetchVideos();
+            await fetchEpisodes();
             await fetchUsers();
+            await loadCurrentCoverImage();
         }
 
-        // Window load initial security gates trigger check
         window.addEventListener('DOMContentLoaded', () => {
             checkSession();
         });
