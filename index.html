@@ -1753,6 +1753,7 @@
             alert("Account registered successfully!");
             evaluateUserSession();
             loadUserProfile();
+            window.location.reload(); // FIX: Reloads page to bypass blank screen issue
         });
 
         // Login submit handler (Retained safely to prevent unhandled reference script breaks)
@@ -1779,6 +1780,7 @@
 
                 evaluateUserSession();
                 loadUserProfile();
+                window.location.reload(); // FIX: Reloads page to bypass blank screen issue
             } else {
                 alert("Incorrect mobile number credentials!");
             }
@@ -1788,6 +1790,7 @@
             localStorage.removeItem('fanzones_logged_user');
             evaluateUserSession();
             closeProfileModal();
+            window.location.reload(); // FIX: Reloads page safely on logout
         };
 
         // ANTI-SCREEN RECORDING & SHIELD SYSTEM
