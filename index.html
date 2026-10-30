@@ -448,7 +448,7 @@
         .thumbnail-box {
             position: relative;
             width: 100%;
-            aspect-ratio: 16 / 9; /* Enforces strict 16:9 proportions */
+            aspect-ratio: 16 / 9;
             background-color: #060608;
             overflow: hidden;
         }
@@ -517,7 +517,7 @@
         .premium-lock-badge {
             position: absolute;
             top: 8px;
-            left: 46px; /* Positioned nicely next to the bookmark button */
+            left: 46px;
             background: rgba(3, 3, 3, 0.8);
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 0, 127, 0.6);
@@ -546,7 +546,7 @@
             line-height: 1.4;
             color: var(--text-main);
             margin-bottom: 8px;
-            height: 36px; /* Two lines desktop spacing */
+            height: 36px;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -649,7 +649,7 @@
         .video-wrapper {
             position: relative;
             width: 100%;
-            aspect-ratio: 16 / 9; /* strict 16:9 canvas proportions */
+            aspect-ratio: 16 / 9;
             background-color: #000;
             overflow: hidden;
             cursor: pointer;
@@ -997,7 +997,7 @@
             font-weight: 500;
         }
 
-        /* Mobile Screen Bottom Navigation Bar (Hidden on desktop) */
+        /* Mobile Screen Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -1072,7 +1072,7 @@
             color: #ff007f;
         }
 
-        /* NEW CONTENT / EPISODE SECTION STYLES */
+        /* CONTENT / EPISODE SECTION STYLES */
         #contentSection {
             display: none;
             width: 100%;
@@ -1206,7 +1206,7 @@
         /* Scroll Down Indicator */
         .scroll-indicator {
             position: fixed;
-            bottom: 85px; /* Safely above mobile bottom nav */
+            bottom: 85px;
             left: 50%;
             background: rgba(13, 13, 15, 0.9);
             backdrop-filter: blur(10px);
@@ -1244,19 +1244,17 @@
 </head>
 <body>
 
-    <!-- Premium Register Auth Modal (Login Hidden/Only Sign Up Form Displayed) -->
+    <!-- Premium Register Auth Modal -->
     <div id="authScreen" class="auth-overlay">
         <div class="auth-container">
             <div class="logo" style="font-size: 34px; display: inline-block; margin-bottom: 12px;">Fanzones</div>
             <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 24px;">Premium Video Access Gateway</p>
             
-            <!-- Hidden Tabs Structure to prevent JavaScript reference crashes -->
             <div class="auth-tabs" style="display: none !important;">
                 <div id="tabLogin" class="auth-tab" onclick="switchAuthTab('login')">LOG IN</div>
                 <div id="tabRegister" class="auth-tab active" onclick="switchAuthTab('register')">SIGN UP</div>
             </div>
 
-            <!-- Log In Form Interface (Permanently hidden in CSS, retained safely in HTML to support internal logic) -->
             <form id="loginForm" class="auth-form" style="display: none !important;">
                 <div class="profile-form-group">
                     <label for="loginPhone">Phone Number</label>
@@ -1265,7 +1263,6 @@
                 <button type="submit" class="profile-save-btn" style="margin-top: 22px;">Access Account</button>
             </form>
 
-            <!-- Only Sign Up Form Interface displays Username instead of Display Name -->
             <form id="registerForm" class="auth-form active" style="display: block !important;">
                 <div class="profile-form-group">
                     <label for="regName">Username</label>
@@ -1297,7 +1294,6 @@
     <div class="categories-container">
         <nav class="categories" id="categoriesNav">
             <div class="category-item active" data-category="All">All</div>
-            <!-- Dynamic categories are injected here -->
         </nav>
     </div>
 
@@ -1313,7 +1309,6 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     Play
                 </button>
-                <!-- Admin shortcut button (links to admin.html) -->
                 <a href="admin.html" class="admin-floating-btn" title="Open Admin Panel">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <circle cx="12" cy="12" r="3"/>
@@ -1339,7 +1334,7 @@
             </div>
         </div>
 
-        <!-- NEW Content / Premium Episodes Layout Area (Hidden by Default) -->
+        <!-- Content / Premium Episodes Layout Area -->
         <div id="contentSection">
             <div class="section-header">
                 <h2 class="section-title">All Episodes</h2>
@@ -1352,7 +1347,7 @@
         </div>
     </main>
 
-    <!-- strict 16:9 Advanced Media Player Modal -->
+    <!-- Strict 16:9 Advanced Media Player Modal -->
     <div class="modal-overlay" id="playerModal">
         <div class="modal-content player-content">
             <button class="player-close" onclick="closePlayerModal()">&times;</button>
@@ -1361,8 +1356,8 @@
                 <!-- disabled download option, context menu, right click, dragging -->
                 <video id="mainVideoPlayer" controlsList="nodownload" oncontextmenu="return false;" ondragstart="return false;" disablePictureInPicture></video>
                 
-                <!-- NEW IFRAME PLAYER FOR EMBED LINKS -->
-                <iframe id="iframePlayer" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen style="display:none; width:100%; height:100%; position:absolute; top:0; left:0; z-index:20; background:#000; border-radius: 16px;"></iframe>
+                <!-- IFRAME PLAYER FOR EMBED LINKS & VDOCIPHER DRM (allow="encrypted-media" enabled) -->
+                <iframe id="iframePlayer" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen allow="encrypted-media" style="display:none; width:100%; height:100%; position:absolute; top:0; left:0; z-index:20; background:#000; border-radius: 16px;"></iframe>
 
                 <!-- Double-tap seeking splash indicators -->
                 <div class="seek-splash left" id="seekSplashLeft">-10s</div>
@@ -1459,7 +1454,6 @@
             <p class="sub-desc">Subscribe to unlock all premium videos and exclusive series access.</p>
 
             <div class="plan-cards">
-                <!-- Dynamically updating the payment link amount based on selection -->
                 <div class="plan-card selected" onclick="selectSubscriptionPlan(this, 5)">
                     <span class="plan-name">Trial Period</span>
                     <span class="plan-price">₹5</span>
@@ -1504,7 +1498,6 @@
             <button class="player-close" onclick="closeProfileModal()">&times;</button>
             <div class="profile-title">Fanzones Profile</div>
             
-            <!-- Avatar grid picker -->
             <div class="profile-form-group" style="text-align: center;">
                 <label>Select Avatar</label>
                 <div class="avatar-selection-grid">
@@ -1515,7 +1508,6 @@
                 </div>
             </div>
 
-            <!-- Profile form fields -->
             <form id="profileForm">
                 <div class="profile-form-group">
                     <label for="profileName">Username</label>
@@ -1547,13 +1539,12 @@
         </div>
     </div>
 
-    <!-- Mobile Bottom Navigation bar links (Hidden on desktop) -->
+    <!-- Mobile Bottom Navigation bar links -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="filterCategory('All')">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
             Home
         </button>
-        <!-- NEW Content Appended here -->
         <button class="nav-item" onclick="filterCategory('Content')">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
             Content
@@ -1608,7 +1599,7 @@
             increment
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Your Exact Firebase Configuration
+        // Exact Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDm9kd5XneXxdFEqfVgCY-lkc8s2JlDdiA",
             authDomain: "fanzoen.firebaseapp.com",
@@ -1625,8 +1616,8 @@
 
         // Core dynamic arrays state
         let allVideos = [];
-        let allEpisodes = []; // New Episodes Storage
-        let pendingMedia = null; // Hold video/episode when payment bypass modal triggers
+        let allEpisodes = [];
+        let pendingMedia = null;
         
         let loadedCategories = ["Latest", "Movie Trailers", "Live Streams", "Podcasts"]; 
         let currentSelectedCategory = "All";
@@ -1674,7 +1665,7 @@
         const minZoom = 0.5;
         const zoomStep = 0.25;
 
-        // AUTH CONTROL LOGIC GLOBALS (Preserved to prevent function crashes)
+        // AUTH CONTROL LOGIC GLOBALS
         window.switchAuthTab = function(type) {
             const tabLogin = document.getElementById('tabLogin');
             const tabRegister = document.getElementById('tabRegister');
@@ -1712,7 +1703,7 @@
             }
         }
 
-        // SignUp submit handler with only name and phone (Now saves directly to Firebase Firestore)
+        // SignUp submit handler
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('regName').value.trim();
@@ -1720,7 +1711,6 @@
 
             let usersList = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
             
-            // Check if phone already registered
             if (usersList.some(user => user.phone === phone)) {
                 alert("This phone number is already registered. Please log in.");
                 return;
@@ -1736,7 +1726,6 @@
             };
 
             try {
-                // Save directly to Firebase Firestore users collection so Admin panel shows it instantly
                 await addDoc(collection(db, "users"), newUser);
             } catch (err) {
                 console.error("Firebase user save error: ", err);
@@ -1746,7 +1735,6 @@
             localStorage.setItem('fanzones_users_db', JSON.stringify(usersList));
             localStorage.setItem('fanzones_logged_user', JSON.stringify(newUser));
 
-            // Populate current app profile details
             localStorage.setItem('fanzones_profile', JSON.stringify({
                 name: newUser.name,
                 bio: newUser.bio,
@@ -1756,10 +1744,10 @@
             alert("Account registered successfully!");
             evaluateUserSession();
             loadUserProfile();
-            window.location.reload(); // FIX: Reloads page to bypass blank screen issue
+            window.location.reload();
         });
 
-        // Login submit handler (Retained safely to prevent unhandled reference script breaks)
+        // Login submit handler
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const phone = document.getElementById('loginPhone').value.trim();
@@ -1774,7 +1762,6 @@
                 }
                 localStorage.setItem('fanzones_logged_user', JSON.stringify(matchedUser));
                 
-                // Sync session details to active layout profile context
                 localStorage.setItem('fanzones_profile', JSON.stringify({
                     name: matchedUser.name,
                     bio: matchedUser.bio || "Proud Fanzones Member",
@@ -1783,7 +1770,7 @@
 
                 evaluateUserSession();
                 loadUserProfile();
-                window.location.reload(); // FIX: Reloads page to bypass blank screen issue
+                window.location.reload();
             } else {
                 alert("Incorrect mobile number credentials!");
             }
@@ -1793,13 +1780,12 @@
             localStorage.removeItem('fanzones_logged_user');
             evaluateUserSession();
             closeProfileModal();
-            window.location.reload(); // FIX: Reloads page safely on logout
+            window.location.reload();
         };
 
         // ANTI-SCREEN RECORDING & SHIELD SYSTEM
         document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        // Keyboard safety hotkeys block rules
         window.addEventListener('keydown', (e) => {
             if (
                 e.key === 'PrintScreen' || 
@@ -1814,9 +1800,7 @@
             }
         });
 
-        // Trigger heavy black blur overlay when focus shifts or screen capture triggers
         window.addEventListener('blur', () => {
-            // FIX: Prevent blackout when clicking inside an iframe (like archive.org embed)
             if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
                 return;
             }
@@ -1837,7 +1821,6 @@
             }
         });
 
-        // Clipboard flushing defense on printscreen up-clicks
         window.addEventListener('keyup', (e) => {
             if (e.key === 'PrintScreen' || e.keyCode === 44) {
                 navigator.clipboard.writeText('');
@@ -1860,7 +1843,6 @@
             profileBioInput.value = stored.bio;
             headerAvatar.src = stored.avatar;
 
-            // Mark matching avatar in grid
             const avatars = document.querySelectorAll('.avatar-option');
             avatars.forEach(av => {
                 if(av.getAttribute('data-url') === stored.avatar) {
@@ -1871,7 +1853,6 @@
             });
         }
 
-        // Profile Form Submit
         profileForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const selectedAvatarImg = document.querySelector('.avatar-option.selected');
@@ -1886,7 +1867,6 @@
             localStorage.setItem('fanzones_profile', JSON.stringify(payload));
             headerAvatar.src = avatarUrl;
             
-            // Sync current stored local logged-in credentials as well
             let loggedInSession = JSON.parse(localStorage.getItem('fanzones_logged_user'));
             if(loggedInSession) {
                 loggedInSession.name = payload.name;
@@ -1894,7 +1874,6 @@
                 loggedInSession.bio = payload.bio;
                 localStorage.setItem('fanzones_logged_user', JSON.stringify(loggedInSession));
 
-                // Also update stored db list
                 let usersList = JSON.parse(localStorage.getItem('fanzones_users_db')) || [];
                 let idx = usersList.findIndex(u => u.phone === loggedInSession.phone);
                 if (idx !== -1) {
@@ -1906,7 +1885,6 @@
             closeProfileModal();
         });
 
-        // Toggle avatar selection
         document.querySelectorAll('.avatar-option').forEach(img => {
             img.addEventListener('click', () => {
                 document.querySelectorAll('.avatar-option').forEach(i => i.classList.remove('selected'));
@@ -1939,7 +1917,6 @@
                 
                 querySnapshot.forEach((doc) => {
                     const name = doc.data().name;
-                    // Filter out Trending and Tech options cleanly
                     if(name !== "Trending 🔥" && name !== "Tech & Gadgets") {
                         dbCategories.push(name);
                     }
@@ -1952,14 +1929,12 @@
                 renderCategoriesMenu();
             } catch (error) {
                 console.error("Error fetching categories: ", error);
-                renderCategoriesMenu(); // load fallback menus
+                renderCategoriesMenu();
             }
         }
 
         function renderCategoriesMenu() {
             categoriesNav.innerHTML = `<div class="category-item ${currentSelectedCategory === 'All' ? 'active' : ''}" data-category="All">All</div>`;
-            
-            // Append NEW Content Tag to Nav
             categoriesNav.innerHTML += `<div class="category-item ${currentSelectedCategory === 'Content' ? 'active' : ''}" data-category="Content">Content</div>`;
 
             loadedCategories.forEach(cat => {
@@ -1970,7 +1945,6 @@
                 categoriesNav.appendChild(item);
             });
 
-            // Append Saved as Category Option cleanly
             const savedItem = document.createElement('div');
             savedItem.className = `category-item ${currentSelectedCategory === 'Saved' ? 'active' : ''}`;
             savedItem.setAttribute('data-category', 'Saved');
@@ -2007,7 +1981,6 @@
         // Fetch Premium Episodes content separately
         async function loadContentEpisodes() {
             try {
-                // Load all episodes for the Content layout
                 const q = query(collection(db, "episodes"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
                 allEpisodes = [];
@@ -2021,13 +1994,12 @@
                 });
 
                 renderEpisodes(allEpisodes);
-                // Also update Home page if it's currently on "All" or "Saved" to show newly loaded episodes at top
                 if (currentSelectedCategory === "All" || currentSelectedCategory === "Saved") {
                     renderVideoCards(allVideos);
                 }
             } catch (error) {
                 console.error("Error loading episodes: ", error);
-                renderEpisodes([]); // fallback empty
+                renderEpisodes([]);
             }
         }
 
@@ -2042,7 +2014,6 @@
             document.getElementById('seedBtn').addEventListener('click', seedDemoData);
         }
 
-        // Seed exactly 6 premium 16:9 widescreen videos + demo episodes and configuration
         async function seedDemoData() {
             const seedBtn = document.getElementById('seedBtn');
             seedBtn.disabled = true;
@@ -2132,7 +2103,6 @@
             ];
 
             try {
-                // Seed custom categories
                 for (let cat of defaultCats) {
                     await addDoc(collection(db, "categories"), {
                         ...cat,
@@ -2140,7 +2110,6 @@
                     });
                 }
                 
-                // Seed exactly 6 premium 16:9 layout videos
                 for (let video of demoVideos) {
                     await addDoc(collection(db, "videos"), {
                         ...video,
@@ -2148,7 +2117,6 @@
                     });
                 }
 
-                // Seed Episode items
                 for (let ep of demoEpisodes) {
                     await addDoc(collection(db, "episodes"), {
                         ...ep,
@@ -2156,7 +2124,7 @@
                     });
                 }
 
-                alert("Successfully seeded exactly 6 premium widescreen videos and Content Episodes!");
+                alert("Successfully seeded demo data!");
                 await loadCategories();
                 await loadVideos();
                 await loadContentEpisodes();
@@ -2172,10 +2140,8 @@
             videoGrid.innerHTML = '';
             
             let filtered = [];
-            // Combine both arrays if we are rendering the main list, so that episodes also show on home page
             let fullData = (baseArray === allVideos) ? [...allVideos, ...allEpisodes] : baseArray;
 
-            // Sort by latest first
             fullData.sort((a, b) => {
                 let timeA = a.createdAt?.seconds || (a.createdAt ? new Date(a.createdAt).getTime()/1000 : 0);
                 let timeB = b.createdAt?.seconds || (b.createdAt ? new Date(b.createdAt).getTime()/1000 : 0);
@@ -2201,12 +2167,10 @@
                 card.className = 'video-card';
                 card.innerHTML = `
                     <div class="thumbnail-box">
-                        <!-- Floating Bookmark Save Button -->
                         <div class="bookmark-icon-btn ${isSaved ? 'saved' : ''}" data-id="${video.id}" title="${isSaved ? 'Remove from Saved' : 'Save Video'}">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.5"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         </div>
                         
-                        <!-- Premium Lock Badge on EVERY Video -->
                         <div class="premium-lock-badge">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7c0-2.757-2.243-5-5-5zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9V7z"/></svg>
                             LOCKED
@@ -2227,7 +2191,6 @@
                     </div>
                 `;
 
-                // Bookmark trigger stops click propagation
                 const saveBtn = card.querySelector('.bookmark-icon-btn');
                 saveBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -2253,7 +2216,6 @@
                 card.className = 'video-card';
                 card.innerHTML = `
                     <div class="thumbnail-box">
-                        <!-- Premium Lock Badge -->
                         <div class="premium-lock-badge" style="left:8px;">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7c0-2.757-2.243-5-5-5zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9V7z"/></svg>
                             PREMIUM
@@ -2310,13 +2272,12 @@
             return num;
         }
 
-        // 5. Highly Advanced Cinematic Video Player Controls logic
+        // 5. Advanced Video Player Controls logic
         let controlsTimeout;
         
         function showPlayerControls() {
             videoWrapper.classList.add('show-controls');
             clearTimeout(controlsTimeout);
-            // Auto hide controls after 2.5 seconds of inactivity
             controlsTimeout = setTimeout(() => {
                 if (!mainVideoPlayer.paused) {
                     videoWrapper.classList.remove('show-controls');
@@ -2324,48 +2285,40 @@
             }, 250);
         }
 
-        // Integrated transform renderer to combine both Zooming and Rotating states
         function updateVideoTransform() {
             let rotationScale = 1.0;
             if (currentRotation === 90 || currentRotation === 270) {
-                rotationScale = 0.5625; // standard scaling to contain wide ratios inside a strict 16:9 box
+                rotationScale = 0.5625;
             }
             mainVideoPlayer.style.transform = `rotate(${currentRotation}deg) scale(${rotationScale * currentZoom})`;
         }
 
         function initCustomPlayer() {
-            // Track pointer movement inside the video viewport wrapper
             videoWrapper.addEventListener('mousemove', showPlayerControls);
             videoWrapper.addEventListener('touchstart', showPlayerControls);
 
-            // Click canvas directly to toggle Play / Pause
             let clickTimeout;
             let lastTap = 0;
 
             videoWrapper.addEventListener('click', (e) => {
-                // Ignore clicks on controls bar container elements
                 if (e.target.closest('#customControls') || e.target.closest('.player-close')) return;
 
                 const now = Date.now();
                 const DOUBLE_PRESS_DELAY = 300;
 
                 if (now - lastTap < DOUBLE_PRESS_DELAY) {
-                    // Double Click detected! Seek 10 seconds left/right
                     clearTimeout(clickTimeout);
                     const rect = videoWrapper.getBoundingClientRect();
                     const clickX = e.clientX - rect.left;
 
                     if (clickX < rect.width / 2) {
-                        // Left half double click: Seek backward 10s
                         mainVideoPlayer.currentTime = Math.max(0, mainVideoPlayer.currentTime - 10);
                         triggerSeekSplash('left');
                     } else {
-                        // Right half double click: Seek forward 10s
                         mainVideoPlayer.currentTime = Math.min(mainVideoPlayer.duration, mainVideoPlayer.currentTime + 10);
                         triggerSeekSplash('right');
                     }
                 } else {
-                    // Schedule Single Click to Play/Pause if no double click occurs
                     clickTimeout = setTimeout(() => {
                         if (mainVideoPlayer.paused) {
                             mainVideoPlayer.play();
@@ -2377,7 +2330,6 @@
                 lastTap = now;
             });
 
-            // Double Click Seek Indicators Splash helper
             function triggerSeekSplash(direction) {
                 const splash = direction === 'left' ? seekSplashLeft : seekSplashRight;
                 splash.classList.add('show');
@@ -2386,7 +2338,6 @@
                 }, 400);
             }
 
-            // Sync play state
             mainVideoPlayer.addEventListener('play', () => {
                 playPauseBtn.innerHTML = `<svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
                 showPlayerControls();
@@ -2405,7 +2356,6 @@
                 }
             });
 
-            // Update Progress sliders, current time text & buffered tracker
             mainVideoPlayer.addEventListener('timeupdate', () => {
                 const percentage = (mainVideoPlayer.currentTime / mainVideoPlayer.duration) * 100;
                 progressRange.value = isNaN(percentage) ? 0 : percentage;
@@ -2413,7 +2363,6 @@
                 currentTimeText.textContent = formatTime(mainVideoPlayer.currentTime);
             });
 
-            // Track buffering metrics
             mainVideoPlayer.addEventListener('progress', () => {
                 if (mainVideoPlayer.duration > 0 && mainVideoPlayer.buffered.length > 0) {
                     const bufferedEnd = mainVideoPlayer.buffered.end(mainVideoPlayer.buffered.length - 1);
@@ -2422,37 +2371,31 @@
                 }
             });
 
-            // Drag timeline input range
             progressRange.addEventListener('input', () => {
                 const seekTo = (progressRange.value / 100) * mainVideoPlayer.duration;
                 mainVideoPlayer.currentTime = seekTo;
                 currentProgressBar.style.width = progressRange.value + '%';
             });
 
-            // Set duration text on load metadata
             mainVideoPlayer.addEventListener('loadedmetadata', () => {
                 totalDurationText.textContent = formatTime(mainVideoPlayer.duration);
             });
 
-            // Volume Adjustment logic
             volumeSlider.addEventListener('input', () => {
                 mainVideoPlayer.volume = volumeSlider.value / 100;
                 mainVideoPlayer.muted = (volumeSlider.value == 0);
                 updateMuteIcon();
             });
 
-            // Mute toggle
             muteBtn.addEventListener('click', () => {
                 mainVideoPlayer.muted = !mainVideoPlayer.muted;
                 updateMuteIcon();
             });
 
-            // Speed select
             speedSelect.addEventListener('change', () => {
                 mainVideoPlayer.playbackRate = parseFloat(speedSelect.value);
             });
 
-            // ZOOM-IN Video logic
             zoomInBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (currentZoom < maxZoom) {
@@ -2461,7 +2404,6 @@
                 }
             });
 
-            // ZOOM-OUT Video logic
             zoomOutBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (currentZoom > minZoom) {
@@ -2470,13 +2412,11 @@
                 }
             });
 
-            // Rotate video canvas interaction rule
             rotateBtn.addEventListener('click', () => {
                 currentRotation = (currentRotation + 90) % 360;
                 updateVideoTransform();
             });
 
-            // PiP
             pipBtn.addEventListener('click', async () => {
                 try {
                     if (document.pictureInPictureElement) {
@@ -2489,7 +2429,6 @@
                 }
             });
 
-            // Fullscreen toggle
             fullscreenBtn.addEventListener('click', () => {
                 if (!document.fullscreenElement) {
                     if (videoWrapper.requestFullscreen) {
@@ -2524,9 +2463,9 @@
         async function openVideoPlayer(video) {
             playerModal.style.display = "flex";
             
-            // CHECK IF LINK IS IFRAME OR DIRECT MP4
+            // CHECK IF LINK IS IFRAME, DIRECT MP4, OR VDOCIPHER
             let link = video.videoUrl || "";
-            const isEmbed = link.includes('embed') || link.includes('<iframe') || link.includes('archive.org');
+            const isEmbed = link.includes('embed') || link.includes('<iframe') || link.includes('archive.org') || link.includes('vdocipher');
 
             if (isEmbed) {
                 // Show Iframe, Hide MP4 Player & Custom Controls
@@ -2554,7 +2493,6 @@
                 bufferBar.style.width = "0%";
                 currentProgressBar.style.width = "0%";
                 
-                // Reset player scale & rotation transforms
                 currentRotation = 0;
                 currentZoom = 1.0;
                 updateVideoTransform();
@@ -2569,16 +2507,13 @@
             const currentViews = (video.views || 0) + 1;
             document.getElementById('playerVideoViews').textContent = `${formatViews(currentViews)} Views`;
 
-            // Commit view increments asynchronously
             try {
-                // Determine the correct collection path based on if category exists
                 const collectionName = video.category ? "videos" : "episodes";
                 const docRef = doc(db, collectionName, video.id);
                 await updateDoc(docRef, {
                     views: increment(1)
                 });
                 
-                // Update local instances
                 if(collectionName === "videos") {
                     const localIdx = allVideos.findIndex(v => v.id === video.id);
                     if (localIdx !== -1) allVideos[localIdx].views += 1;
@@ -2595,8 +2530,8 @@
             playerModal.style.display = "none";
             mainVideoPlayer.pause();
             mainVideoPlayer.src = "";
-            document.getElementById('iframePlayer').src = ""; // Stops iframe video/audio in background
-            renderVideoCards(allVideos); // Sync indicators
+            document.getElementById('iframePlayer').src = "";
+            renderVideoCards(allVideos);
             renderEpisodes(allEpisodes);
         };
 
@@ -2610,7 +2545,6 @@
 
         // GLOBAL CONTENT SUBSCRIPTION PAYWALL LOGIC (FOR ALL VIDEOS)
         window.handlePremiumContent = function(mediaItem) {
-            // Check if user has already unlocked via password or payment
             const isSubscribed = localStorage.getItem('fanzones_subscribed') === 'true';
             
             if (isSubscribed) {
@@ -2621,13 +2555,11 @@
             }
         };
 
-        // Payment Link and Plan Selector Update
         window.selectSubscriptionPlan = function(element, amount) {
             const planCards = document.querySelectorAll('.plan-card');
             planCards.forEach(card => card.classList.remove('selected'));
             element.classList.add('selected');
 
-            // Dynamically update the 'Pay Now' link parameters
             const dynamicPayBtn = document.getElementById('dynamicPayBtn');
             dynamicPayBtn.href = `https://jaiambey.shop/j.html?amount=${amount}`;
         };
@@ -2637,25 +2569,19 @@
             pendingMedia = null;
         };
 
-        // AUTO-UNLOCK AFTER REDIRECT FROM PAYMENT GATEWAY
         function checkPaymentSuccess() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('payment') === 'success') {
-                // Auto Unlock user local storage
                 localStorage.setItem('fanzones_subscribed', 'true');
-                
                 alert("✅ Payment Successful! Fanzones Premium is now completely Unlocked.");
                 
-                // Remove the URL parameters silently without refreshing so link looks neat
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
                 window.history.replaceState({path: newUrl}, '', newUrl);
 
-                // Open content library directly as a reward
                 filterCategory('Content');
             }
         }
 
-        // Category Filter Switch Layout Engine
         window.filterCategory = function(categoryName) {
             currentSelectedCategory = categoryName;
             
@@ -2668,7 +2594,6 @@
                 }
             });
 
-            // Sync with bottom navigation triggers
             const navItems = document.querySelectorAll('.bottom-nav .nav-item');
             navItems.forEach(nav => nav.classList.remove('active'));
             if (categoryName === "All") navItems[0].classList.add('active');
@@ -2676,7 +2601,6 @@
             else if (categoryName === "Saved") navItems[2].classList.add('active');
             else if (categoryName === "Latest") navItems[4].classList.add('active');
 
-            // Hide/Show correct Layout Blocks dynamically
             const mainVideoArea = document.getElementById('mainVideoArea');
             const contentSection = document.getElementById('contentSection');
             const heroBanner = document.querySelector('.hero-banner');
@@ -2701,7 +2625,6 @@
             }
         });
 
-        // Search match
         searchInput.addEventListener('input', (e) => {
             const val = e.target.value.toLowerCase().trim();
             let combined = [...allVideos, ...allEpisodes];
@@ -2716,7 +2639,6 @@
             renderVideoCards(filtered);
         });
 
-        // Scroll Indicator Logic to hide when scrolled
         window.addEventListener('scroll', () => {
             const indicator = document.getElementById('scrollIndicator');
             if (indicator) {
@@ -2730,16 +2652,13 @@
             }
         });
 
-        // Initialization execution hooks
         async function init() {
             evaluateUserSession();
             loadUserProfile();
             initCustomPlayer();
             await loadCategories();
             await loadVideos();
-            await loadContentEpisodes(); // pre-fetch episodes for seamless experience
-
-            // Check if user just came back from the payment gateway
+            await loadContentEpisodes();
             checkPaymentSuccess();
         }
 
