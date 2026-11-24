@@ -3,13 +3,15 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>BETZONE X — Premium Sports Entertainment & Prediction App</title>
-  
-  <!-- Google Fonts -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#030714" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>777bet — Premium Sports Entertainment & Virtual Prediction</title>
+
+  <!-- Premium Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -25,13 +27,13 @@
           },
           colors: {
             navy: {
-              950: '#030612',
-              900: '#070C1E',
-              800: '#0E1733',
-              700: '#172347',
+              950: '#030714',
+              900: '#070E24',
+              800: '#0E1938',
+              700: '#172752',
             },
             electric: '#0088FF',
-            cyanGlow: '#00D4FF',
+            cyanGlow: '#00E0FF',
             neon: '#00FF87',
             gold: '#FFD700',
           }
@@ -42,23 +44,21 @@
 
   <style>
     :root {
-      --bg-primary: #040814;
-      --bg-secondary: #0B1226;
-      --card-bg: rgba(16, 25, 52, 0.65);
-      --card-border: rgba(255, 255, 255, 0.1);
-      --text-primary: #F8FAFC;
-      --text-secondary: #94A3B8;
-      --nav-bg: rgba(10, 16, 36, 0.85);
+      --bg-app: #030714;
+      --bg-surface: rgba(14, 24, 54, 0.72);
+      --border-glass: rgba(255, 255, 255, 0.11);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --nav-glass: rgba(8, 14, 34, 0.88);
     }
 
     html.light-theme {
-      --bg-primary: #EEF3FA;
-      --bg-secondary: #FFFFFF;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(15, 23, 42, 0.09);
-      --text-primary: #0F172A;
-      --text-secondary: #475569;
-      --nav-bg: rgba(255, 255, 255, 0.9);
+      --bg-app: #EFF4FB;
+      --bg-surface: rgba(255, 255, 255, 0.88);
+      --border-glass: rgba(15, 23, 42, 0.09);
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --nav-glass: rgba(255, 255, 255, 0.94);
     }
 
     * {
@@ -68,296 +68,302 @@
     }
     *::-webkit-scrollbar { display: none; }
 
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: radial-gradient(circle at top center, #0d1b3e 0%, #02040a 100%);
-      color: var(--text-primary);
-      min-height: 100vh;
+      background: radial-gradient(circle at 50% 0%, #0d214f 0%, #02050f 100%);
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    body {
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow-x: hidden;
     }
 
-    /* Mobile App Shell */
-    .phone-frame {
+    /* Full-Bleed Mobile First App Container + Desktop Showcase Frame */
+    .app-shell {
       width: 100%;
-      max-width: 430px;
-      height: 100vh;
-      max-height: 900px;
-      background: var(--bg-primary);
+      height: 100dvh;
+      background: var(--bg-app);
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 30px 90px rgba(0, 136, 255, 0.25), 0 0 0 1px rgba(255,255,255,0.12);
       transition: background 0.35s ease, color 0.35s ease;
     }
 
-    @media (min-width: 500px) {
-      .phone-frame {
-        height: 92vh;
-        border-radius: 38px;
-        border: 6px solid #161F38;
+    @media (min-width: 520px) {
+      .app-shell {
+        max-width: 420px;
+        height: min(92dvh, 880px);
+        border-radius: 40px;
+        border: 7px solid #15203E;
+        box-shadow:
+          0 35px 100px rgba(0, 136, 255, 0.28),
+          0 0 0 1px rgba(255, 255, 255, 0.14),
+          inset 0 0 30px rgba(0, 136, 255, 0.08);
       }
     }
 
-    /* Glassmorphism & 3D Cards */
+    /* 3D Glassmorphism Cards */
     .glass-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--card-border);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
       transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    .glass-card-hover:active {
-      transform: scale(0.975);
+    .glass-press:active {
+      transform: scale(0.97);
     }
 
-    .btn-3d {
-      position: relative;
-      background: linear-gradient(135deg, #0088FF 0%, #0055FF 100%);
-      box-shadow: 0 8px 24px rgba(0, 136, 255, 0.45), inset 0 1px 1px rgba(255,255,255,0.35);
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* 3D Tactile Buttons */
+    .btn-3d-blue {
+      background: linear-gradient(135deg, #00A3FF 0%, #0057FF 100%);
+      color: #FFFFFF;
+      box-shadow:
+        0 10px 26px rgba(0, 120, 255, 0.45),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.42),
+        inset 0 -2px 4px rgba(0, 20, 80, 0.4);
+      transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease;
     }
-    .btn-3d:active { transform: translateY(2px) scale(0.97); box-shadow: 0 4px 12px rgba(0,136,255,0.3); }
+    .btn-3d-blue:active {
+      transform: translateY(2px) scale(0.97);
+      box-shadow: 0 4px 12px rgba(0, 120, 255, 0.3);
+    }
 
-    .btn-neon {
-      background: linear-gradient(135deg, #00FF87 0%, #00C96B 100%);
-      color: #03120A;
-      box-shadow: 0 8px 22px rgba(0, 255, 135, 0.35), inset 0 1px 1px rgba(255,255,255,0.5);
+    .btn-3d-neon {
+      background: linear-gradient(135deg, #00FF87 0%, #00C868 100%);
+      color: #03150C;
+      box-shadow:
+        0 10px 24px rgba(0, 255, 135, 0.35),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.55);
+      transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-3d-neon:active { transform: translateY(2px) scale(0.97); }
+
+    .btn-3d-gold {
+      background: linear-gradient(135deg, #FFE44D 0%, #FFB800 100%);
+      color: #1A1100;
+      box-shadow: 0 8px 22px rgba(255, 196, 0, 0.35), inset 0 1px 1px rgba(255,255,255,0.6);
     }
 
     /* Animations */
     @keyframes float3D {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-12px) rotate(4deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
     }
-    @keyframes spinBall {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.06); }
-      100% { transform: rotate(360deg) scale(1); }
+    @keyframes spinSlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
-    @keyframes pulseGlow {
-      0%, 100% { opacity: 1; box-shadow: 0 0 10px #FF2E54, 0 0 20px rgba(255, 46, 84, 0.5); }
-      50% { opacity: 0.6; box-shadow: 0 0 4px #FF2E54; }
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #FF2E54; }
+      50% { opacity: 0.45; transform: scale(1.18); box-shadow: 0 0 2px #FF2E54; }
     }
-    @keyframes shimmer {
+    @keyframes slideFadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes shimmerBg {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
     }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes progressLoad {
+    @keyframes loadBar {
       0% { width: 0%; }
-      60% { width: 78%; }
+      55% { width: 72%; }
       100% { width: 100%; }
     }
 
-    .animate-float { animation: float3D 4s ease-in-out infinite; }
-    .animate-spin-ball { animation: spinBall 9s linear infinite; }
-    .animate-live-dot { animation: pulseGlow 1.4s ease-in-out infinite; }
-    .screen-enter { animation: slideUp 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .anim-float { animation: float3D 3.8s ease-in-out infinite; }
+    .anim-spin { animation: spinSlow 11s linear infinite; }
+    .anim-live { animation: livePulse 1.3s ease-in-out infinite; }
+    .anim-enter { animation: slideFadeUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .anim-ticker { display: flex; width: max-content; animation: marquee 22s linear infinite; }
+    .anim-ticker:hover { animation-play-state: paused; }
 
     .skeleton {
-      background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.04) 75%);
+      background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.05) 75%);
       background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
+      animation: shimmerBg 1.4s infinite;
     }
 
-    /* Background Glow Orbs */
-    .bg-orb-blue {
-      position: absolute;
-      width: 280px; height: 280px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0, 136, 255, 0.25) 0%, transparent 70%);
-      filter: blur(30px);
-      pointer-events: none;
-      z-index: 0;
+    /* Ambient Glows */
+    .glow-spot-1 {
+      position: absolute; width: 280px; height: 280px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 136, 255, 0.26) 0%, transparent 70%);
+      filter: blur(28px); pointer-events: none; z-index: 0;
     }
-    .bg-orb-green {
-      position: absolute;
-      width: 240px; height: 240px;
-      border-radius: 50%;
+    .glow-spot-2 {
+      position: absolute; width: 250px; height: 250px; border-radius: 50%;
       background: radial-gradient(circle, rgba(0, 255, 135, 0.14) 0%, transparent 70%);
-      filter: blur(30px);
-      pointer-events: none;
-      z-index: 0;
+      filter: blur(28px); pointer-events: none; z-index: 0;
     }
 
-    /* Floating Bottom Nav */
-    .bottom-nav {
-      background: var(--nav-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
-    }
-
-    /* Custom Scroll container */
+    /* Scroll Area with Safe Area support */
     .screen-scroll {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
       position: relative;
       z-index: 10;
-      padding-bottom: 105px;
+      padding-bottom: calc(98px + env(safe-area-inset-bottom));
     }
     .screen-scroll.no-nav {
-      padding-bottom: 24px;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
     }
 
-    /* Light mode helper overrides */
+    /* Floating Bottom Nav */
+    .floating-nav {
+      background: var(--nav-glass);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid var(--border-glass);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+      bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+
+    /* Light Mode Text Overrides */
+    html.light-theme .text-white { color: #0F172A; }
     html.light-theme .text-slate-300,
-    html.light-theme .text-slate-400 {
-      color: #475569 !important;
-    }
-    html.light-theme .text-white {
-      color: #0F172A;
-    }
-    html.light-theme .keep-white {
-      color: #FFFFFF !important;
-    }
-    html.light-theme .bg-white\/5 {
-      background-color: rgba(15, 23, 42, 0.05);
-    }
-    html.light-theme .bg-slate-900\/80 {
-      background-color: rgba(241, 245, 249, 0.9);
-    }
+    html.light-theme .text-slate-400 { color: #475569 !important; }
+    html.light-theme .keep-white { color: #FFFFFF !important; }
+    html.light-theme .bg-white\/5 { background-color: rgba(15, 23, 42, 0.05); }
+    html.light-theme .bg-white\/10 { background-color: rgba(15, 23, 42, 0.08); }
+    html.light-theme header { background: rgba(255, 255, 255, 0.85) !important; }
   </style>
 </head>
 <body>
 
-<div class="phone-frame" id="app-frame">
-  <!-- Ambient Background Orbs -->
-  <div class="bg-orb-blue -top-20 -left-16"></div>
-  <div class="bg-orb-green top-1/3 -right-20"></div>
+<div class="app-shell" id="app-shell">
+  <!-- Ambient Background Spots -->
+  <div class="glow-spot-1 -top-20 -left-16"></div>
+  <div class="glow-spot-2 top-1/3 -right-20"></div>
 
-  <!-- Toast Notification Banner -->
-  <div id="toast-container" class="absolute top-4 left-4 right-4 z-50 pointer-events-none flex flex-col gap-2"></div>
+  <!-- Toast Stack -->
+  <div id="toast-container" class="absolute top-3 left-3 right-3 z-50 pointer-events-none flex flex-col gap-2" style="padding-top: env(safe-area-inset-top);"></div>
 
-  <!-- Modal Container -->
-  <div id="modal-overlay" class="hidden absolute inset-0 z-50 bg-black/75 backdrop-blur-md flex items-end sm:items-center justify-center p-4 transition-opacity">
-    <div id="modal-content" class="w-full glass-card rounded-3xl p-5 max-h-[85vh] overflow-y-auto screen-enter"></div>
+  <!-- Modal Sheet -->
+  <div id="modal-overlay" class="hidden absolute inset-0 z-50 bg-black/75 backdrop-blur-md flex items-end sm:items-center justify-center p-3">
+    <div id="modal-content" class="w-full glass-card rounded-3xl p-5 max-h-[84dvh] overflow-y-auto anim-enter"></div>
   </div>
 
-  <!-- Main Dynamic Screen Viewport -->
+  <!-- Dynamic Screen Container -->
   <div id="screen-viewport" class="flex-1 flex flex-col overflow-hidden relative z-10"></div>
 
-  <!-- Floating Action Button (Quick Live Match Centre / Skeleton Demo) -->
-  <button id="fab-live" onclick="navigate('live-centre', { matchId: state.matches[0].id })" title="Quick Live Match Centre"
-    class="hidden absolute bottom-24 right-4 z-30 w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-orange-500 text-white shadow-lg shadow-rose-500/40 flex items-center justify-center transition-transform active:scale-90 border border-white/20">
-    <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-neon border-2 border-navy-950 animate-pulse"></span>
-    <svg class="w-6 h-6 keep-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+  <!-- Floating Quick Live Action Button -->
+  <button id="fab-live" onclick="navigate('live-centre', { matchId: state.matches[0].id })" aria-label="Quick Live Match Centre"
+    class="hidden absolute right-4 z-30 w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 via-red-500 to-orange-500 text-white shadow-[0_10px_25px_rgba(244,63,94,0.5)] flex items-center justify-center active:scale-90 transition border border-white/25"
+    style="bottom: calc(86px + env(safe-area-inset-bottom));">
+    <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-neon border-2 border-navy-950 animate-ping"></span>
+    <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-neon border-2 border-navy-950"></span>
+    <svg class="w-6 h-6 keep-white" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
     </svg>
   </button>
 
-  <!-- Floating Bottom Navigation Bar -->
-  <nav id="bottom-nav" class="hidden absolute bottom-3 left-3 right-3 z-40 bottom-nav rounded-2xl px-2 py-2 flex items-center justify-around">
-    <!-- Dynamically rendered -->
-  </nav>
+  <!-- Floating 5-Tab Bottom Navigation -->
+  <nav id="bottom-nav" class="hidden absolute left-3 right-3 z-40 floating-nav rounded-2xl px-1.5 py-2 flex items-center justify-around"></nav>
 </div>
 
 <script>
 // ============================================================================
-// 1. STATE MANAGEMENT & REALISTIC MOCK DATA
+// 1. GLOBAL APP STATE & REALISTIC SPORTS DATA
 // ============================================================================
 const state = {
-  currentScreen: 'splash', // 14 screens supported
+  currentScreen: 'splash',
   screenParams: {},
   history: [],
   darkMode: true,
   onboardingStep: 0,
-  loginStep: 'phone', // 'phone' | 'otp'
+  touchStartX: 0,
+  loginStep: 'phone',
   countryCode: '+91',
   phoneNumber: '9876543210',
-  otpValue: ['4', '8', '2', '9'],
-  isLoadingSkeleton: false,
+  otpDigits: ['7', '7', '7', '1'],
+  isSkeletonLoading: false,
 
-  // User Profile
   user: {
     name: 'Aarav Sharma',
-    username: '@aarav_pro',
-    id: 'BZX-849201',
-    avatarColor: 'from-electric to-neon',
-    virtualPoints: 12450,
+    username: '@aarav_777',
+    id: '777B-849201',
+    virtualPoints: 15750,
     dailyClaimed: false,
     streakDays: 5,
     language: 'English (Global)',
-    favSports: ['Cricket', 'Football', 'Basketball'],
+    favSports: ['Cricket', 'Football', 'Basketball', 'Esports'],
     favTeams: ['Mumbai Titans', 'Real Madrid', 'India'],
-    notificationsEnabled: {
-      liveScores: true,
-      favTeams: true,
-      challenges: true,
-      predictions: true
-    },
-    privacyPublicProfile: true,
+    notifications: { live: true, teams: true, challenges: true },
+    publicLeaderboard: true
   },
 
-  // Active filters & UI tabs
   selectedSport: 'All',
-  sportsPageFilter: 'Live',
+  sportsStatusTab: 'Live',
   sportsSearch: '',
-  selectedTournamentFilter: 'All',
+  selectedSportCategoryPage: 'All',
   matchDetailsTab: 'Overview',
   myPredTab: 'Active',
   leaderboardTab: 'Weekly',
+
   predictionSlip: {
     matchId: 'm1',
     market: 'Match Winner',
     selection: null,
-    multiplier: 1.85,
+    multiplier: 1.72,
     stake: 250
   },
 
-  // Quiz state
   quizAnswered: false,
-  quizCorrect: false,
 
-  // 7 Sports Categories
   sportsCategories: [
-    { id: 'Cricket', name: 'Cricket', icon: '🏏', count: 12, color: 'from-blue-500 to-cyan-400' },
-    { id: 'Football', name: 'Football', icon: '⚽', count: 18, color: 'from-emerald-500 to-neon' },
-    { id: 'Tennis', name: 'Tennis', icon: '🎾', count: 7, color: 'from-lime-400 to-yellow-400' },
-    { id: 'Basketball', name: 'Basketball', icon: '🏀', count: 9, color: 'from-orange-500 to-amber-400' },
-    { id: 'Volleyball', name: 'Volleyball', icon: '🏐', count: 4, color: 'from-violet-500 to-purple-400' },
-    { id: 'Hockey', name: 'Hockey', icon: '🏑', count: 5, color: 'from-sky-500 to-indigo-500' },
-    { id: 'Esports', name: 'Esports', icon: '🎮', count: 14, color: 'from-fuchsia-500 to-pink-500' },
+    { id: 'Cricket', name: 'Cricket', icon: '🏏', badge: '12 Live' },
+    { id: 'Football', name: 'Football', icon: '⚽', badge: '18 Live' },
+    { id: 'Tennis', name: 'Tennis', icon: '🎾', badge: '7 Live' },
+    { id: 'Basketball', name: 'Basketball', icon: '🏀', badge: '9 Live' },
+    { id: 'Volleyball', name: 'Volleyball', icon: '🏐', badge: '4 Live' },
+    { id: 'Hockey', name: 'Hockey', icon: '🏑', badge: '5 Live' },
+    { id: 'Esports', name: 'Esports', icon: '🎮', badge: '14 Live' },
   ],
 
-  // Matches Database (Live, Upcoming, Completed)
   matches: [
     {
       id: 'm1',
       sport: 'Cricket',
       tournament: 'IPL Premier League',
       status: 'LIVE',
-      timer: '17.4 Ov',
+      timer: '18.2 Ov',
       date: 'Today',
       time: '19:30 IST',
-      teamA: { name: 'Mumbai Titans', short: 'MT', score: '184/4', color: '#0088FF', fav: true },
-      teamB: { name: 'Chennai Kings', short: 'CK', score: '172/6', color: '#FFD700', fav: false },
       venue: 'Wankhede Arena, Mumbai',
-      stats: { possessionA: 56, possessionB: 44, runRateA: '10.42', runRateB: '8.60', sixesA: 11, sixesB: 8, boundariesA: 18, boundariesB: 15 },
+      teamA: { name: 'Mumbai Titans', short: 'MT', score: '192/4', color: '#0088FF', fav: true },
+      teamB: { name: 'Chennai Kings', short: 'CK', score: '176/6', color: '#FFB800', fav: false },
+      stats: { possessionA: 61, possessionB: 39, runRateA: '10.48', runRateB: '8.80', sixesA: 12, sixesB: 8, foursA: 19, foursB: 15 },
       commentary: [
-        { time: '17.4', tag: 'SIX!', color: 'text-neon', text: 'R. Sharma launches it over long-on for a massive 94m SIX! Crowd goes wild!' },
-        { time: '17.3', tag: '1 RUN', color: 'text-electric', text: 'Yorker length, driven smoothly to deep cover for a quick single.' },
-        { time: '17.2', tag: 'FOUR', color: 'text-gold', text: 'Crunched through extra cover! Pure timing, races to the fence.' },
-        { time: '17.1', tag: 'DOT', color: 'text-slate-400', text: 'Sharp slower bouncer, beaten outside off stump.' },
+        { time: '18.2', tag: 'SIX!', color: 'text-neon', text: 'R. Sharma smokes it over deep mid-wicket! 96m monster hit!' },
+        { time: '18.1', tag: 'FOUR', color: 'text-gold', text: 'Driven crisply past cover point — pure timing!' },
+        { time: '17.6', tag: 'WICKET', color: 'text-rose-400', text: 'Slower yorker! Off-stump rattled, crucial breakthrough!' },
+        { time: '17.4', tag: '2 RUNS', color: 'text-electric', text: 'Punched into the gap at long-on, brisk running between wickets.' }
       ],
-      lineupsA: ['R. Sharma (C) - 78*(41)', 'I. Kishan (WK) - 34(22)', 'S. Yadav - 49(25)', 'H. Pandya - 18*(9)', 'J. Bumrah - 3/24'],
-      lineupsB: ['R. Gaikwad (C) - 64(44)', 'D. Conway - 29(21)', 'S. Dube - 41(23)', 'M. Dhoni (WK) - 21*(10)', 'R. Jadeja - 2/31'],
-      history: ['MT won by 6 wickets (May 2026)', 'CK won by 14 runs (Mar 2026)', 'MT won by 5 wickets (Oct 2025)'],
+      lineupsA: ['R. Sharma (C) 84*(44)', 'S. Yadav 51(26)', 'I. Kishan (WK) 32(20)', 'H. Pandya 19*(10)', 'J. Bumrah 3/22'],
+      lineupsB: ['R. Gaikwad (C) 66(45)', 'S. Dube 44(24)', 'D. Conway 29(21)', 'M. Dhoni (WK) 22*(10)', 'R. Jadeja 2/29'],
+      history: ['MT won by 6 wkts (May 2026)', 'CK won by 14 runs (Mar 2026)', 'MT won by 5 wkts (Oct 2025)'],
       predictions: {
-        'Match Winner': [{ label: 'Mumbai Titans', mult: 1.65 }, { label: 'Chennai Kings', mult: 2.35 }],
-        'Total Runs': [{ label: 'Over 365.5 Runs', mult: 1.90 }, { label: 'Under 365.5 Runs', mult: 1.90 }],
-        'Player Performance': [{ label: 'R. Sharma 85+ Runs', mult: 2.10 }, { label: 'J. Bumrah 4+ Wickets', mult: 3.20 }]
+        'Match Winner': [{ label: 'Mumbai Titans', mult: 1.55 }, { label: 'Chennai Kings', mult: 2.55 }],
+        'Total Runs': [{ label: 'Over 375.5 Runs', mult: 1.88 }, { label: 'Under 375.5 Runs', mult: 1.92 }],
+        'Player Performance': [{ label: 'R. Sharma 100+ Runs', mult: 2.40 }, { label: 'J. Bumrah 4+ Wickets', mult: 3.10 }]
       }
     },
     {
@@ -365,50 +371,50 @@ const state = {
       sport: 'Football',
       tournament: 'UEFA Champions League',
       status: 'LIVE',
-      timer: "74'",
+      timer: "76'",
       date: 'Today',
       time: '01:30 IST',
-      teamA: { name: 'Real Madrid', short: 'RMA', score: '2', color: '#FFFFFF', fav: true },
-      teamB: { name: 'Man City', short: 'MCI', score: '1', color: '#38BDF8', fav: false },
       venue: 'Santiago Bernabéu',
-      stats: { possessionA: 48, possessionB: 52, shotsA: 14, shotsB: 16, onTargetA: 7, onTargetB: 5, cornersA: 5, cornersB: 8 },
+      teamA: { name: 'Real Madrid', short: 'RMA', score: '2', color: '#E2E8F0', fav: true },
+      teamB: { name: 'Man City', short: 'MCI', score: '1', color: '#38BDF8', fav: false },
+      stats: { possessionA: 49, possessionB: 51, shotsA: 15, shotsB: 16, onTargetA: 8, onTargetB: 5, cornersA: 6, cornersB: 8 },
       commentary: [
-        { time: "74'", tag: 'SAVE', color: 'text-electric', text: 'Brilliant fingertip save by Courtois to deny Haaland from 12 yards!' },
-        { time: "68'", tag: 'GOAL!', color: 'text-neon', text: 'VINÍCIUS JR! Lightning counter-attack and clinical low finish into the far corner!' },
-        { time: "61'", tag: 'YELLOW', color: 'text-gold', text: 'Rodri booked for a tactical foul in midfield.' },
-        { time: "44'", tag: 'GOAL!', color: 'text-neon', text: 'Foden curls a beauty from the edge of the box to equalize!' },
+        { time: "76'", tag: 'SAVE', color: 'text-electric', text: 'World-class reflex save by Courtois from Haaland’s header!' },
+        { time: "68'", tag: 'GOAL!', color: 'text-neon', text: 'VINÍCIUS JR! Clinical low strike into the bottom right corner!' },
+        { time: "59'", tag: 'YELLOW', color: 'text-gold', text: 'Rodri cautioned after stopping a rapid counter.' },
+        { time: "44'", tag: 'GOAL!', color: 'text-neon', text: 'Foden rifles it into the top bin from 22 yards!' }
       ],
-      lineupsA: ['Courtois (GK)', 'Carvajal', 'Rüdiger', 'Bellingham (1G)', 'Mbappé (1A)', 'Vinícius Jr (1G)'],
-      lineupsB: ['Ederson (GK)', 'Walker', 'Dias', 'Rodri', 'De Bruyne', 'Haaland', 'Foden (1G)'],
+      lineupsA: ['Courtois', 'Carvajal', 'Rüdiger', 'Bellingham (1G)', 'Mbappé (1A)', 'Vinícius Jr (1G)'],
+      lineupsB: ['Ederson', 'Walker', 'Dias', 'Rodri', 'De Bruyne', 'Haaland', 'Foden (1G)'],
       history: ['RMA 3-3 MCI (Apr 2026)', 'MCI 1-1 RMA (Apr 2026)', 'MCI 4-0 RMA (May 2025)'],
       predictions: {
-        'Match Winner': [{ label: 'Real Madrid', mult: 1.45 }, { label: 'Draw', mult: 3.80 }, { label: 'Man City', mult: 5.50 }],
-        'Total Goals': [{ label: 'Over 3.5 Goals', mult: 1.80 }, { label: 'Under 3.5 Goals', mult: 2.00 }],
-        'First Team to Score Next': [{ label: 'Real Madrid', mult: 2.05 }, { label: 'Man City', mult: 1.95 }]
+        'Match Winner': [{ label: 'Real Madrid', mult: 1.42 }, { label: 'Draw', mult: 4.10 }, { label: 'Man City', mult: 5.80 }],
+        'Total Goals': [{ label: 'Over 3.5 Goals', mult: 1.85 }, { label: 'Under 3.5 Goals', mult: 1.95 }],
+        'First Team to Score Next': [{ label: 'Real Madrid', mult: 2.00 }, { label: 'Man City', mult: 1.95 }]
       }
     },
     {
       id: 'm3',
       sport: 'Basketball',
-      tournament: 'NBA Finals',
+      tournament: 'NBA Playoffs',
       status: 'LIVE',
-      timer: 'Q4 04:12',
+      timer: 'Q4 03:45',
       date: 'Today',
       time: '06:00 IST',
-      teamA: { name: 'LA Lakers', short: 'LAL', score: '104', color: '#A855F7', fav: false },
-      teamB: { name: 'Boston Celtics', short: 'BOS', score: '101', color: '#00FF87', fav: false },
       venue: 'Crypto.com Arena',
-      stats: { possessionA: 51, possessionB: 49, threePtA: '14/31', threePtB: '12/34', reboundsA: 42, reboundsB: 39 },
+      teamA: { name: 'LA Lakers', short: 'LAL', score: '108', color: '#A855F7', fav: false },
+      teamB: { name: 'Boston Celtics', short: 'BOS', score: '104', color: '#00FF87', fav: false },
+      stats: { possessionA: 53, possessionB: 47, shotsA: '41/78', shotsB: '38/80', onTargetA: '14 3PM', onTargetB: '12 3PM', cornersA: '44 REB', cornersB: '39 REB' },
       commentary: [
-        { time: 'Q4 04:12', tag: '3-PTR', color: 'text-neon', text: 'LeBron James steps back from deep downtown — SPLASH! Lakers lead by 3!' },
-        { time: 'Q4 05:01', tag: 'DUNK', color: 'text-gold', text: 'Jayson Tatum slams it home in transition!' }
+        { time: 'Q4 03:45', tag: '3-PTR!', color: 'text-neon', text: 'LeBron James pulls up from the logo — BANG!' },
+        { time: 'Q4 04:30', tag: 'DUNK', color: 'text-gold', text: 'Anthony Davis with a thunderous alley-oop finish!' }
       ],
-      lineupsA: ['L. James (32 pts)', 'A. Davis (26 pts, 14 reb)', 'A. Reaves (18 pts)'],
-      lineupsB: ['J. Tatum (34 pts)', 'J. Brown (24 pts)', 'D. White (15 pts)'],
+      lineupsA: ['L. James (35 pts)', 'A. Davis (26 pts, 14 reb)', 'A. Reaves (19 pts)'],
+      lineupsB: ['J. Tatum (34 pts)', 'J. Brown (25 pts)', 'D. White (16 pts)'],
       history: ['BOS 112-108 LAL', 'LAL 114-105 BOS'],
       predictions: {
-        'Match Winner': [{ label: 'LA Lakers', mult: 1.75 }, { label: 'Boston Celtics', mult: 2.15 }],
-        'Total Points': [{ label: 'Over 224.5 Pts', mult: 1.85 }, { label: 'Under 224.5 Pts', mult: 1.95 }]
+        'Match Winner': [{ label: 'LA Lakers', mult: 1.65 }, { label: 'Boston Celtics', mult: 2.25 }],
+        'Total Points': [{ label: 'Over 226.5 Pts', mult: 1.90 }, { label: 'Under 226.5 Pts', mult: 1.90 }]
       }
     },
     {
@@ -416,21 +422,21 @@ const state = {
       sport: 'Cricket',
       tournament: 'ICC Champions Cup',
       status: 'UPCOMING',
-      timer: '02h 18m 44s',
+      timer: '01h 44m 20s',
       date: '25 Nov 2026',
       time: '14:00 IST',
+      venue: 'Narendra Modi Stadium',
       teamA: { name: 'India', short: 'IND', score: 'vs', color: '#0088FF', fav: true },
       teamB: { name: 'Australia', short: 'AUS', score: 'vs', color: '#FACC15', fav: false },
-      venue: 'Narendra Modi Stadium',
-      stats: { possessionA: 50, possessionB: 50 },
-      commentary: [{ time: 'PRE', tag: 'INFO', color: 'text-electric', text: 'Pitch looks flat and batting-friendly. Dew expected in second innings.' }],
+      stats: { possessionA: 52, possessionB: 48 },
+      commentary: [{ time: 'PRE', tag: 'PITCH', color: 'text-cyanGlow', text: 'Batting paradise expected. High-scoring thriller on the cards.' }],
       lineupsA: ['R. Sharma', 'S. Gill', 'V. Kohli', 'S. Iyer', 'K. Rahul', 'J. Bumrah'],
       lineupsB: ['T. Head', 'M. Marsh', 'S. Smith', 'G. Maxwell', 'P. Cummins', 'M. Starc'],
       history: ['IND won by 4 wkts', 'AUS won by 6 wkts'],
       predictions: {
-        'Match Winner': [{ label: 'India', mult: 1.72 }, { label: 'Australia', mult: 2.15 }],
-        'Total Runs': [{ label: '1st Innings 310+', mult: 2.05 }, { label: 'Under 310', mult: 1.75 }],
-        'Player Performance': [{ label: 'V. Kohli 50+ Runs', mult: 1.95 }, { label: 'T. Head 40+ Runs', mult: 2.10 }]
+        'Match Winner': [{ label: 'India', mult: 1.70 }, { label: 'Australia', mult: 2.20 }],
+        'Total Runs': [{ label: '1st Innings 315+', mult: 2.05 }, { label: 'Under 315', mult: 1.78 }],
+        'Player Performance': [{ label: 'V. Kohli 50+ Runs', mult: 1.92 }, { label: 'J. Bumrah 3+ Wkts', mult: 2.30 }]
       }
     },
     {
@@ -438,39 +444,37 @@ const state = {
       sport: 'Tennis',
       tournament: 'Wimbledon Masters',
       status: 'UPCOMING',
-      timer: '05h 42m 10s',
+      timer: '04h 12m 50s',
       date: '25 Nov 2026',
       time: '18:30 IST',
+      venue: 'Centre Court, London',
       teamA: { name: 'C. Alcaraz', short: 'ALC', score: 'vs', color: '#00FF87', fav: false },
       teamB: { name: 'J. Sinner', short: 'SIN', score: 'vs', color: '#FF6B35', fav: false },
-      venue: 'Centre Court, London',
       stats: { possessionA: 50, possessionB: 50 },
-      commentary: [{ time: 'PRE', tag: 'PREVIEW', color: 'text-gold', text: 'Blockbuster clash between the top two seeds on grass!' }],
-      lineupsA: ['C. Alcaraz (ESP) - Seed #1'],
-      lineupsB: ['J. Sinner (ITA) - Seed #2'],
+      commentary: [{ time: 'PRE', tag: 'PREVIEW', color: 'text-gold', text: 'Top two seeds collide on lush grass in London!' }],
+      lineupsA: ['C. Alcaraz (ESP) #1'],
+      lineupsB: ['J. Sinner (ITA) #2'],
       history: ['Alcaraz 3-2 Sinner', 'Sinner 2-1 Alcaraz'],
-      predictions: {
-        'Match Winner': [{ label: 'C. Alcaraz', mult: 1.88 }, { label: 'J. Sinner', mult: 1.92 }]
-      }
+      predictions: { 'Match Winner': [{ label: 'C. Alcaraz', mult: 1.88 }, { label: 'J. Sinner', mult: 1.92 }] }
     },
     {
       id: 'm6',
       sport: 'Football',
       tournament: 'FIFA World Series',
       status: 'UPCOMING',
-      timer: '1d 04h 15m',
+      timer: '1d 03h 15m',
       date: '26 Nov 2026',
       time: '22:00 IST',
+      venue: 'MetLife Stadium',
       teamA: { name: 'Argentina', short: 'ARG', score: 'vs', color: '#38BDF8', fav: true },
       teamB: { name: 'France', short: 'FRA', score: 'vs', color: '#3B82F6', fav: false },
-      venue: 'MetLife Stadium',
       stats: { possessionA: 50, possessionB: 50 },
-      commentary: [{ time: 'PRE', tag: 'HYPE', color: 'text-neon', text: 'Rematch of the century!' }],
-      lineupsA: ['Messi', 'Alvarez', 'Mac Allister', 'Martinez'],
-      lineupsB: ['Mbappé', 'Griezmann', 'Tchouaméni', 'Saliba'],
+      commentary: [{ time: 'PRE', tag: 'CLASH', color: 'text-neon', text: 'World champions face off in an iconic friendly!' }],
+      lineupsA: ['L. Messi', 'J. Alvarez', 'Mac Allister', 'E. Martinez'],
+      lineupsB: ['K. Mbappé', 'A. Griezmann', 'Tchouaméni', 'W. Saliba'],
       history: ['ARG 3(4)-3(2) FRA'],
       predictions: {
-        'Match Winner': [{ label: 'Argentina', mult: 2.30 }, { label: 'Draw', mult: 3.10 }, { label: 'France', mult: 2.40 }],
+        'Match Winner': [{ label: 'Argentina', mult: 2.25 }, { label: 'Draw', mult: 3.10 }, { label: 'France', mult: 2.40 }],
         'First Team to Score': [{ label: 'Argentina', mult: 1.95 }, { label: 'France', mult: 2.00 }]
       }
     },
@@ -482,11 +486,11 @@ const state = {
       timer: 'FT',
       date: '23 Nov 2026',
       time: 'Ended',
+      venue: 'Seoul Arena',
       teamA: { name: 'Fnatic', short: 'FNC', score: '2', color: '#F97316', fav: false },
       teamB: { name: 'Sentinels', short: 'SEN', score: '1', color: '#EF4444', fav: false },
-      venue: 'Seoul Arena',
-      stats: { possessionA: 54, possessionB: 46 },
-      commentary: [{ time: 'MAP 3', tag: 'WIN', color: 'text-neon', text: 'Fnatic closes out Ascent 13-9 to take the series!' }],
+      stats: { possessionA: 55, possessionB: 45 },
+      commentary: [{ time: 'MAP 3', tag: 'WIN', color: 'text-neon', text: 'Fnatic wins Ascent 13-9 to clinch the series!' }],
       lineupsA: ['Boaster', 'Derke', 'Alfajer', 'Chronicle'],
       lineupsB: ['TenZ', 'zekken', 'johnqt', 'Sacy'],
       history: ['FNC 2-1 SEN'],
@@ -494,52 +498,46 @@ const state = {
     }
   ],
 
-  // Popular Tournaments
   tournaments: [
-    { id: 'IPL', name: 'IPL Premier', sport: 'Cricket', badge: 'HOT', teams: '10 Teams', gradient: 'from-blue-600 via-indigo-700 to-purple-800', icon: '🏏' },
-    { id: 'ICC', name: 'ICC Cricket', sport: 'Cricket', badge: 'GLOBAL', teams: '16 Nations', gradient: 'from-cyan-600 to-blue-900', icon: '🏆' },
-    { id: 'FIFA', name: 'FIFA Series', sport: 'Football', badge: 'ELITE', teams: '32 Nations', gradient: 'from-emerald-600 to-teal-900', icon: '🌍' },
-    { id: 'UCL', name: 'UEFA Champions', sport: 'Football', badge: 'LIVE', teams: '36 Clubs', gradient: 'from-indigo-700 to-slate-900', icon: '⚽' },
-    { id: 'NBA', name: 'NBA Playoffs', sport: 'Basketball', badge: 'PRO', teams: '16 Franchises', gradient: 'from-orange-600 to-red-900', icon: '🏀' },
-    { id: 'WIM', name: 'Wimbledon', sport: 'Tennis', badge: 'GRAND SLAM', teams: '128 Players', gradient: 'from-lime-600 to-emerald-900', icon: '🎾' },
+    { id: 'IPL', name: 'IPL Premier', sport: 'Cricket', badge: 'HOT', teams: '10 Teams', gradient: 'from-blue-600 via-indigo-700 to-purple-900', icon: '🏏' },
+    { id: 'ICC', name: 'ICC Cricket', sport: 'Cricket', badge: 'GLOBAL', teams: '16 Nations', gradient: 'from-cyan-600 to-blue-950', icon: '🏆' },
+    { id: 'FIFA', name: 'FIFA Series', sport: 'Football', badge: 'ELITE', teams: '32 Nations', gradient: 'from-emerald-600 to-teal-950', icon: '🌍' },
+    { id: 'UCL', name: 'UEFA Champions', sport: 'Football', badge: 'LIVE', teams: '36 Clubs', gradient: 'from-indigo-600 to-slate-950', icon: '⚽' },
+    { id: 'NBA', name: 'NBA Playoffs', sport: 'Basketball', badge: 'PRO', teams: '16 Teams', gradient: 'from-orange-600 to-red-950', icon: '🏀' },
+    { id: 'WIM', name: 'Wimbledon', sport: 'Tennis', badge: 'SLAM', teams: '128 Players', gradient: 'from-lime-600 to-emerald-950', icon: '🎾' },
   ],
 
-  // User Predictions History
   myPredictions: [
-    { id: 'p1', match: 'Mumbai Titans vs Chennai Kings', sport: 'Cricket', market: 'Match Winner', pick: 'Mumbai Titans', stake: 500, potential: 825, status: 'Active', date: 'Today, 19:45' },
+    { id: 'p1', match: 'Mumbai Titans vs Chennai Kings', sport: 'Cricket', market: 'Match Winner', pick: 'Mumbai Titans', stake: 500, potential: 775, status: 'Active', date: 'Today, 19:45' },
     { id: 'p2', match: 'Real Madrid vs Man City', sport: 'Football', market: 'Total Goals', pick: 'Over 2.5 Goals', stake: 300, potential: 540, status: 'Correct', date: 'Today, 01:30' },
     { id: 'p3', match: 'Fnatic vs Sentinels', sport: 'Esports', market: 'Match Winner', pick: 'Fnatic', stake: 400, potential: 720, status: 'Correct', date: 'Yesterday' },
     { id: 'p4', match: 'Arsenal vs Liverpool', sport: 'Football', market: 'First Team to Score', pick: 'Arsenal', stake: 250, potential: 0, status: 'Incorrect', date: '21 Nov 2026' },
-    { id: 'p5', match: 'LA Lakers vs Celtics', sport: 'Basketball', market: 'Match Winner', pick: 'LA Lakers', stake: 200, potential: 350, status: 'Active', date: 'Today, 06:00' },
+    { id: 'p5', match: 'LA Lakers vs Celtics', sport: 'Basketball', market: 'Match Winner', pick: 'LA Lakers', stake: 200, potential: 330, status: 'Active', date: 'Today, 06:00' },
   ],
 
-  // Leaderboard Data
   leaderboard: {
     Daily: [
-      { rank: 1, name: 'Vikram_X', points: 4850, acc: '88%', badge: '🔥', color: 'from-gold to-amber-500' },
-      { rank: 2, name: 'SarahSports', points: 4320, acc: '84%', badge: '⚡', color: 'from-slate-300 to-slate-500' },
-      { rank: 3, name: 'Aarav_Pro', points: 3910, acc: '79%', badge: '🎯', color: 'from-amber-700 to-orange-600', isMe: true },
-      { rank: 4, name: 'LeoPredictor', points: 3540, acc: '76%', badge: '⚽', color: 'from-electric to-blue-600' },
-      { rank: 5, name: 'CricketKing99', points: 3190, acc: '74%', badge: '🏏', color: 'from-emerald-500 to-teal-600' },
+      { rank: 1, name: 'Vikram_777', points: 5250, acc: '89%', badge: '🔥', color: 'from-gold to-amber-500' },
+      { rank: 2, name: 'SarahSports', points: 4680, acc: '85%', badge: '⚡', color: 'from-slate-200 to-slate-400' },
+      { rank: 3, name: 'Aarav_777', points: 4210, acc: '80%', badge: '🎯', color: 'from-amber-600 to-orange-600', isMe: true },
+      { rank: 4, name: 'LeoPredictor', points: 3690, acc: '76%', badge: '⚽', color: 'from-electric to-blue-600' },
+      { rank: 5, name: 'CricketKing', points: 3310, acc: '74%', badge: '🏏', color: 'from-emerald-500 to-teal-600' },
     ],
     Weekly: [
-      { rank: 1, name: 'ShadowAce', points: 24900, acc: '86%', badge: '👑', color: 'from-gold to-yellow-500' },
-      { rank: 2, name: 'Neha_Sports', points: 22150, acc: '82%', badge: '💎', color: 'from-cyan-400 to-blue-500' },
-      { rank: 3, name: 'KaranStrike', points: 19840, acc: '80%', badge: '⚡', color: 'from-amber-600 to-orange-500' },
-      { rank: 4, name: 'Aarav_Pro', points: 18450, acc: '78%', badge: '🎯', color: 'from-electric to-neon', isMe: true },
-      { rank: 5, name: 'Madridista7', points: 16200, acc: '75%', badge: '⚽', color: 'from-purple-500 to-indigo-600' },
-      { rank: 6, name: 'RohanHoops', points: 14900, acc: '71%', badge: '🏀', color: 'from-orange-500 to-red-500' },
+      { rank: 1, name: 'ShadowAce', points: 26400, acc: '87%', badge: '👑', color: 'from-gold to-yellow-500' },
+      { rank: 2, name: 'Neha_Pro', points: 23100, acc: '83%', badge: '💎', color: 'from-cyan-400 to-blue-500' },
+      { rank: 3, name: 'KaranStrike', points: 20850, acc: '81%', badge: '⚡', color: 'from-amber-600 to-orange-500' },
+      { rank: 4, name: 'Aarav_777', points: 19450, acc: '80%', badge: '🎯', color: 'from-electric to-neon', isMe: true },
+      { rank: 5, name: 'Madridista7', points: 16900, acc: '75%', badge: '⚽', color: 'from-purple-500 to-indigo-600' },
     ],
     Monthly: [
-      { rank: 1, name: 'GrandMaster_BZ', points: 98400, acc: '89%', badge: '🏆', color: 'from-gold to-amber-500' },
-      { rank: 2, name: 'ShadowAce', points: 91200, acc: '85%', badge: '👑', color: 'from-slate-300 to-slate-400' },
-      { rank: 3, name: 'Aarav_Pro', points: 84600, acc: '78%', badge: '🎯', color: 'from-amber-600 to-orange-700', isMe: true },
-      { rank: 4, name: 'CricGuru_IN', points: 79300, acc: '77%', badge: '🏏', color: 'from-blue-500 to-indigo-600' },
-      { rank: 5, name: 'TennisQueen', points: 72100, acc: '74%', badge: '🎾', color: 'from-lime-500 to-emerald-600' },
+      { rank: 1, name: 'Legend_777', points: 104200, acc: '90%', badge: '🏆', color: 'from-gold to-amber-500' },
+      { rank: 2, name: 'ShadowAce', points: 93800, acc: '86%', badge: '👑', color: 'from-slate-200 to-slate-400' },
+      { rank: 3, name: 'Aarav_777', points: 86900, acc: '80%', badge: '🎯', color: 'from-amber-600 to-orange-700', isMe: true },
+      { rank: 4, name: 'CricGuru_IN', points: 81400, acc: '77%', badge: '🏏', color: 'from-blue-500 to-indigo-600' },
     ]
   },
 
-  // Rewards & Challenges
   challenges: [
     { id: 'c1', title: 'Predict 3 Live Matches', progress: 2, total: 3, reward: 500, claimed: false },
     { id: 'c2', title: 'Cricket Streak Master', progress: 3, total: 3, reward: 750, claimed: false },
@@ -549,121 +547,134 @@ const state = {
     { name: 'Sharp Shooter', desc: '5 Correct Predictions in a row', icon: '🎯', unlocked: true },
     { name: 'IPL Strategist', desc: '20 Cricket Predictions', icon: '🏏', unlocked: true },
     { name: 'UCL Night Owl', desc: 'Predict 10 Football Matches', icon: '⚽', unlocked: true },
-    { name: 'MVP Legend', desc: 'Reach Top 3 Leaderboard', icon: '🏆', unlocked: false },
+    { name: '777bet MVP', desc: 'Reach Top 3 Leaderboard', icon: '🏆', unlocked: false },
   ],
 
-  // Notifications
   notifications: [
-    { id: 'n1', type: 'live', title: 'Mumbai Titans vs Chennai Kings is LIVE!', desc: 'Your favourite team Mumbai Titans is batting at 184/4.', time: '2m ago', unread: true, matchId: 'm1' },
-    { id: 'n2', type: 'goal', title: 'GOAL! Real Madrid 2 - 1 Man City', desc: 'Vinícius Jr scores in the 68th minute!', time: '9m ago', unread: true, matchId: 'm2' },
-    { id: 'n3', type: 'win', title: 'Prediction Settled: +540 VP!', desc: 'Your Over 2.5 Goals prediction was CORRECT.', time: '1h ago', unread: true },
-    { id: 'n4', type: 'challenge', title: 'New Weekly Sports Quiz Available', desc: 'Answer today’s trivia and earn +250 Virtual Points.', time: '3h ago', unread: false },
-    { id: 'n5', type: 'badge', title: 'Achievement Unlocked: Sharp Shooter 🎯', desc: 'You hit 5 accurate predictions in a row!', time: 'Yesterday', unread: false },
+    { id: 'n1', type: 'live', title: 'Mumbai Titans vs Chennai Kings is LIVE!', desc: 'Your favourite team Mumbai Titans is flying at 192/4!', time: '1m ago', unread: true, matchId: 'm1' },
+    { id: 'n2', type: 'goal', title: 'GOAL! Real Madrid 2 - 1 Man City', desc: 'Vinícius Jr strikes in the 68th minute!', time: '8m ago', unread: true, matchId: 'm2' },
+    { id: 'n3', type: 'win', title: 'Prediction Settled: +540 VP!', desc: 'Your Over 2.5 Goals prediction won!', time: '1h ago', unread: true },
+    { id: 'n4', type: 'challenge', title: 'Daily Sports Quiz Ready', desc: 'Answer today’s trivia and claim +250 Virtual Points.', time: '3h ago', unread: false },
+    { id: 'n5', type: 'badge', title: 'Badge Unlocked: Sharp Shooter 🎯', desc: '5 consecutive accurate predictions!', time: 'Yesterday', unread: false },
   ]
 };
 
 // ============================================================================
-// 2. SVG 3D ASSETS & UI HELPERS
+// 2. CUSTOM 3D SVG BRANDING & ILLUSTRATIONS
 // ============================================================================
-function getLogoSVG(size = 32) {
+function get777BetLogo(size = 'md') {
+  const sizes = {
+    sm: { box: 'w-8 h-8 rounded-xl', num: 'text-xs', title: 'text-base', sub: 'text-[10px]' },
+    md: { box: 'w-9 h-9 rounded-xl', num: 'text-sm', title: 'text-lg', sub: 'text-xs' },
+    lg: { box: 'w-14 h-14 rounded-2xl', num: 'text-xl', title: 'text-3xl', sub: 'text-base' }
+  }[size] || { box: 'w-9 h-9 rounded-xl', num: 'text-sm', title: 'text-lg', sub: 'text-xs' };
+
   return `
   <div class="flex items-center gap-2 select-none">
-    <div class="relative flex items-center justify-center rounded-xl bg-gradient-to-br from-electric via-blue-600 to-indigo-900 shadow-lg shadow-blue-500/40 border border-white/25" style="width:${size}px;height:${size}px;">
-      <svg class="w-3/5 h-3/5 text-white drop-shadow" viewBox="0 0 24 24" fill="none">
-        <path d="M5 4L19 20M19 4L5 20" stroke="url(#xGrad)" stroke-width="3.2" stroke-linecap="round"/>
-        <circle cx="12" cy="12" r="3" fill="#00FF87"/>
-        <defs>
-          <linearGradient id="xGrad" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#FFFFFF"/>
-            <stop offset="1" stop-color="#00D4FF"/>
-          </linearGradient>
-        </defs>
-      </svg>
+    <div class="${sizes.box} relative flex items-center justify-center bg-gradient-to-br from-electric via-blue-600 to-indigo-950 border border-white/30 shadow-[0_6px_20px_rgba(0,136,255,0.45)] overflow-hidden shrink-0">
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/25 to-transparent"></div>
+      <span class="relative z-10 font-display font-black ${sizes.num} tracking-tighter bg-gradient-to-b from-gold via-yellow-300 to-amber-500 bg-clip-text text-transparent drop-shadow">777</span>
     </div>
-    <div class="font-display font-black tracking-tight leading-none">
-      <span class="text-white text-lg">BETZONE</span>
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-electric to-neon text-xl ml-0.5">X</span>
+    <div class="font-display font-black tracking-tight leading-none flex items-baseline">
+      <span class="${sizes.title} text-gold drop-shadow-[0_2px_8px_rgba(255,215,0,0.3)]">777</span>
+      <span class="${sizes.title} text-white ml-0.5">bet</span>
+      <span class="ml-1 w-1.5 h-1.5 rounded-full bg-neon shadow-[0_0_8px_#00FF87]"></span>
     </div>
   </div>`;
 }
 
-function get3DFootballSVG(sizeClass = "w-28 h-28") {
+function get3DFootballSVG(cls = 'w-28 h-28') {
   return `
-  <svg class="${sizeClass} drop-shadow-[0_18px_25px_rgba(0,136,255,0.45)]" viewBox="0 0 120 120" fill="none">
+  <svg class="${cls} drop-shadow-[0_18px_28px_rgba(0,136,255,0.45)]" viewBox="0 0 120 120" fill="none">
     <defs>
-      <radialGradient id="ballShade" cx="35%" cy="30%" r="70%">
+      <radialGradient id="b777" cx="35%" cy="28%" r="72%">
         <stop offset="0%" stop-color="#FFFFFF"/>
         <stop offset="55%" stop-color="#CBD5E1"/>
         <stop offset="100%" stop-color="#1E293B"/>
       </radialGradient>
-      <linearGradient id="neonRim" x1="0" y1="0" x2="120" y2="120">
-        <stop offset="0%" stop-color="#0088FF"/>
+      <linearGradient id="rim777" x1="0" y1="0" x2="120" y2="120">
+        <stop offset="0%" stop-color="#00E0FF"/>
+        <stop offset="50%" stop-color="#0088FF"/>
         <stop offset="100%" stop-color="#00FF87"/>
       </linearGradient>
     </defs>
-    <circle cx="60" cy="60" r="52" fill="url(#ballShade)" stroke="url(#neonRim)" stroke-width="3"/>
-    <polygon points="60,36 78,49 71,70 49,70 42,49" fill="#0F172A"/>
-    <path d="M60 36V10M78 49L105 39M71 70L88 100M49 70L32 100M42 49L15 39" stroke="#0F172A" stroke-width="3.5" stroke-linecap="round"/>
-    <polygon points="60,8 72,16 48,16" fill="#0F172A"/>
-    <polygon points="108,42 102,60 95,40" fill="#0F172A"/>
-    <polygon points="12,42 18,60 25,40" fill="#0F172A"/>
-    <ellipse cx="42" cy="30" rx="14" ry="7" transform="rotate(-25 42 30)" fill="white" fill-opacity="0.45"/>
+    <circle cx="60" cy="60" r="52" fill="url(#b777)" stroke="url(#rim777)" stroke-width="3.2"/>
+    <polygon points="60,36 78,49 71,70 49,70 42,49" fill="#0B132B"/>
+    <path d="M60 36V10M78 49L105 39M71 70L88 100M49 70L32 100M42 49L15 39" stroke="#0B132B" stroke-width="3.5" stroke-linecap="round"/>
+    <polygon points="60,8 72,16 48,16" fill="#0B132B"/>
+    <polygon points="108,42 102,60 95,40" fill="#0B132B"/>
+    <polygon points="12,42 18,60 25,40" fill="#0B132B"/>
+    <ellipse cx="42" cy="29" rx="14" ry="7" transform="rotate(-24 42 29)" fill="white" fill-opacity="0.5"/>
+  </svg>`;
+}
+
+function get3DTrophySVG(cls = 'w-20 h-20') {
+  return `
+  <svg class="${cls} drop-shadow-[0_12px_22px_rgba(255,215,0,0.4)]" viewBox="0 0 100 100" fill="none">
+    <defs>
+      <linearGradient id="goldCup" x1="20" y1="10" x2="80" y2="90" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#FFF29C"/>
+        <stop offset="50%" stop-color="#FFD700"/>
+        <stop offset="100%" stop-color="#D97706"/>
+      </linearGradient>
+    </defs>
+    <path d="M30 20H70V42C70 55 61 65 50 65C39 65 30 55 30 42V20Z" fill="url(#goldCup)"/>
+    <path d="M30 25H18C18 40 24 46 30 46M70 25H82C82 40 76 46 70 46" stroke="url(#goldCup)" stroke-width="5" stroke-linecap="round"/>
+    <rect x="45" y="64" width="10" height="14" fill="url(#goldCup)"/>
+    <rect x="33" y="78" width="34" height="8" rx="4" fill="url(#goldCup)"/>
+    <ellipse cx="43" cy="33" rx="4" ry="10" fill="white" fill-opacity="0.45"/>
   </svg>`;
 }
 
 function getTeamBadge(team, size = 'w-10 h-10') {
   return `
-  <div class="${size} rounded-2xl flex items-center justify-center font-display font-extrabold text-xs tracking-wider shadow-lg border border-white/20 shrink-0 relative overflow-hidden keep-white"
-       style="background: linear-gradient(135deg, ${team.color}dd, #090F24);">
+  <div class="${size} rounded-2xl flex items-center justify-center font-display font-extrabold text-xs tracking-wider shadow-lg border border-white/25 shrink-0 relative overflow-hidden keep-white"
+       style="background: linear-gradient(135deg, ${team.color}e6, #081028);">
     <span class="relative z-10 drop-shadow">${team.short}</span>
-    <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent"></div>
   </div>`;
 }
 
+// ============================================================================
+// 3. TOASTS, MODALS & NAVIGATION HELPERS
+// ============================================================================
 function showToast(title, subtitle = '', type = 'info') {
   const container = document.getElementById('toast-container');
-  const colors = {
-    success: 'border-neon/50 bg-emerald-950/90 text-neon',
+  const styles = {
+    success: 'border-neon/50 bg-emerald-950/95 text-neon',
     info: 'border-electric/50 bg-navy-900/95 text-cyanGlow',
-    warn: 'border-gold/50 bg-amber-950/90 text-gold'
+    warn: 'border-gold/50 bg-amber-950/95 text-gold'
   };
-  const toast = document.createElement('div');
-  toast.className = `glass-card ${colors[type] || colors.info} rounded-2xl px-4 py-3 shadow-2xl border flex items-center justify-between gap-3 screen-enter pointer-events-auto`;
-  toast.innerHTML = `
-    <div>
-      <div class="text-xs font-bold tracking-wide">${title}</div>
-      ${subtitle ? `<div class="text-[11px] text-slate-300 mt-0.5">${subtitle}</div>` : ''}
+  const el = document.createElement('div');
+  el.className = `glass-card ${styles[type] || styles.info} rounded-2xl px-4 py-3 shadow-2xl border flex items-center justify-between gap-3 anim-enter pointer-events-auto`;
+  el.innerHTML = `
+    <div class="min-w-0">
+      <div class="text-xs font-extrabold tracking-wide truncate">${title}</div>
+      ${subtitle ? `<div class="text-[11px] text-slate-300 mt-0.5 truncate">${subtitle}</div>` : ''}
     </div>
-    <span class="text-xs opacity-70">✓</span>
+    <span class="text-xs font-bold shrink-0">✓</span>
   `;
-  container.appendChild(toast);
+  container.appendChild(el);
   setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transition = 'opacity 0.3s ease';
-    setTimeout(() => toast.remove(), 300);
-  }, 2600);
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.25s ease';
+    setTimeout(() => el.remove(), 250);
+  }, 2400);
 }
 
 function openModal(html) {
-  const overlay = document.getElementById('modal-overlay');
-  const content = document.getElementById('modal-content');
-  content.innerHTML = html;
-  overlay.classList.remove('hidden');
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.remove('hidden');
 }
-
 function closeModal() {
   document.getElementById('modal-overlay').classList.add('hidden');
 }
-
 document.getElementById('modal-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'modal-overlay') closeModal();
 });
 
-// ============================================================================
-// 3. NAVIGATION ENGINE (ALL 14 SCREENS)
-// ============================================================================
-function navigate(screen, params = {}, addToHistory = true) {
-  if (addToHistory && state.currentScreen !== screen && state.currentScreen !== 'splash') {
+function navigate(screen, params = {}, pushHistory = true) {
+  if (pushHistory && state.currentScreen !== screen && state.currentScreen !== 'splash') {
     state.history.push({ screen: state.currentScreen, params: state.screenParams });
   }
   state.currentScreen = screen;
@@ -685,27 +696,21 @@ function goBack() {
 function renderBottomNav() {
   const nav = document.getElementById('bottom-nav');
   const fab = document.getElementById('fab-live');
-  const hiddenNavScreens = ['splash', 'onboarding', 'login'];
-
-  if (hiddenNavScreens.includes(state.currentScreen)) {
+  if (['splash', 'onboarding', 'login'].includes(state.currentScreen)) {
     nav.classList.add('hidden');
     fab.classList.add('hidden');
     return;
   }
 
   nav.classList.remove('hidden');
-  if (['home', 'sports', 'match-details'].includes(state.currentScreen)) {
-    fab.classList.remove('hidden');
-  } else {
-    fab.classList.add('hidden');
-  }
+  fab.classList.toggle('hidden', !['home', 'sports', 'match-details'].includes(state.currentScreen));
 
   const tabs = [
     { id: 'home', label: 'Home', icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>` },
     { id: 'sports', label: 'Sports', icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/>` },
     { id: 'predictions', label: 'Predict', icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>` },
     { id: 'leaderboard', label: 'Ranks', icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>` },
-    { id: 'profile', label: 'Profile', icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>` },
+    { id: 'profile', label: 'Profile', icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>` }
   ];
 
   const activeGroup = {
@@ -717,57 +722,51 @@ function renderBottomNav() {
   }[state.currentScreen] || 'home';
 
   nav.innerHTML = tabs.map(t => {
-    const isActive = activeGroup === t.id;
+    const active = activeGroup === t.id;
     return `
-      <button onclick="navigate('${t.id}')" class="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all ${isActive ? 'text-electric' : 'text-slate-400 hover:text-white'}">
-        ${isActive ? `<span class="absolute -top-2 w-7 h-1 rounded-full bg-gradient-to-r from-electric to-neon shadow-[0_0_10px_#0088FF]"></span>` : ''}
-        <svg class="w-5 h-5 mb-0.5 ${isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(0,136,255,0.7)]' : ''} transition-transform" fill="none" stroke="currentColor" stroke-width="${isActive ? 2.4 : 1.8}" viewBox="0 0 24 24">
-          ${t.icon}
-        </svg>
-        <span class="text-[10px] font-semibold tracking-wide">${t.label}</span>
-      </button>
-    `;
+      <button onclick="navigate('${t.id}')" class="relative min-w-[56px] py-1.5 px-2 rounded-xl flex flex-col items-center justify-center transition-all ${active ? 'text-electric' : 'text-slate-400'}">
+        ${active ? `<span class="absolute -top-2 w-8 h-1 rounded-full bg-gradient-to-r from-electric via-cyanGlow to-neon shadow-[0_0_12px_#0088FF]"></span>` : ''}
+        <svg class="w-5 h-5 mb-0.5 transition-transform ${active ? 'scale-110' : ''}" fill="none" stroke="currentColor" stroke-width="${active ? 2.4 : 1.9}" viewBox="0 0 24 24">${t.icon}</svg>
+        <span class="text-[10px] font-bold tracking-wide">${t.label}</span>
+      </button>`;
   }).join('');
 }
 
 function getHeader(title = null, showBack = false) {
-  const unreadCount = state.notifications.filter(n => n.unread).length;
+  const unread = state.notifications.filter(n => n.unread).length;
   return `
-  <header class="sticky top-0 z-30 px-4 pt-3 pb-3 backdrop-blur-xl bg-navy-950/75 border-b border-white/5 flex items-center justify-between">
-    <div class="flex items-center gap-2.5">
+  <header class="sticky top-0 z-30 px-4 pb-3 backdrop-blur-xl bg-navy-950/80 border-b border-white/10 flex items-center justify-between"
+          style="padding-top: calc(12px + env(safe-area-inset-top));">
+    <div class="flex items-center gap-2.5 min-w-0">
       ${showBack ? `
-        <button onclick="goBack()" class="w-9 h-9 rounded-xl glass-card flex items-center justify-center text-white active:scale-90">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-        </button>
-      ` : ''}
-      ${title ? `<h1 class="font-display font-bold text-lg tracking-tight">${title}</h1>` : getLogoSVG(34)}
+        <button onclick="goBack()" aria-label="Back" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center active:scale-90 shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>` : ''}
+      ${title ? `<h1 class="font-display font-extrabold text-lg tracking-tight truncate">${title}</h1>` : get777BetLogo('md')}
     </div>
 
-    <div class="flex items-center gap-2">
-      <!-- Virtual Points Pill -->
-      <button onclick="navigate('rewards')" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border border-gold/30 active:scale-95 transition">
-        <span class="w-4 h-4 rounded-full bg-gradient-to-br from-gold to-amber-500 text-navy-950 font-black text-[10px] flex items-center justify-center shadow">V</span>
-        <span class="font-mono font-bold text-xs text-gold">${state.user.virtualPoints.toLocaleString()}</span>
+    <div class="flex items-center gap-2 shrink-0">
+      <button onclick="navigate('rewards')" class="h-9 px-2.5 rounded-full bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border border-gold/40 flex items-center gap-1.5 active:scale-95 transition">
+        <span class="w-4 h-4 rounded-full bg-gradient-to-br from-gold to-amber-500 text-navy-950 font-black text-[10px] flex items-center justify-center">V</span>
+        <span class="font-mono font-extrabold text-xs text-gold">${state.user.virtualPoints.toLocaleString()}</span>
       </button>
 
-      <!-- Notifications -->
-      <button onclick="navigate('notifications')" class="relative w-9 h-9 rounded-xl glass-card flex items-center justify-center active:scale-90">
-        <svg class="w-5 h-5 text-slate-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="navigate('notifications')" aria-label="Notifications" class="relative w-10 h-10 rounded-xl glass-card flex items-center justify-center active:scale-90">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
         </svg>
-        ${unreadCount > 0 ? `<span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center border border-navy-950">${unreadCount}</span>` : ''}
+        ${unread > 0 ? `<span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center border border-navy-950 keep-white">${unread}</span>` : ''}
       </button>
 
-      <!-- Profile Avatar -->
-      <button onclick="navigate('profile')" class="w-9 h-9 rounded-xl bg-gradient-to-br ${state.user.avatarColor} p-0.5 active:scale-90">
-        <div class="w-full h-full rounded-[10px] bg-navy-900 flex items-center justify-center font-display font-bold text-xs text-white">AS</div>
+      <button onclick="navigate('profile')" aria-label="Profile" class="w-10 h-10 rounded-xl bg-gradient-to-br from-electric via-cyanGlow to-neon p-0.5 active:scale-90">
+        <div class="w-full h-full rounded-[10px] bg-navy-950 flex items-center justify-center font-display font-black text-xs text-white keep-white">AS</div>
       </button>
     </div>
   </header>`;
 }
 
 // ============================================================================
-// 4. ALL 14 SCREEN RENDERERS
+// 4. ALL 14 SCREENS
 // ============================================================================
 
 // SCREEN 1: SPLASH SCREEN
@@ -777,101 +776,87 @@ function renderSplash() {
   }, 2800);
 
   return `
-  <div class="flex-1 flex flex-col items-center justify-between px-6 py-12 relative overflow-hidden screen-enter bg-gradient-to-b from-[#061232] via-[#040814] to-[#02040a]">
-    <!-- Glowing Rings -->
-    <div class="absolute top-1/3 w-72 h-72 rounded-full bg-electric/20 blur-3xl animate-pulse"></div>
-    <div class="absolute bottom-1/4 w-56 h-56 rounded-full bg-neon/10 blur-3xl"></div>
+  <div class="flex-1 flex flex-col items-center justify-between px-6 py-12 relative overflow-hidden anim-enter bg-gradient-to-b from-[#07163F] via-[#04091B] to-[#02040B]">
+    <div class="absolute top-1/4 w-80 h-80 rounded-full bg-electric/25 blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-1/4 w-64 h-64 rounded-full bg-gold/10 blur-3xl"></div>
 
-    <div class="text-xs font-mono tracking-[0.25em] text-electric/80 uppercase">Sports Tech Engine v4.0</div>
+    <div class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono tracking-[0.25em] text-cyanGlow uppercase">
+      Next-Gen Sports Arena
+    </div>
 
     <div class="flex flex-col items-center text-center z-10">
-      <div class="animate-float mb-6 relative">
-        <div class="animate-spin-ball">${get3DFootballSVG('w-32 h-32')}</div>
+      <div class="anim-float mb-6">
+        <div class="anim-spin">${get3DFootballSVG('w-32 h-32')}</div>
       </div>
-
-      <div class="scale-125 mb-5">${getLogoSVG(42)}</div>
-      <p class="font-display font-semibold tracking-[0.2em] text-xs text-cyanGlow uppercase mt-2">
+      <div class="mb-4">${get777BetLogo('lg')}</div>
+      <p class="font-display font-bold tracking-[0.24em] text-xs text-neon uppercase">
         YOUR SPORTS. YOUR MOMENT.
       </p>
     </div>
 
-    <div class="w-full max-w-xs z-10 space-y-4">
-      <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-        <div class="h-full bg-gradient-to-r from-electric via-cyanGlow to-neon rounded-full" style="animation: progressLoad 2.6s ease forwards;"></div>
+    <div class="w-full max-w-xs z-10 space-y-3">
+      <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden p-0.5">
+        <div class="h-full bg-gradient-to-r from-electric via-cyanGlow to-neon rounded-full" style="animation: loadBar 2.6s ease forwards;"></div>
       </div>
       <div class="flex justify-between items-center text-[11px] text-slate-400">
-        <span>Loading Live Arena...</span>
-        <button onclick="navigate('onboarding', {}, false)" class="text-electric font-semibold underline">Tap to skip</button>
+        <span>Syncing Live Stadiums...</span>
+        <button onclick="navigate('onboarding', {}, false)" class="text-gold font-bold">Skip →</button>
       </div>
     </div>
   </div>`;
 }
 
-// SCREEN 2: ONBOARDING (3 SLIDES)
+// SCREEN 2: ONBOARDING (3 SWIPEABLE SCREENS)
 function renderOnboarding() {
   const slides = [
     {
       title: 'Experience Every Moment.',
-      desc: 'Discover live sports, matches and global tournaments in real-time with 3D analytics.',
+      desc: 'Discover live sports, real-time scores, and premier global tournaments in one 3D arena.',
       visual: `
         <div class="relative flex items-center justify-center h-56">
-          <div class="absolute w-44 h-44 rounded-full bg-electric/25 blur-2xl"></div>
-          <div class="animate-float flex items-center gap-4">
+          <div class="absolute w-48 h-48 rounded-full bg-electric/25 blur-2xl"></div>
+          <div class="anim-float flex items-center gap-3">
             ${get3DFootballSVG('w-28 h-28')}
-            <div class="w-24 h-28 rounded-3xl glass-card p-3 flex flex-col justify-between border-electric/40 rotate-6">
-              <span class="px-2 py-0.5 rounded-full bg-rose-500 text-[9px] font-bold w-fit keep-white">● LIVE</span>
-              <div>
-                <div class="text-[10px] text-slate-400">UCL FINAL</div>
-                <div class="font-display font-black text-lg text-white">2 : 1</div>
-              </div>
+            <div class="w-28 rounded-3xl glass-card p-3.5 border-electric/40 rotate-6 space-y-2">
+              <span class="px-2 py-0.5 rounded-full bg-rose-500 text-[9px] font-black text-white keep-white">● LIVE</span>
+              <div class="text-[10px] text-cyanGlow font-bold">IPL ARENA</div>
+              <div class="font-mono font-black text-lg">192/4</div>
             </div>
           </div>
         </div>`
     },
     {
       title: 'Predict. Compete. Achieve.',
-      desc: 'Participate in exciting sports prediction challenges using 100% free virtual points.',
+      desc: 'Test your sports IQ with 100% free Virtual Points predictions and rise up the ranks.',
       visual: `
         <div class="relative flex items-center justify-center h-56">
-          <div class="absolute w-44 h-44 rounded-full bg-neon/20 blur-2xl"></div>
-          <div class="animate-float glass-card rounded-3xl p-5 w-64 border-neon/40">
-            <div class="flex justify-between items-center mb-3">
-              <span class="text-xs font-bold text-neon">VIRTUAL PREDICTION</span>
-              <span class="text-gold font-mono text-xs font-bold">+850 VP</span>
+          <div class="absolute w-48 h-48 rounded-full bg-neon/20 blur-2xl"></div>
+          <div class="anim-float glass-card rounded-3xl p-5 w-64 border-neon/40 space-y-2.5">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-black text-neon tracking-wider">777BET PREDICT</span>
+              <span class="text-xs font-mono font-bold text-gold">+775 VP</span>
             </div>
-            <div class="space-y-2">
-              <div class="p-2.5 rounded-xl bg-electric/20 border border-electric flex justify-between text-xs font-semibold">
-                <span>Mumbai Titans</span><span class="text-neon">✓ Selected</span>
-              </div>
-              <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex justify-between text-xs text-slate-400">
-                <span>Chennai Kings</span><span>2.35x</span>
-              </div>
+            <div class="p-2.5 rounded-xl bg-neon/15 border border-neon flex justify-between text-xs font-bold">
+              <span>Mumbai Titans</span><span class="text-neon">✓ Picked</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex justify-between text-xs text-slate-400">
+              <span>Chennai Kings</span><span>2.55x</span>
             </div>
           </div>
         </div>`
     },
     {
       title: 'Your Sports Universe.',
-      desc: 'Follow your favourite teams, climb leaderboards, and unlock elite trophy badges.',
+      desc: 'Follow your favourite teams, unlock elite trophies, and claim daily Virtual Point rewards.',
       visual: `
         <div class="relative flex items-center justify-center h-56">
-          <div class="absolute w-44 h-44 rounded-full bg-gold/20 blur-2xl"></div>
-          <div class="animate-float grid grid-cols-2 gap-3 w-60">
-            <div class="glass-card rounded-2xl p-3 text-center border-gold/40">
-              <div class="text-3xl mb-1">🏆</div>
-              <div class="text-xs font-bold">Rank #1</div>
-            </div>
-            <div class="glass-card rounded-2xl p-3 text-center border-electric/40">
-              <div class="text-3xl mb-1">🏏</div>
-              <div class="text-xs font-bold">Cricket</div>
-            </div>
-            <div class="glass-card rounded-2xl p-3 text-center border-neon/40">
-              <div class="text-3xl mb-1">⚽</div>
-              <div class="text-xs font-bold">Football</div>
-            </div>
-            <div class="glass-card rounded-2xl p-3 text-center border-purple-500/40">
-              <div class="text-3xl mb-1">🏀</div>
-              <div class="text-xs font-bold">Basketball</div>
+          <div class="absolute w-48 h-48 rounded-full bg-gold/20 blur-2xl"></div>
+          <div class="anim-float flex flex-col items-center gap-3">
+            ${get3DTrophySVG('w-24 h-24')}
+            <div class="flex gap-2">
+              <span class="px-3 py-1.5 rounded-xl glass-card text-xs font-bold">🏏 Cricket</span>
+              <span class="px-3 py-1.5 rounded-xl glass-card text-xs font-bold">⚽ Football</span>
+              <span class="px-3 py-1.5 rounded-xl glass-card text-xs font-bold">🏀 NBA</span>
             </div>
           </div>
         </div>`
@@ -882,103 +867,111 @@ function renderOnboarding() {
   const isLast = state.onboardingStep === 2;
 
   return `
-  <div class="flex-1 flex flex-col justify-between px-6 py-8 screen-enter">
+  <div ontouchstart="state.touchStartX=event.touches[0].clientX"
+       ontouchend="handleOnboardingSwipe(event.changedTouches[0].clientX)"
+       class="flex-1 flex flex-col justify-between px-6 py-8 anim-enter select-none">
     <div class="flex items-center justify-between">
-      ${getLogoSVG(28)}
-      <button onclick="navigate('login', {}, false)" class="px-3.5 py-1.5 rounded-full glass-card text-xs font-semibold text-slate-300">Skip</button>
+      ${get777BetLogo('sm')}
+      <button onclick="navigate('login', {}, false)" class="px-4 py-2 rounded-full glass-card text-xs font-bold text-slate-300 active:scale-95">Skip</button>
     </div>
 
     <div class="my-auto">
       ${s.visual}
-      <div class="text-center mt-4 space-y-3 px-2">
-        <h2 class="font-display font-extrabold text-3xl leading-tight bg-gradient-to-r from-white via-blue-100 to-cyanGlow bg-clip-text text-transparent">
+      <div class="text-center mt-4 space-y-2.5 px-1">
+        <h2 class="font-display font-black text-3xl leading-tight bg-gradient-to-r from-white via-cyan-100 to-cyanGlow bg-clip-text text-transparent">
           ${s.title}
         </h2>
         <p class="text-sm text-slate-400 leading-relaxed">${s.desc}</p>
+        <p class="text-[10px] text-slate-500 pt-1">← Swipe to explore →</p>
       </div>
     </div>
 
     <div class="space-y-5">
-      <!-- Dots Indicator -->
       <div class="flex justify-center gap-2">
-        ${slides.map((_, idx) => `
-          <button onclick="state.onboardingStep=${idx}; renderApp();" class="h-2 rounded-full transition-all ${idx === state.onboardingStep ? 'w-8 bg-gradient-to-r from-electric to-neon' : 'w-2 bg-white/20'}"></button>
+        ${slides.map((_, i) => `
+          <button onclick="state.onboardingStep=${i}; renderApp();"
+            class="h-2 rounded-full transition-all ${i === state.onboardingStep ? 'w-9 bg-gradient-to-r from-electric to-neon' : 'w-2.5 bg-white/20'}"></button>
         `).join('')}
       </div>
 
       <div class="flex gap-3">
-        ${state.onboardingStep > 0 ? `
-          <button onclick="state.onboardingStep--; renderApp();" class="px-5 py-4 rounded-2xl glass-card font-bold text-sm">Back</button>
-        ` : ''}
-        <button onclick="${isLast ? "navigate('login', {}, false)" : "state.onboardingStep++; renderApp();"}" class="flex-1 py-4 rounded-2xl btn-3d font-display font-bold text-base text-white tracking-wide keep-white">
-          ${isLast ? 'Get Started →' : 'Continue'}
+        ${state.onboardingStep > 0 ? `<button onclick="state.onboardingStep--; renderApp();" class="px-5 py-4 rounded-2xl glass-card font-bold text-sm">Back</button>` : ''}
+        <button onclick="${isLast ? "navigate('login', {}, false)" : "state.onboardingStep++; renderApp();"}"
+          class="flex-1 py-4 rounded-2xl btn-3d-blue font-display font-extrabold text-base tracking-wide">
+          ${isLast ? 'Get Started →' : 'Next'}
         </button>
       </div>
     </div>
   </div>`;
 }
 
+function handleOnboardingSwipe(endX) {
+  const diff = state.touchStartX - endX;
+  if (diff > 45 && state.onboardingStep < 2) { state.onboardingStep++; renderApp(); }
+  else if (diff < -45 && state.onboardingStep > 0) { state.onboardingStep--; renderApp(); }
+}
+
 // SCREEN 3: LOGIN
 function renderLogin() {
   return `
-  <div class="screen-scroll no-nav px-6 py-8 flex flex-col justify-between screen-enter">
+  <div class="screen-scroll no-nav px-5 py-8 flex flex-col justify-between anim-enter">
     <div>
-      <div class="flex justify-between items-center mb-8">
-        ${getLogoSVG(34)}
-        <span class="px-2.5 py-1 rounded-full bg-neon/10 border border-neon/30 text-neon text-[10px] font-bold">FREE TO PLAY</span>
+      <div class="flex items-center justify-between mb-8">
+        ${get777BetLogo('md')}
+        <span class="px-2.5 py-1 rounded-full bg-neon/15 border border-neon/35 text-neon text-[10px] font-extrabold">100% FREE</span>
       </div>
 
-      <h1 class="font-display font-extrabold text-2xl mb-1">Welcome Back, Champion</h1>
-      <p class="text-sm text-slate-400 mb-6">Sign in to access live matches & virtual predictions.</p>
+      <h1 class="font-display font-black text-2xl mb-1">Enter the 777bet Arena</h1>
+      <p class="text-sm text-slate-400 mb-6">Sign in with your mobile number or Google account.</p>
 
       <div class="glass-card rounded-3xl p-5 space-y-4">
         ${state.loginStep === 'phone' ? `
           <div>
-            <label class="text-xs font-semibold text-slate-300 mb-2 block">Mobile Number</label>
+            <label class="text-xs font-bold text-slate-300 mb-2 block">Mobile Number</label>
             <div class="flex gap-2">
-              <select onchange="state.countryCode=this.value" class="bg-navy-900/90 border border-white/15 rounded-xl px-3 py-3 text-sm font-semibold text-white outline-none">
+              <select onchange="state.countryCode=this.value" class="bg-navy-900 border border-white/15 rounded-2xl px-3 py-3.5 text-sm font-bold text-white outline-none">
                 <option value="+91" ${state.countryCode==='+91'?'selected':''}>🇮🇳 +91</option>
                 <option value="+1" ${state.countryCode==='+1'?'selected':''}>🇺🇸 +1</option>
                 <option value="+44" ${state.countryCode==='+44'?'selected':''}>🇬🇧 +44</option>
                 <option value="+971" ${state.countryCode==='+971'?'selected':''}>🇦🇪 +971</option>
               </select>
-              <input type="tel" value="${state.phoneNumber}" oninput="state.phoneNumber=this.value" placeholder="Enter 10-digit number"
-                class="flex-1 bg-navy-900/90 border border-white/15 focus:border-electric rounded-xl px-4 py-3 text-sm font-mono text-white outline-none"/>
+              <input type="tel" inputmode="numeric" value="${state.phoneNumber}" oninput="state.phoneNumber=this.value" placeholder="Mobile number"
+                class="flex-1 min-w-0 bg-navy-900 border border-white/15 focus:border-electric rounded-2xl px-4 py-3.5 text-base font-mono text-white outline-none"/>
             </div>
           </div>
-
-          <button onclick="state.loginStep='otp'; showToast('OTP Sent!', 'Demo OTP 4829 sent to ' + state.countryCode + ' ' + state.phoneNumber, 'success'); renderApp();"
-            class="w-full py-3.5 rounded-xl btn-3d font-display font-bold text-sm text-white keep-white">
+          <button onclick="state.loginStep='otp'; showToast('OTP Sent!', 'Demo code 7771 sent to ' + state.countryCode + ' ' + state.phoneNumber, 'success'); renderApp();"
+            class="w-full py-4 rounded-2xl btn-3d-blue font-display font-extrabold text-sm">
             Send OTP Verification
           </button>
         ` : `
           <div>
             <div class="flex justify-between items-center mb-2">
-              <label class="text-xs font-semibold text-slate-300">Enter 4-Digit OTP</label>
-              <button onclick="state.loginStep='phone'; renderApp();" class="text-xs text-electric font-semibold">Change Number</button>
+              <label class="text-xs font-bold text-slate-300">Verify 4-Digit OTP</label>
+              <button onclick="state.loginStep='phone'; renderApp();" class="text-xs text-electric font-bold">Edit Number</button>
             </div>
             <p class="text-[11px] text-slate-400 mb-3">Sent to ${state.countryCode} ${state.phoneNumber}</p>
-            <div class="grid grid-cols-4 gap-3 mb-4">
-              ${state.otpValue.map((v, i) => `
-                <input type="text" maxlength="1" value="${v}" oninput="state.otpValue[${i}]=this.value"
-                  class="h-14 text-center font-mono font-bold text-xl bg-navy-900/90 border border-electric/50 rounded-xl text-white outline-none"/>
+            <div class="grid grid-cols-4 gap-2.5 mb-4">
+              ${state.otpDigits.map((d, idx) => `
+                <input id="otp-${idx}" type="tel" inputmode="numeric" maxlength="1" value="${d}"
+                  oninput="handleOtpInput(${idx}, this.value)"
+                  class="h-14 text-center font-mono font-black text-xl bg-navy-900 border border-electric/50 focus:border-neon rounded-2xl text-white outline-none"/>
               `).join('')}
             </div>
-            <button onclick="showToast('Welcome to BETZONE X!', '+250 Daily Bonus Ready', 'success'); navigate('home', {}, false);"
-              class="w-full py-3.5 rounded-xl btn-neon font-display font-bold text-sm">
-              Verify & Enter Arena →
+            <button onclick="showToast('Welcome to 777bet!', 'Your arena is ready', 'success'); navigate('home', {}, false);"
+              class="w-full py-4 rounded-2xl btn-3d-neon font-display font-extrabold text-sm">
+              Verify & Launch 777bet →
             </button>
           </div>
         `}
 
-        <div class="relative flex items-center py-2">
+        <div class="relative flex items-center py-1">
           <div class="flex-grow border-t border-white/10"></div>
-          <span class="mx-3 text-[11px] text-slate-400 uppercase">or continue with</span>
+          <span class="mx-3 text-[11px] text-slate-400 uppercase font-semibold">or</span>
           <div class="flex-grow border-t border-white/10"></div>
         </div>
 
         <button onclick="showToast('Google Sign-In Success', 'Signed in as Aarav Sharma', 'success'); navigate('home', {}, false);"
-          class="w-full py-3.5 rounded-xl bg-white text-slate-900 font-bold text-sm flex items-center justify-center gap-2.5 shadow active:scale-95 transition">
+          class="w-full py-3.5 rounded-2xl bg-white text-slate-900 font-extrabold text-sm flex items-center justify-center gap-2.5 shadow-lg active:scale-95 transition">
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
             <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
@@ -992,37 +985,61 @@ function renderLogin() {
 
     <div class="mt-6 text-center space-y-2">
       <p class="text-[11px] text-slate-400">
-        By continuing, you agree to our
-        <button onclick="openLegalModal('Terms & Conditions')" class="text-electric underline">Terms & Conditions</button> &
-        <button onclick="openLegalModal('Privacy Policy')" class="text-electric underline">Privacy Policy</button>.
+        By continuing, you accept our
+        <button onclick="openInfoModal('Terms & Conditions')" class="text-electric underline font-semibold">Terms & Conditions</button> and
+        <button onclick="openInfoModal('Privacy Policy')" class="text-electric underline font-semibold">Privacy Policy</button>.
       </p>
-      <p class="text-[10px] text-neon/80 font-medium">100% Virtual Entertainment • No Real-Money Wagering</p>
+      <p class="text-[10px] text-neon font-bold">Virtual Entertainment Only • Zero Real-Money Wagering</p>
     </div>
   </div>`;
 }
 
+function handleOtpInput(idx, val) {
+  state.otpDigits[idx] = val.slice(-1);
+  if (val && idx < 3) {
+    const next = document.getElementById(`otp-${idx + 1}`);
+    if (next) next.focus();
+  }
+}
+
 // SCREEN 4: HOME DASHBOARD
 function renderHome() {
-  const liveMatches = state.matches.filter(m => m.status === 'LIVE' && (state.selectedSport === 'All' || m.sport === state.selectedSport));
-  const upcomingMatches = state.matches.filter(m => m.status === 'UPCOMING' && (state.selectedSport === 'All' || m.sport === state.selectedSport));
+  const live = state.matches.filter(m => m.status === 'LIVE' && (state.selectedSport === 'All' || m.sport === state.selectedSport));
+  const upcoming = state.matches.filter(m => m.status === 'UPCOMING' && (state.selectedSport === 'All' || m.sport === state.selectedSport));
 
   return `
   ${getHeader()}
-  <div class="screen-scroll px-4 pt-3 space-y-5 screen-enter">
-    <!-- Animated Top Promo Banner -->
-    <div class="relative rounded-3xl p-5 overflow-hidden bg-gradient-to-br from-[#0055FF] via-[#0B2265] to-[#040B24] border border-electric/40 shadow-2xl shadow-blue-900/40">
-      <div class="absolute -right-6 -bottom-6 opacity-35 animate-float">${get3DFootballSVG('w-36 h-36')}</div>
-      <div class="relative z-10 max-w-[72%] space-y-2">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neon/20 border border-neon/40 text-neon text-[10px] font-bold tracking-wider">
-          ⚡ SEASON 2026 LIVE
+  <div class="screen-scroll px-4 pt-2.5 space-y-5 anim-enter">
+
+    <!-- Live Score Marquee Ticker -->
+    <div class="glass-card rounded-2xl py-2 px-3 overflow-hidden border-electric/25">
+      <div class="anim-ticker gap-6 text-[11px] font-mono">
+        ${[...state.matches.filter(m=>m.status==='LIVE'), ...state.matches.filter(m=>m.status==='LIVE')].map(m => `
+          <button onclick="navigate('match-details', { matchId: '${m.id}' })" class="flex items-center gap-2 shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+            <span class="font-bold text-cyanGlow">${m.teamA.short} ${m.teamA.score}</span>
+            <span class="text-slate-400">vs</span>
+            <span class="font-bold text-white">${m.teamB.short} ${m.teamB.score}</span>
+            <span class="text-neon">(${m.timer})</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Premium 3D Animated Hero Banner -->
+    <div class="relative rounded-3xl p-5 overflow-hidden bg-gradient-to-br from-[#0055FF] via-[#0B2268] to-[#040B24] border border-electric/40 shadow-[0_20px_50px_rgba(0,85,255,0.35)]">
+      <div class="absolute -right-5 -bottom-5 opacity-40 anim-float">${get3DFootballSVG('w-36 h-36')}</div>
+      <div class="relative z-10 max-w-[75%] space-y-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold/20 border border-gold/40 text-gold text-[10px] font-extrabold tracking-wider">
+          ★ 777BET ARENA 2026
         </span>
         <h2 class="font-display font-black text-xl leading-tight text-white keep-white">
           WELCOME TO THE SPORTS UNIVERSE.
         </h2>
-        <p class="text-[11px] text-blue-100/80">Predict matches with Virtual Points & win exclusive trophies.</p>
-        <div class="pt-1 flex gap-2">
-          <button onclick="navigate('predictions')" class="px-3.5 py-2 rounded-xl btn-neon text-xs font-extrabold">Predict Now</button>
-          <button onclick="toggleSkeletonDemo()" class="px-3 py-2 rounded-xl bg-white/10 text-white text-xs font-semibold keep-white">Rewards</button>
+        <p class="text-[11px] text-blue-100/85">Predict live sports with Virtual Points & dominate the leaderboard.</p>
+        <div class="pt-1 flex flex-wrap gap-2">
+          <button onclick="navigate('predictions')" class="px-4 py-2.5 rounded-xl btn-3d-neon text-xs font-extrabold">Predict Now</button>
+          <button onclick="navigate('rewards')" class="px-3.5 py-2.5 rounded-xl bg-white/15 text-white text-xs font-bold keep-white">🎁 Daily +250 VP</button>
         </div>
       </div>
     </div>
@@ -1030,17 +1047,17 @@ function renderHome() {
     <!-- Sports Category Horizontal Navigation -->
     <div>
       <div class="flex items-center justify-between mb-2.5">
-        <h3 class="font-display font-bold text-sm tracking-wide">Sports Arena</h3>
-        <button onclick="navigate('sports')" class="text-xs text-electric font-semibold">View All →</button>
+        <h3 class="font-display font-extrabold text-sm tracking-wide">Sports Categories</h3>
+        <button onclick="navigate('sports')" class="text-xs text-electric font-bold">Explore All →</button>
       </div>
-      <div class="flex gap-2.5 overflow-x-auto pb-1">
+      <div class="flex gap-2.5 overflow-x-auto pb-1 snap-x">
         <button onclick="state.selectedSport='All'; renderApp();"
-          class="shrink-0 px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition ${state.selectedSport==='All' ? 'btn-3d text-white keep-white' : 'glass-card text-slate-300'}">
+          class="snap-start shrink-0 px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center gap-1.5 transition ${state.selectedSport==='All' ? 'btn-3d-blue' : 'glass-card text-slate-300'}">
           🌐 All
         </button>
         ${state.sportsCategories.map(c => `
           <button onclick="state.selectedSport='${c.id}'; renderApp();"
-            class="shrink-0 px-3.5 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition ${state.selectedSport===c.id ? 'btn-3d text-white keep-white' : 'glass-card text-slate-300'}">
+            class="snap-start shrink-0 px-3.5 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition ${state.selectedSport===c.id ? 'btn-3d-blue' : 'glass-card text-slate-300'}">
             <span>${c.icon}</span><span>${c.name}</span>
           </button>
         `).join('')}
@@ -1051,17 +1068,21 @@ function renderHome() {
     <div>
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-live-dot"></span>
-          <h3 class="font-display font-bold text-base">Live Matches</h3>
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-500 anim-live"></span>
+          <h3 class="font-display font-extrabold text-base">Live Matches</h3>
         </div>
-        <span class="text-[11px] font-mono text-slate-400">${liveMatches.length} Active</span>
+        <button onclick="triggerSkeletonRefresh()" class="text-[11px] font-bold text-cyanGlow">↻ Refresh</button>
       </div>
 
-      ${state.isLoadingSkeleton ? renderSkeletonCards() : `
+      ${state.isSkeletonLoading ? `
         <div class="space-y-3">
-          ${liveMatches.length ? liveMatches.map(m => renderMatchCard(m)).join('') : `
-            <div class="glass-card rounded-2xl p-5 text-center text-xs text-slate-400">
-              No live ${state.selectedSport} matches right now. Check Upcoming below!
+          ${[1,2].map(() => `<div class="glass-card rounded-3xl p-4 space-y-3"><div class="h-4 w-1/3 rounded skeleton"></div><div class="h-10 rounded-xl skeleton"></div><div class="h-10 rounded-xl skeleton"></div></div>`).join('')}
+        </div>
+      ` : `
+        <div class="space-y-3">
+          ${live.length ? live.map(m => renderMatchCard(m)).join('') : `
+            <div class="glass-card rounded-3xl p-5 text-center text-xs text-slate-400">
+              No live ${state.selectedSport} matches right now. Explore Upcoming below!
             </div>
           `}
         </div>
@@ -1071,30 +1092,30 @@ function renderHome() {
     <!-- UPCOMING MATCHES -->
     <div>
       <div class="flex items-center justify-between mb-3">
-        <h3 class="font-display font-bold text-base">Upcoming Matches</h3>
-        <button onclick="state.sportsPageFilter='Upcoming'; navigate('sports');" class="text-xs text-electric font-semibold">Schedule →</button>
+        <h3 class="font-display font-extrabold text-base">Upcoming Matches</h3>
+        <button onclick="state.sportsStatusTab='Upcoming'; navigate('sports');" class="text-xs text-electric font-bold">Schedule →</button>
       </div>
-      <div class="flex gap-3 overflow-x-auto pb-1">
-        ${upcomingMatches.map(m => `
-          <div onclick="navigate('match-details', { matchId: '${m.id}' })" class="shrink-0 w-72 glass-card glass-card-hover rounded-3xl p-4 cursor-pointer">
+      <div class="flex gap-3 overflow-x-auto pb-1 snap-x">
+        ${upcoming.map(m => `
+          <div onclick="navigate('match-details', { matchId: '${m.id}' })" class="snap-start shrink-0 w-72 glass-card glass-press rounded-3xl p-4 cursor-pointer">
             <div class="flex items-center justify-between text-[10px] mb-3">
-              <span class="px-2 py-0.5 rounded-md bg-electric/15 text-electric font-bold">${m.tournament}</span>
-              <span class="font-mono text-gold font-semibold">⏳ ${m.timer}</span>
+              <span class="px-2 py-0.5 rounded-md bg-electric/15 text-cyanGlow font-bold">${m.tournament}</span>
+              <span class="font-mono text-gold font-bold">⏳ ${m.timer}</span>
             </div>
             <div class="flex items-center justify-between gap-2 my-2">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 min-w-0">
                 ${getTeamBadge(m.teamA, 'w-9 h-9')}
-                <span class="font-display font-bold text-xs">${m.teamA.name}</span>
+                <span class="font-display font-bold text-xs truncate">${m.teamA.name}</span>
               </div>
-              <span class="text-[11px] font-bold text-slate-400">VS</span>
-              <div class="flex items-center gap-2">
-                <span class="font-display font-bold text-xs text-right">${m.teamB.name}</span>
+              <span class="text-[10px] font-black text-slate-400 shrink-0">VS</span>
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="font-display font-bold text-xs truncate text-right">${m.teamB.name}</span>
                 ${getTeamBadge(m.teamB, 'w-9 h-9')}
               </div>
             </div>
             <div class="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
               <span>📅 ${m.date} • ${m.time}</span>
-              <span class="text-neon font-semibold">Predict →</span>
+              <span class="text-neon font-bold">Predict →</span>
             </div>
           </div>
         `).join('')}
@@ -1104,17 +1125,17 @@ function renderHome() {
     <!-- POPULAR TOURNAMENTS -->
     <div>
       <div class="flex items-center justify-between mb-3">
-        <h3 class="font-display font-bold text-base">Popular Tournaments</h3>
-        <span class="text-[11px] text-gold font-semibold">Top Leagues</span>
+        <h3 class="font-display font-extrabold text-base">Popular Tournaments</h3>
+        <span class="text-[11px] text-gold font-bold">6 Major Leagues</span>
       </div>
       <div class="grid grid-cols-2 gap-3">
         ${state.tournaments.map(t => `
-          <div onclick="state.selectedTournamentFilter='${t.sport}'; navigate('sports');"
-            class="rounded-2xl p-3.5 bg-gradient-to-br ${t.gradient} border border-white/15 shadow-lg relative overflow-hidden cursor-pointer active:scale-95 transition">
+          <div onclick="state.selectedSportCategoryPage='${t.sport}'; navigate('sports');"
+            class="rounded-3xl p-4 bg-gradient-to-br ${t.gradient} border border-white/15 shadow-lg relative overflow-hidden cursor-pointer active:scale-95 transition">
             <div class="absolute -right-2 -bottom-2 text-4xl opacity-25">${t.icon}</div>
-            <span class="px-2 py-0.5 rounded-full bg-black/30 text-[9px] font-bold text-white keep-white">${t.badge}</span>
+            <span class="px-2 py-0.5 rounded-full bg-black/35 text-[9px] font-extrabold text-white keep-white">${t.badge}</span>
             <div class="mt-2 font-display font-extrabold text-sm text-white keep-white">${t.name}</div>
-            <div class="text-[10px] text-white/75 keep-white">${t.sport} • ${t.teams}</div>
+            <div class="text-[10px] text-white/80 keep-white">${t.sport} • ${t.teams}</div>
           </div>
         `).join('')}
       </div>
@@ -1122,147 +1143,152 @@ function renderHome() {
   </div>`;
 }
 
+function triggerSkeletonRefresh() {
+  state.isSkeletonLoading = true;
+  renderApp();
+  setTimeout(() => {
+    state.isSkeletonLoading = false;
+    showToast('Scores Updated!', 'Live data synced', 'info');
+    renderApp();
+  }, 600);
+}
+
 function renderMatchCard(m) {
   return `
-  <div class="glass-card glass-card-hover rounded-3xl p-4 relative overflow-hidden">
+  <div class="glass-card glass-press rounded-3xl p-4 relative overflow-hidden">
     <div class="flex items-center justify-between mb-3">
-      <div class="flex items-center gap-2">
-        <span class="text-[11px] font-semibold text-cyanGlow">${m.tournament}</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="font-mono text-[11px] text-slate-300">${m.timer}</span>
-        <span class="px-2 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/50 text-rose-400 text-[10px] font-extrabold flex items-center gap-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-live-dot"></span> LIVE
-        </span>
+      <span class="text-[11px] font-bold text-cyanGlow truncate pr-2">${m.tournament}</span>
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="font-mono text-[11px] text-slate-300 font-semibold">${m.timer}</span>
+        ${m.status === 'LIVE' ? `
+          <span class="px-2 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/50 text-rose-400 text-[10px] font-black flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 anim-live"></span> LIVE
+          </span>
+        ` : `<span class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-bold">${m.status}</span>`}
       </div>
     </div>
 
     <div class="space-y-2.5 my-2">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5 min-w-0">
           ${getTeamBadge(m.teamA)}
-          <div>
-            <div class="font-display font-bold text-sm">${m.teamA.name}</div>
-            <div class="text-[10px] text-slate-400">${m.teamA.fav ? '★ Favourite' : m.sport}</div>
+          <div class="min-w-0">
+            <div class="font-display font-bold text-sm truncate">${m.teamA.name}</div>
+            <button onclick="toggleFav('${m.id}', 'A')" class="text-[10px] ${m.teamA.fav ? 'text-gold font-bold' : 'text-slate-400'}">
+              ${m.teamA.fav ? '★ Favourite' : '☆ Follow'}
+            </button>
           </div>
         </div>
-        <div class="font-mono font-extrabold text-lg text-white">${m.teamA.score}</div>
+        <div class="font-mono font-black text-lg text-white shrink-0">${m.teamA.score}</div>
       </div>
 
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5 min-w-0">
           ${getTeamBadge(m.teamB)}
-          <div>
-            <div class="font-display font-bold text-sm">${m.teamB.name}</div>
-            <div class="text-[10px] text-slate-400">${m.teamB.fav ? '★ Favourite' : m.sport}</div>
+          <div class="min-w-0">
+            <div class="font-display font-bold text-sm truncate">${m.teamB.name}</div>
+            <button onclick="toggleFav('${m.id}', 'B')" class="text-[10px] ${m.teamB.fav ? 'text-gold font-bold' : 'text-slate-400'}">
+              ${m.teamB.fav ? '★ Favourite' : '☆ Follow'}
+            </button>
           </div>
         </div>
-        <div class="font-mono font-extrabold text-lg text-slate-200">${m.teamB.score}</div>
+        <div class="font-mono font-black text-lg text-slate-200 shrink-0">${m.teamB.score}</div>
       </div>
     </div>
 
     <div class="mt-3 pt-3 border-t border-white/10 flex gap-2">
-      <button onclick="navigate('match-details', { matchId: '${m.id}' })" class="flex-1 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold transition">
-        Match Details
+      <button onclick="navigate('match-details', { matchId: '${m.id}' })" class="flex-1 py-2.5 rounded-xl bg-white/10 text-xs font-bold active:scale-95 transition">
+        Details
       </button>
-      <button onclick="navigate('live-centre', { matchId: '${m.id}' })" class="px-3.5 py-2 rounded-xl bg-electric/20 border border-electric/40 text-electric text-xs font-bold">
-        Live Centre
+      <button onclick="navigate('live-centre', { matchId: '${m.id}' })" class="px-3.5 py-2.5 rounded-xl bg-electric/20 border border-electric/40 text-electric text-xs font-bold active:scale-95 transition">
+        Live Hub
       </button>
-      <button onclick="openPredictionForMatch('${m.id}')" class="px-3.5 py-2 rounded-xl btn-neon text-xs font-extrabold">
+      <button onclick="openPredictionForMatch('${m.id}')" class="px-4 py-2.5 rounded-xl btn-3d-neon text-xs font-extrabold">
         Predict
       </button>
     </div>
   </div>`;
 }
 
-function renderSkeletonCards() {
-  return [1, 2].map(() => `
-    <div class="glass-card rounded-3xl p-4 space-y-3">
-      <div class="h-4 w-1/3 rounded skeleton"></div>
-      <div class="h-8 w-full rounded-xl skeleton"></div>
-      <div class="h-8 w-full rounded-xl skeleton"></div>
-    </div>
-  `).join('');
-}
-
-function toggleSkeletonDemo() {
-  navigate('rewards');
+function toggleFav(matchId, side) {
+  const m = state.matches.find(x => x.id === matchId);
+  if (!m) return;
+  const team = side === 'A' ? m.teamA : m.teamB;
+  team.fav = !team.fav;
+  if (team.fav && !state.user.favTeams.includes(team.name)) state.user.favTeams.push(team.name);
+  showToast(team.fav ? `Followed ${team.name}` : `Unfollowed ${team.name}`, '', 'info');
+  renderApp();
 }
 
 // SCREEN 5: SPORTS CATEGORY
 function renderSports() {
-  const activeSport = state.selectedTournamentFilter !== 'All' ? state.selectedTournamentFilter : (state.selectedSport === 'All' ? 'All Sports' : state.selectedSport);
+  const sport = state.selectedSportCategoryPage;
   const filtered = state.matches.filter(m => {
-    const matchStatus = state.sportsPageFilter === 'All' || m.status.toLowerCase() === state.sportsPageFilter.toLowerCase();
-    const matchSport = activeSport === 'All Sports' || m.sport === activeSport;
+    const sMatch = state.sportsStatusTab === 'All' || m.status.toLowerCase() === state.sportsStatusTab.toLowerCase();
+    const cMatch = sport === 'All' || m.sport === sport;
     const q = state.sportsSearch.toLowerCase();
-    const matchSearch = !q || m.teamA.name.toLowerCase().includes(q) || m.teamB.name.toLowerCase().includes(q) || m.tournament.toLowerCase().includes(q);
-    return matchStatus && matchSport && matchSearch;
+    const qMatch = !q || m.teamA.name.toLowerCase().includes(q) || m.teamB.name.toLowerCase().includes(q) || m.tournament.toLowerCase().includes(q);
+    return sMatch && cMatch && qMatch;
   });
 
   return `
   ${getHeader('Sports Arena', true)}
-  <div class="screen-scroll px-4 pt-3 space-y-4 screen-enter">
-    <!-- Sport Hero Banner -->
-    <div class="glass-card rounded-3xl p-4 flex items-center justify-between bg-gradient-to-r from-electric/20 to-neon/10 border-electric/30">
+  <div class="screen-scroll px-4 pt-3 space-y-4 anim-enter">
+    <div class="glass-card rounded-3xl p-4 flex items-center justify-between bg-gradient-to-r from-electric/20 via-navy-900 to-neon/10 border-electric/30">
       <div>
-        <div class="text-[10px] font-bold text-neon uppercase tracking-widest">Category Explorer</div>
-        <h2 class="font-display font-black text-xl mt-0.5">${activeSport}</h2>
-        <p class="text-xs text-slate-400">Live scores, schedules & favourites</p>
+        <span class="text-[10px] font-extrabold text-neon uppercase tracking-widest">777bet Sport Hub</span>
+        <h2 class="font-display font-black text-xl mt-0.5">${sport === 'All' ? 'All Sports' : sport}</h2>
+        <p class="text-xs text-slate-400">Live, Upcoming & Completed matches</p>
       </div>
-      <div class="text-5xl animate-float">🏟️</div>
+      <div class="text-5xl anim-float">🏟️</div>
     </div>
 
-    <!-- Search Bar -->
+    <!-- Search -->
     <div class="relative">
       <input type="text" value="${state.sportsSearch}" oninput="state.sportsSearch=this.value; renderApp();"
-        placeholder="Search teams, tournaments..."
-        class="w-full glass-card rounded-2xl pl-10 pr-4 py-3 text-xs text-white placeholder-slate-400 outline-none focus:border-electric"/>
-      <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        placeholder="Search teams or tournaments..."
+        class="w-full glass-card rounded-2xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-slate-400 outline-none focus:border-electric"/>
+      <svg class="w-4 h-4 text-slate-400 absolute left-4 top-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
       </svg>
     </div>
 
-    <!-- Sport Chips Filter -->
+    <!-- Sport Filter Chips -->
     <div class="flex gap-2 overflow-x-auto pb-1">
-      <button onclick="state.selectedTournamentFilter='All'; state.selectedSport='All'; renderApp();"
-        class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold ${activeSport==='All Sports' ? 'bg-electric text-white keep-white' : 'glass-card text-slate-300'}">All</button>
+      <button onclick="state.selectedSportCategoryPage='All'; renderApp();"
+        class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold ${sport==='All' ? 'btn-3d-blue' : 'glass-card text-slate-300'}">All</button>
       ${state.sportsCategories.map(c => `
-        <button onclick="state.selectedTournamentFilter='${c.id}'; renderApp();"
-          class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold ${activeSport===c.id ? 'bg-electric text-white keep-white' : 'glass-card text-slate-300'}">${c.icon} ${c.name}</button>
+        <button onclick="state.selectedSportCategoryPage='${c.id}'; renderApp();"
+          class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold ${sport===c.id ? 'btn-3d-blue' : 'glass-card text-slate-300'}">${c.icon} ${c.name}</button>
       `).join('')}
     </div>
 
-    <!-- Status Tabs: Live / Upcoming / Completed -->
-    <div class="grid grid-cols-3 gap-2 p-1 glass-card rounded-2xl">
+    <!-- Status Tabs -->
+    <div class="grid grid-cols-3 gap-1.5 p-1 glass-card rounded-2xl">
       ${['Live', 'Upcoming', 'Completed'].map(tab => `
-        <button onclick="state.sportsPageFilter='${tab}'; renderApp();"
-          class="py-2 rounded-xl text-xs font-bold transition ${state.sportsPageFilter===tab ? 'btn-3d text-white keep-white' : 'text-slate-400'}">
-          ${tab}
-        </button>
+        <button onclick="state.sportsStatusTab='${tab}'; renderApp();"
+          class="py-2.5 rounded-xl text-xs font-extrabold transition ${state.sportsStatusTab===tab ? 'btn-3d-blue' : 'text-slate-400'}">${tab}</button>
       `).join('')}
     </div>
 
-    <!-- Favourite Teams Quick Strip -->
+    <!-- Favourite Teams Strip -->
     <div>
-      <div class="text-xs font-bold text-slate-300 mb-2">★ Your Favourite Teams</div>
-      <div class="flex gap-2 overflow-x-auto">
-        ${state.user.favTeams.map(team => `
-          <button onclick="state.sportsSearch='${team}'; state.sportsPageFilter='All'; renderApp();" class="shrink-0 px-3 py-1.5 rounded-full bg-gold/15 border border-gold/30 text-gold text-[11px] font-bold">
-            ★ ${team}
-          </button>
+      <div class="text-xs font-bold text-slate-300 mb-2">★ Quick Filter: Favourite Teams</div>
+      <div class="flex gap-2 overflow-x-auto pb-1">
+        ${state.user.favTeams.map(t => `
+          <button onclick="state.sportsSearch='${t}'; state.sportsStatusTab='All'; renderApp();"
+            class="shrink-0 px-3 py-1.5 rounded-full bg-gold/15 border border-gold/35 text-gold text-[11px] font-bold">★ ${t}</button>
         `).join('')}
       </div>
     </div>
 
-    <!-- Matches List -->
     <div class="space-y-3">
       ${filtered.length ? filtered.map(m => renderMatchCard(m)).join('') : `
-        <div class="glass-card rounded-3xl p-8 text-center">
-          <div class="text-3xl mb-2">🔍</div>
-          <div class="font-bold text-sm">No matches found</div>
-          <p class="text-xs text-slate-400 mt-1">Try switching status tabs or clearing your search.</p>
-          <button onclick="state.sportsSearch=''; state.sportsPageFilter='All'; state.selectedTournamentFilter='All'; renderApp();" class="mt-3 px-4 py-2 rounded-xl bg-electric text-xs font-bold text-white keep-white">Reset Filters</button>
+        <div class="glass-card rounded-3xl p-7 text-center space-y-2">
+          <div class="text-3xl">🔍</div>
+          <div class="font-bold text-sm">No matches match your filter</div>
+          <button onclick="state.sportsSearch=''; state.sportsStatusTab='All'; state.selectedSportCategoryPage='All'; renderApp();"
+            class="mt-2 px-4 py-2 rounded-xl btn-3d-blue text-xs font-bold">Show All Matches</button>
         </div>
       `}
     </div>
@@ -1274,35 +1300,35 @@ function renderMatchDetails() {
   const m = state.matches.find(x => x.id === state.screenParams.matchId) || state.matches[0];
   const tabs = ['Overview', 'Statistics', 'Commentary', 'Lineups', 'History'];
 
-  let tabBody = '';
+  let body = '';
   if (state.matchDetailsTab === 'Overview') {
-    tabBody = `
-      <div class="glass-card rounded-2xl p-4 space-y-3">
+    body = `
+      <div class="glass-card rounded-3xl p-4 space-y-3">
         <div class="flex justify-between text-xs"><span class="text-slate-400">Tournament</span><span class="font-bold text-cyanGlow">${m.tournament}</span></div>
         <div class="flex justify-between text-xs"><span class="text-slate-400">Venue</span><span class="font-semibold">${m.venue}</span></div>
         <div class="flex justify-between text-xs"><span class="text-slate-400">Schedule</span><span class="font-semibold">${m.date} • ${m.time}</span></div>
         <div class="pt-2 border-t border-white/10">
-          <div class="text-xs font-bold mb-2">Win Probability Momentum</div>
+          <div class="text-xs font-bold mb-2">Win Momentum</div>
           <div class="h-3 rounded-full bg-white/10 overflow-hidden flex">
-            <div class="bg-electric h-full transition-all duration-700" style="width:${m.stats.possessionA || 55}%"></div>
-            <div class="bg-gold h-full transition-all duration-700" style="width:${m.stats.possessionB || 45}%"></div>
+            <div class="bg-gradient-to-r from-electric to-cyanGlow h-full" style="width:${m.stats.possessionA || 55}%"></div>
+            <div class="bg-gold h-full flex-1"></div>
           </div>
-          <div class="flex justify-between text-[11px] mt-1 font-mono">
-            <span class="text-electric">${m.teamA.short} ${m.stats.possessionA || 55}%</span>
-            <span class="text-gold">${m.stats.possessionB || 45}% ${m.teamB.short}</span>
+          <div class="flex justify-between text-[11px] mt-1.5 font-mono">
+            <span class="text-electric font-bold">${m.teamA.short} ${m.stats.possessionA || 55}%</span>
+            <span class="text-gold font-bold">${m.stats.possessionB || 45}% ${m.teamB.short}</span>
           </div>
         </div>
       </div>`;
   } else if (state.matchDetailsTab === 'Statistics') {
-    const statRows = [
-      { label: 'Possession / Control', a: (m.stats.possessionA||52)+'%', b: (m.stats.possessionB||48)+'%', pctA: m.stats.possessionA||52 },
-      { label: m.sport === 'Cricket' ? 'Run Rate' : 'Shots / Attempts', a: m.stats.runRateA || m.stats.shotsA || 12, b: m.stats.runRateB || m.stats.shotsB || 10, pctA: 58 },
-      { label: m.sport === 'Cricket' ? 'Sixes Hit' : 'On Target', a: m.stats.sixesA || m.stats.onTargetA || 7, b: m.stats.sixesB || m.stats.onTargetB || 5, pctA: 60 },
-      { label: m.sport === 'Cricket' ? 'Boundaries (4s)' : 'Corners', a: m.stats.boundariesA || m.stats.cornersA || 14, b: m.stats.boundariesB || m.stats.cornersB || 11, pctA: 55 }
+    const rows = [
+      { label: 'Control / Momentum', a: (m.stats.possessionA||52)+'%', b: (m.stats.possessionB||48)+'%', pct: m.stats.possessionA||52 },
+      { label: m.sport === 'Cricket' ? 'Run Rate' : 'Attempts', a: m.stats.runRateA || m.stats.shotsA || 12, b: m.stats.runRateB || m.stats.shotsB || 10, pct: 57 },
+      { label: m.sport === 'Cricket' ? 'Sixes' : 'On Target', a: m.stats.sixesA || m.stats.onTargetA || 7, b: m.stats.sixesB || m.stats.onTargetB || 5, pct: 60 },
+      { label: m.sport === 'Cricket' ? 'Boundaries (4s)' : 'Corners / Reb', a: m.stats.foursA || m.stats.cornersA || 14, b: m.stats.foursB || m.stats.cornersB || 11, pct: 56 }
     ];
-    tabBody = `
-      <div class="glass-card rounded-2xl p-4 space-y-4">
-        ${statRows.map(r => `
+    body = `
+      <div class="glass-card rounded-3xl p-4 space-y-4">
+        ${rows.map(r => `
           <div>
             <div class="flex justify-between text-xs font-mono mb-1.5">
               <span class="font-bold text-electric">${r.a}</span>
@@ -1310,62 +1336,53 @@ function renderMatchDetails() {
               <span class="font-bold text-gold">${r.b}</span>
             </div>
             <div class="h-2 rounded-full bg-white/10 overflow-hidden flex">
-              <div class="bg-gradient-to-r from-electric to-cyanGlow" style="width:${r.pctA}%"></div>
+              <div class="bg-electric" style="width:${r.pct}%"></div>
               <div class="bg-gold flex-1"></div>
             </div>
           </div>
         `).join('')}
       </div>`;
   } else if (state.matchDetailsTab === 'Commentary') {
-    tabBody = `
+    body = `
       <div class="space-y-2.5">
         ${m.commentary.map(c => `
           <div class="glass-card rounded-2xl p-3.5 flex gap-3">
-            <div class="shrink-0 text-center">
-              <div class="font-mono font-bold text-xs text-white">${c.time}</div>
-              <div class="text-[9px] font-extrabold ${c.color} mt-0.5">${c.tag}</div>
+            <div class="shrink-0 w-12 text-center">
+              <div class="font-mono font-bold text-xs">${c.time}</div>
+              <div class="text-[9px] font-black ${c.color} mt-0.5">${c.tag}</div>
             </div>
             <p class="text-xs text-slate-300 leading-relaxed">${c.text}</p>
           </div>
         `).join('')}
       </div>`;
   } else if (state.matchDetailsTab === 'Lineups') {
-    tabBody = `
+    body = `
       <div class="grid grid-cols-2 gap-3">
         <div class="glass-card rounded-2xl p-3.5">
           <div class="font-bold text-xs text-electric mb-2">${m.teamA.name}</div>
-          <ul class="space-y-1.5 text-[11px] text-slate-300">
-            ${m.lineupsA.map(p => `<li class="pb-1 border-b border-white/5">${p}</li>`).join('')}
-          </ul>
+          <ul class="space-y-1.5 text-[11px] text-slate-300">${m.lineupsA.map(p => `<li class="pb-1 border-b border-white/5">${p}</li>`).join('')}</ul>
         </div>
         <div class="glass-card rounded-2xl p-3.5">
           <div class="font-bold text-xs text-gold mb-2">${m.teamB.name}</div>
-          <ul class="space-y-1.5 text-[11px] text-slate-300">
-            ${m.lineupsB.map(p => `<li class="pb-1 border-b border-white/5">${p}</li>`).join('')}
-          </ul>
+          <ul class="space-y-1.5 text-[11px] text-slate-300">${m.lineupsB.map(p => `<li class="pb-1 border-b border-white/5">${p}</li>`).join('')}</ul>
         </div>
       </div>`;
   } else {
-    tabBody = `
-      <div class="glass-card rounded-2xl p-4 space-y-2.5">
-        <div class="text-xs font-bold text-slate-300 mb-1">Recent Head-to-Head</div>
-        ${m.history.map(h => `
-          <div class="p-2.5 rounded-xl bg-white/5 text-xs flex items-center justify-between">
-            <span>${h}</span><span class="text-neon text-[10px] font-bold">FINAL</span>
-          </div>
-        `).join('')}
+    body = `
+      <div class="glass-card rounded-3xl p-4 space-y-2.5">
+        <div class="text-xs font-bold text-slate-300">Head-to-Head History</div>
+        ${m.history.map(h => `<div class="p-3 rounded-xl bg-white/5 text-xs flex justify-between"><span>${h}</span><span class="text-neon font-bold text-[10px]">FINAL</span></div>`).join('')}
       </div>`;
   }
 
   return `
   ${getHeader('Match Details', true)}
-  <div class="screen-scroll px-4 pt-3 space-y-4 screen-enter">
-    <!-- Scoreboard Card -->
-    <div class="glass-card rounded-3xl p-5 bg-gradient-to-b from-electric/15 to-navy-900/90 border-electric/30">
+  <div class="screen-scroll px-4 pt-3 space-y-4 anim-enter">
+    <div class="glass-card rounded-3xl p-5 bg-gradient-to-b from-electric/20 to-navy-950/90 border-electric/35">
       <div class="flex justify-between items-center text-[11px] mb-4">
         <span class="text-cyanGlow font-bold">${m.tournament}</span>
         <span class="px-2.5 py-0.5 rounded-full ${m.status==='LIVE' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40' : 'bg-electric/20 text-electric'} font-bold">
-          ${m.status === 'LIVE' ? '● LIVE • ' + m.timer : m.status + ' • ' + m.timer}
+          ${m.status==='LIVE' ? '● LIVE • ' + m.timer : m.status + ' • ' + m.timer}
         </span>
       </div>
 
@@ -1374,9 +1391,9 @@ function renderMatchDetails() {
           ${getTeamBadge(m.teamA, 'w-14 h-14')}
           <div class="font-display font-bold text-sm mt-2">${m.teamA.name}</div>
         </div>
-        <div class="text-center px-2">
-          <div class="font-mono font-black text-2xl tracking-tight text-white">${m.teamA.score} <span class="text-slate-500 text-lg">-</span> ${m.teamB.score}</div>
-          <div class="text-[10px] text-neon mt-1 animate-pulse">Live Updates Active</div>
+        <div class="text-center px-1">
+          <div class="font-mono font-black text-2xl text-white">${m.teamA.score} <span class="text-slate-500 text-base">-</span> ${m.teamB.score}</div>
+          <div class="text-[10px] text-neon mt-1 animate-pulse">Live Sync Active</div>
         </div>
         <div class="flex-1 flex flex-col items-center text-center">
           ${getTeamBadge(m.teamB, 'w-14 h-14')}
@@ -1385,26 +1402,19 @@ function renderMatchDetails() {
       </div>
 
       <div class="grid grid-cols-2 gap-2.5 mt-5">
-        <button onclick="navigate('live-centre', { matchId: '${m.id}' })" class="py-2.5 rounded-xl btn-3d text-xs font-bold text-white keep-white">
-          ⚡ Live Match Centre
-        </button>
-        <button onclick="openPredictionForMatch('${m.id}')" class="py-2.5 rounded-xl btn-neon text-xs font-extrabold">
-          🎯 Make Prediction
-        </button>
+        <button onclick="navigate('live-centre', { matchId: '${m.id}' })" class="py-3 rounded-xl btn-3d-blue text-xs font-extrabold">⚡ Live Centre</button>
+        <button onclick="openPredictionForMatch('${m.id}')" class="py-3 rounded-xl btn-3d-neon text-xs font-extrabold">🎯 Predict</button>
       </div>
     </div>
 
-    <!-- 5 Interactive Tabs -->
     <div class="flex gap-1.5 overflow-x-auto pb-1">
       ${tabs.map(t => `
         <button onclick="state.matchDetailsTab='${t}'; renderApp();"
-          class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition ${state.matchDetailsTab===t ? 'bg-electric text-white keep-white shadow' : 'glass-card text-slate-400'}">
-          ${t}
-        </button>
+          class="shrink-0 px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${state.matchDetailsTab===t ? 'btn-3d-blue' : 'glass-card text-slate-400'}">${t}</button>
       `).join('')}
     </div>
 
-    ${tabBody}
+    ${body}
   </div>`;
 }
 
@@ -1413,17 +1423,15 @@ function renderLiveCentre() {
   const m = state.matches.find(x => x.id === state.screenParams.matchId) || state.matches[0];
   return `
   ${getHeader('Live Match Centre', true)}
-  <div class="screen-scroll px-4 pt-3 space-y-4 screen-enter">
-    <!-- Immersive Live Arena Pitch -->
-    <div class="rounded-3xl p-5 bg-gradient-to-br from-[#062447] via-[#07152E] to-[#040B1A] border border-cyanGlow/30 shadow-2xl relative overflow-hidden">
+  <div class="screen-scroll px-4 pt-3 space-y-4 anim-enter">
+    <div class="rounded-3xl p-5 bg-gradient-to-br from-[#06264D] via-[#07152F] to-[#030A18] border border-cyanGlow/35 shadow-2xl">
       <div class="flex justify-between items-center mb-3">
         <span class="px-2.5 py-1 rounded-full bg-rose-500 text-white text-[10px] font-black tracking-wider flex items-center gap-1.5 keep-white">
-          <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE STREAM TRACKER
+          <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE TRACKER
         </span>
         <span class="font-mono text-xs text-neon font-bold">${m.timer}</span>
       </div>
 
-      <!-- Large Live Scoreboard -->
       <div class="glass-card rounded-2xl p-4 flex items-center justify-between my-2">
         <div class="flex items-center gap-2.5">
           ${getTeamBadge(m.teamA, 'w-11 h-11')}
@@ -1432,7 +1440,7 @@ function renderLiveCentre() {
             <div class="font-mono font-black text-xl text-white">${m.teamA.score}</div>
           </div>
         </div>
-        <div class="text-xs font-bold text-slate-400 px-2">VS</div>
+        <div class="text-xs font-black text-slate-400">VS</div>
         <div class="flex items-center gap-2.5 text-right">
           <div>
             <div class="font-bold text-xs">${m.teamB.short}</div>
@@ -1442,52 +1450,51 @@ function renderLiveCentre() {
         </div>
       </div>
 
-      <!-- Simulated Animated Pitch Visualizer -->
-      <div class="mt-3 rounded-2xl bg-emerald-950/60 border border-neon/25 p-3">
+      <!-- Simulated 2D/3D Pitch Radar -->
+      <div class="mt-3 rounded-2xl bg-emerald-950/70 border border-neon/30 p-3">
         <div class="flex justify-between text-[10px] text-neon font-bold mb-2">
-          <span>● ATTACKING MOMENTUM</span>
-          <span>${m.teamA.short} DOMINATING</span>
+          <span>● MOMENTUM RADAR</span>
+          <span>${m.teamA.short} PRESSING</span>
         </div>
-        <div class="h-10 rounded-xl bg-emerald-900/40 border border-white/10 relative flex items-center px-3 overflow-hidden">
-          <div class="w-1/2 h-full border-r border-white/15"></div>
-          <div class="absolute left-2/3 w-4 h-4 rounded-full bg-neon shadow-[0_0_15px_#00FF87] animate-bounce"></div>
-          <span class="ml-auto text-[10px] font-mono text-white/80">LIVE ACTION</span>
+        <div class="h-12 rounded-xl bg-emerald-900/40 border border-white/15 relative flex items-center px-3 overflow-hidden">
+          <div class="w-1/2 h-full border-r border-white/20"></div>
+          <div class="w-10 h-10 rounded-full border border-white/15 absolute left-1/2 -translate-x-1/2"></div>
+          <div class="absolute left-2/3 w-4 h-4 rounded-full bg-neon shadow-[0_0_18px_#00FF87] animate-bounce"></div>
+          <span class="ml-auto text-[10px] font-mono text-white/80 keep-white">IN PLAY</span>
         </div>
       </div>
     </div>
 
-    <!-- Match Timeline -->
-    <div class="glass-card rounded-2xl p-4">
+    <div class="glass-card rounded-3xl p-4">
       <div class="flex justify-between items-center mb-3">
-        <h3 class="font-display font-bold text-sm">Live Timeline & Commentary</h3>
-        <button onclick="simulateLiveEvent('${m.id}')" class="px-2.5 py-1 rounded-lg bg-electric/20 text-electric text-[10px] font-bold">+ Simulate Play</button>
+        <h3 class="font-display font-bold text-sm">Play-by-Play Timeline</h3>
+        <button onclick="simulateLiveEvent('${m.id}')" class="px-3 py-1.5 rounded-xl btn-3d-blue text-[10px] font-bold">+ Simulate Play</button>
       </div>
-      <div class="space-y-3 border-l-2 border-electric/40 pl-3 ml-1">
+      <div class="space-y-3 border-l-2 border-electric/40 pl-3.5 ml-1">
         ${m.commentary.map(c => `
           <div class="relative">
-            <span class="absolute -left-[19px] top-1 w-2.5 h-2.5 rounded-full bg-neon border-2 border-navy-950"></span>
+            <span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-neon border-2 border-navy-950"></span>
             <div class="flex items-center gap-2">
-              <span class="font-mono font-bold text-xs text-white">${c.time}</span>
-              <span class="px-1.5 py-0.5 rounded bg-white/10 text-[9px] font-bold ${c.color}">${c.tag}</span>
+              <span class="font-mono font-bold text-xs">${c.time}</span>
+              <span class="px-2 py-0.5 rounded bg-white/10 text-[9px] font-black ${c.color}">${c.tag}</span>
             </div>
-            <p class="text-xs text-slate-300 mt-1">${c.text}</p>
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">${c.text}</p>
           </div>
         `).join('')}
       </div>
     </div>
 
-    <!-- Star Player Performance -->
-    <div class="glass-card rounded-2xl p-4">
-      <h3 class="font-display font-bold text-sm mb-3">Top Player Performances</h3>
+    <div class="glass-card rounded-3xl p-4">
+      <h3 class="font-display font-bold text-sm mb-3">Key Player Form</h3>
       <div class="grid grid-cols-2 gap-2.5">
-        <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-          <div class="text-[10px] text-electric font-bold">${m.teamA.short} MVP</div>
-          <div class="font-bold text-xs mt-0.5">${m.lineupsA[0]}</div>
+        <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+          <div class="text-[10px] text-electric font-bold">${m.teamA.short} STAR</div>
+          <div class="font-bold text-xs mt-0.5 truncate">${m.lineupsA[0]}</div>
           <div class="mt-2 h-1.5 rounded-full bg-white/10"><div class="h-full w-4/5 rounded-full bg-neon"></div></div>
         </div>
-        <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-          <div class="text-[10px] text-gold font-bold">${m.teamB.short} MVP</div>
-          <div class="font-bold text-xs mt-0.5">${m.lineupsB[0]}</div>
+        <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+          <div class="text-[10px] text-gold font-bold">${m.teamB.short} STAR</div>
+          <div class="font-bold text-xs mt-0.5 truncate">${m.lineupsB[0]}</div>
           <div class="mt-2 h-1.5 rounded-full bg-white/10"><div class="h-full w-3/4 rounded-full bg-gold"></div></div>
         </div>
       </div>
@@ -1495,55 +1502,52 @@ function renderLiveCentre() {
   </div>`;
 }
 
-function simulateLiveEvent(matchId) {
-  const m = state.matches.find(x => x.id === matchId);
+function simulateLiveEvent(id) {
+  const m = state.matches.find(x => x.id === id);
   if (!m) return;
   if (m.sport === 'Cricket') {
-    m.commentary.unshift({ time: '17.5', tag: 'FOUR!', color: 'text-gold', text: 'SIMULATED: Driven gloriously down the ground for 4 runs!' });
-    m.teamA.score = '188/4';
-    m.timer = '17.5 Ov';
+    m.commentary.unshift({ time: '18.3', tag: 'FOUR!', color: 'text-gold', text: 'LIVE PLAY: Cracking square cut to the boundary!' });
+    m.teamA.score = '196/4';
+    m.timer = '18.3 Ov';
   } else {
-    m.commentary.unshift({ time: "78'", tag: 'CHANCE!', color: 'text-electric', text: 'SIMULATED: Close-range header hits the crossbar!' });
-    m.timer = "78'";
+    m.commentary.unshift({ time: "79'", tag: 'SHOT!', color: 'text-electric', text: 'LIVE PLAY: Screamer from outside the box just inches wide!' });
+    m.timer = "79'";
   }
-  showToast('Live Feed Updated!', `${m.teamA.short} vs ${m.teamB.short}`, 'info');
+  showToast('Live Feed Updated', `${m.teamA.short} vs ${m.teamB.short}`, 'info');
   renderApp();
 }
 
 // SCREEN 8: PREDICTION CENTRE
 function renderPredictions() {
-  const predictable = state.matches.filter(m => m.status !== 'COMPLETED');
-  const activeMatch = predictable.find(m => m.id === state.predictionSlip.matchId) || predictable[0];
-  const markets = Object.keys(activeMatch.predictions);
-  if (!markets.includes(state.predictionSlip.market)) {
-    state.predictionSlip.market = markets[0];
-  }
-  const options = activeMatch.predictions[state.predictionSlip.market];
+  const list = state.matches.filter(m => m.status !== 'COMPLETED');
+  const active = list.find(m => m.id === state.predictionSlip.matchId) || list[0];
+  const markets = Object.keys(active.predictions);
+  if (!markets.includes(state.predictionSlip.market)) state.predictionSlip.market = markets[0];
+  const options = active.predictions[state.predictionSlip.market];
 
   return `
   ${getHeader('Prediction Centre')}
-  <div class="screen-scroll px-4 pt-3 space-y-4 screen-enter">
-    <!-- Compliance Disclaimer Banner -->
-    <div class="rounded-2xl p-3 bg-neon/10 border border-neon/30 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2">
-        <span class="text-lg">🛡️</span>
+  <div class="screen-scroll px-4 pt-3 space-y-4 anim-enter">
+    <div class="rounded-2xl p-3 bg-neon/10 border border-neon/35 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="text-lg shrink-0">🛡️</span>
         <div class="text-[11px] leading-tight">
-          <span class="font-bold text-neon">Virtual Points Only:</span>
-          <span class="text-slate-300">No real money, deposits, or cash prizes. Pure sports fun!</span>
+          <span class="font-extrabold text-neon">Virtual Points Only:</span>
+          <span class="text-slate-300">No real money, deposits, or cash prizes.</span>
         </div>
       </div>
-      <button onclick="navigate('my-predictions')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/10 text-[10px] font-bold">History</button>
+      <button onclick="navigate('my-predictions')" class="shrink-0 px-3 py-1.5 rounded-xl bg-white/10 text-[10px] font-bold">History</button>
     </div>
 
-    <!-- Select Match Horizontal -->
+    <!-- Select Match -->
     <div>
-      <div class="text-xs font-bold text-slate-300 mb-2">1. Choose Match</div>
+      <div class="text-xs font-bold text-slate-300 mb-2">1. Select Match</div>
       <div class="flex gap-2.5 overflow-x-auto pb-1">
-        ${predictable.map(m => {
-          const isSel = m.id === activeMatch.id;
+        ${list.map(m => {
+          const sel = m.id === active.id;
           return `
           <button onclick="state.predictionSlip.matchId='${m.id}'; state.predictionSlip.selection=null; renderApp();"
-            class="shrink-0 px-3.5 py-2.5 rounded-2xl text-left transition ${isSel ? 'btn-3d text-white keep-white' : 'glass-card text-slate-300'}">
+            class="shrink-0 px-3.5 py-2.5 rounded-2xl text-left transition ${sel ? 'btn-3d-blue' : 'glass-card text-slate-300'}">
             <div class="text-[9px] font-bold opacity-80">${m.sport} • ${m.status}</div>
             <div class="font-display font-bold text-xs mt-0.5">${m.teamA.short} vs ${m.teamB.short}</div>
           </button>`;
@@ -1551,64 +1555,54 @@ function renderPredictions() {
       </div>
     </div>
 
-    <!-- Prediction Markets -->
+    <!-- Market & Options -->
     <div class="glass-card rounded-3xl p-4 space-y-4">
       <div class="flex justify-between items-center">
         <div>
-          <div class="text-[10px] text-cyanGlow font-bold">${activeMatch.tournament}</div>
-          <h3 class="font-display font-bold text-base">${activeMatch.teamA.name} vs ${activeMatch.teamB.name}</h3>
+          <div class="text-[10px] text-cyanGlow font-bold">${active.tournament}</div>
+          <h3 class="font-display font-extrabold text-base">${active.teamA.name} vs ${active.teamB.name}</h3>
         </div>
-        <span class="text-xs font-mono text-gold">${activeMatch.timer}</span>
+        <span class="text-xs font-mono text-gold font-bold">${active.timer}</span>
       </div>
 
-      <!-- Market Tabs -->
       <div class="flex gap-2 overflow-x-auto pb-1">
         ${markets.map(mk => `
           <button onclick="state.predictionSlip.market='${mk}'; state.predictionSlip.selection=null; renderApp();"
-            class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold ${state.predictionSlip.market===mk ? 'bg-electric text-white keep-white' : 'bg-white/5 text-slate-400'}">
-            ${mk}
-          </button>
+            class="shrink-0 px-3 py-2 rounded-xl text-xs font-bold ${state.predictionSlip.market===mk ? 'btn-3d-blue' : 'bg-white/5 text-slate-400'}">${mk}</button>
         `).join('')}
       </div>
 
-      <!-- Options -->
       <div class="space-y-2.5">
-        ${options.map(opt => {
-          const chosen = state.predictionSlip.selection === opt.label;
+        ${options.map(o => {
+          const chosen = state.predictionSlip.selection === o.label;
           return `
-          <button onclick="state.predictionSlip.selection='${opt.label}'; state.predictionSlip.multiplier=${opt.mult}; renderApp();"
-            class="w-full p-3.5 rounded-2xl border flex items-center justify-between transition ${chosen ? 'bg-neon/15 border-neon shadow-[0_0_15px_rgba(0,255,135,0.2)]' : 'bg-white/5 border-white/10 hover:border-white/25'}">
-            <span class="font-bold text-sm">${opt.label}</span>
-            <span class="px-2.5 py-1 rounded-lg bg-navy-950/80 font-mono font-bold text-xs ${chosen ? 'text-neon' : 'text-gold'}">${opt.mult}x VP</span>
+          <button onclick="state.predictionSlip.selection='${o.label}'; state.predictionSlip.multiplier=${o.mult}; renderApp();"
+            class="w-full p-3.5 rounded-2xl border flex items-center justify-between transition active:scale-[0.98] ${chosen ? 'bg-neon/15 border-neon shadow-[0_0_18px_rgba(0,255,135,0.2)]' : 'bg-white/5 border-white/10'}">
+            <span class="font-bold text-sm">${o.label}</span>
+            <span class="px-2.5 py-1 rounded-xl bg-navy-950/80 font-mono font-extrabold text-xs ${chosen ? 'text-neon' : 'text-gold'}">${o.mult}x VP</span>
           </button>`;
         }).join('')}
       </div>
 
-      <!-- Stake Selector -->
       <div class="pt-2 border-t border-white/10 space-y-3">
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-slate-400">Select Virtual Points (VP)</span>
-          <span class="font-mono text-gold font-bold">Balance: ${state.user.virtualPoints.toLocaleString()} VP</span>
+        <div class="flex justify-between text-xs">
+          <span class="text-slate-400">Virtual Points Stake</span>
+          <span class="font-mono text-gold font-bold">Bal: ${state.user.virtualPoints.toLocaleString()} VP</span>
         </div>
         <div class="grid grid-cols-4 gap-2">
           ${[100, 250, 500, 1000].map(amt => `
             <button onclick="state.predictionSlip.stake=${amt}; renderApp();"
-              class="py-2 rounded-xl font-mono text-xs font-bold transition ${state.predictionSlip.stake===amt ? 'bg-gold text-navy-950' : 'bg-white/5 text-slate-300'}">
-              ${amt}
-            </button>
+              class="py-2.5 rounded-xl font-mono text-xs font-extrabold transition ${state.predictionSlip.stake===amt ? 'btn-3d-gold' : 'bg-white/5 text-slate-300'}">${amt}</button>
           `).join('')}
         </div>
 
-        <div class="p-3 rounded-2xl bg-navy-950/60 flex justify-between items-center text-xs">
-          <span class="text-slate-400">Potential Virtual Return</span>
-          <span class="font-mono font-black text-base text-neon">
-            +${Math.round(state.predictionSlip.stake * state.predictionSlip.multiplier)} VP
-          </span>
+        <div class="p-3.5 rounded-2xl bg-navy-950/70 flex justify-between items-center text-xs">
+          <span class="text-slate-400">Estimated Virtual Return</span>
+          <span class="font-mono font-black text-base text-neon">+${Math.round(state.predictionSlip.stake * state.predictionSlip.multiplier)} VP</span>
         </div>
 
-        <button onclick="submitVirtualPrediction('${activeMatch.id}')"
-          class="w-full py-3.5 rounded-2xl btn-neon font-display font-extrabold text-sm">
-          Confirm Virtual Prediction →
+        <button onclick="submitPrediction('${active.id}')" class="w-full py-4 rounded-2xl btn-3d-neon font-display font-extrabold text-sm">
+          Lock Virtual Prediction →
         </button>
       </div>
     </div>
@@ -1621,20 +1615,13 @@ function openPredictionForMatch(matchId) {
   navigate('predictions');
 }
 
-function submitVirtualPrediction(matchId) {
+function submitPrediction(matchId) {
   const slip = state.predictionSlip;
-  if (!slip.selection) {
-    showToast('Select an option first', 'Tap any prediction option above', 'warn');
-    return;
-  }
-  if (state.user.virtualPoints < slip.stake) {
-    showToast('Insufficient Virtual Points', 'Claim daily rewards to earn more VP!', 'warn');
-    return;
-  }
+  if (!slip.selection) { showToast('Choose an option', 'Tap a team or outcome above', 'warn'); return; }
+  if (state.user.virtualPoints < slip.stake) { showToast('Not enough VP', 'Claim daily bonus in Rewards!', 'warn'); return; }
+
   const m = state.matches.find(x => x.id === matchId);
   state.user.virtualPoints -= slip.stake;
-  const potential = Math.round(slip.stake * slip.multiplier);
-
   state.myPredictions.unshift({
     id: 'p' + Date.now(),
     match: `${m.teamA.name} vs ${m.teamB.name}`,
@@ -1642,14 +1629,13 @@ function submitVirtualPrediction(matchId) {
     market: slip.market,
     pick: slip.selection,
     stake: slip.stake,
-    potential,
+    potential: Math.round(slip.stake * slip.multiplier),
     status: 'Active',
     date: 'Just Now'
   });
-
   state.challenges[0].progress = Math.min(state.challenges[0].total, state.challenges[0].progress + 1);
   slip.selection = null;
-  showToast('Prediction Locked!', `${slip.stake} VP placed on ${m.teamA.short} vs ${m.teamB.short}`, 'success');
+  showToast('Prediction Confirmed!', `${slip.stake} VP placed on 777bet`, 'success');
   navigate('my-predictions');
 }
 
@@ -1664,60 +1650,59 @@ function renderMyPredictions() {
 
   const finished = state.myPredictions.filter(p => p.status !== 'Active');
   const wins = finished.filter(p => p.status === 'Correct').length;
-  const accuracy = finished.length ? Math.round((wins / finished.length) * 100) : 78;
+  const acc = finished.length ? Math.round((wins / finished.length) * 100) : 80;
+  const dashOffset = 157 - (157 * acc) / 100;
 
   return `
   ${getHeader('My Predictions', true)}
-  <div class="screen-scroll px-4 pt-3 space-y-4 screen-enter">
-    <!-- Accuracy Summary Card -->
+  <div class="screen-scroll px-4 pt-3 space-y-4 anim-enter">
     <div class="glass-card rounded-3xl p-4 flex items-center justify-between bg-gradient-to-r from-electric/20 to-neon/10">
       <div>
-        <div class="text-xs text-slate-300">Prediction Accuracy</div>
-        <div class="font-display font-black text-3xl text-neon mt-0.5">${accuracy}%</div>
+        <div class="text-xs text-slate-300 font-semibold">Prediction Accuracy</div>
+        <div class="font-display font-black text-3xl text-neon mt-0.5">${acc}%</div>
         <div class="text-[11px] text-slate-400 mt-1">${wins} Won • ${finished.length - wins} Missed • ${state.myPredictions.filter(p=>p.status==='Active').length} Active</div>
       </div>
-      <div class="w-16 h-16 rounded-full border-4 border-neon flex items-center justify-center font-mono font-bold text-sm text-white shadow-[0_0_20px_rgba(0,255,135,0.3)]">
-        🎯
+      <div class="relative w-16 h-16 flex items-center justify-center">
+        <svg class="w-16 h-16 -rotate-90" viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="25" stroke="rgba(255,255,255,0.12)" stroke-width="5" fill="none"/>
+          <circle cx="30" cy="30" r="25" stroke="#00FF87" stroke-width="5" fill="none" stroke-linecap="round"
+            stroke-dasharray="157" stroke-dashoffset="${dashOffset}"/>
+        </svg>
+        <span class="absolute text-xs font-mono font-black text-white">${acc}%</span>
       </div>
     </div>
 
-    <!-- Filter Tabs -->
     <div class="grid grid-cols-4 gap-1.5 p-1 glass-card rounded-2xl">
       ${tabs.map(t => `
         <button onclick="state.myPredTab='${t}'; renderApp();"
-          class="py-2 rounded-xl text-[11px] font-bold transition ${state.myPredTab===t ? 'btn-3d text-white keep-white' : 'text-slate-400'}">
-          ${t}
-        </button>
+          class="py-2 rounded-xl text-[11px] font-bold transition ${state.myPredTab===t ? 'btn-3d-blue' : 'text-slate-400'}">${t}</button>
       `).join('')}
     </div>
 
-    <!-- Prediction Cards -->
     <div class="space-y-3">
       ${list.length ? list.map(p => {
-        const badgeClass = p.status === 'Correct' ? 'bg-neon/20 text-neon border-neon/40' :
-                           p.status === 'Incorrect' ? 'bg-rose-500/20 text-rose-400 border-rose-500/40' :
-                           'bg-electric/20 text-electric border-electric/40';
+        const badge = p.status==='Correct' ? 'bg-neon/20 text-neon border-neon/40' :
+                      p.status==='Incorrect' ? 'bg-rose-500/20 text-rose-400 border-rose-500/40' :
+                      'bg-electric/20 text-electric border-electric/40';
         return `
-        <div class="glass-card rounded-2xl p-4 space-y-2">
+        <div class="glass-card rounded-3xl p-4 space-y-2.5">
           <div class="flex justify-between items-center">
             <span class="text-[10px] font-bold text-slate-400">${p.sport} • ${p.date}</span>
-            <span class="px-2.5 py-0.5 rounded-full border text-[10px] font-bold ${badgeClass}">${p.status}</span>
+            <span class="px-2.5 py-0.5 rounded-full border text-[10px] font-extrabold ${badge}">${p.status}</span>
           </div>
           <div class="font-display font-bold text-sm">${p.match}</div>
-          <div class="flex justify-between items-center text-xs bg-white/5 rounded-xl p-2.5">
+          <div class="flex justify-between items-center text-xs bg-white/5 rounded-2xl p-3">
             <div>
               <div class="text-[10px] text-slate-400">${p.market}</div>
-              <div class="font-bold text-white">${p.pick}</div>
+              <div class="font-bold">${p.pick}</div>
             </div>
             <div class="text-right font-mono">
               <div class="text-[10px] text-slate-400">Stake: ${p.stake} VP</div>
-              <div class="font-bold ${p.status==='Incorrect' ? 'text-rose-400' : 'text-neon'}">
-                ${p.status==='Incorrect' ? '0 VP' : '+' + p.potential + ' VP'}
-              </div>
+              <div class="font-extrabold ${p.status==='Incorrect' ? 'text-rose-400' : 'text-neon'}">${p.status==='Incorrect' ? '0 VP' : '+' + p.potential + ' VP'}</div>
             </div>
           </div>
         </div>`;
-      }).join('') : `<div class="glass-card rounded-2xl p-6 text-center text-xs text-slate-400">No predictions in ${state.myPredTab}.</div>`}
+      }).join('') : `<div class="glass-card rounded-3xl p-6 text-center text-xs text-slate-400">No ${state.myPredTab} predictions yet.</div>`}
     </div>
   </div>`;
 }
@@ -1729,35 +1714,30 @@ function renderLeaderboard() {
 
   return `
   ${getHeader('Leaderboard')}
-  <div class="screen-scroll px-4 pt-3 space-y-4 screen-enter">
-    <!-- Period Tabs -->
-    <div class="grid grid-cols-3 gap-2 p-1 glass-card rounded-2xl">
+  <div class="screen-scroll px-4 pt-3 space-y-4 anim-enter">
+    <div class="grid grid-cols-3 gap-1.5 p-1 glass-card rounded-2xl">
       ${['Daily', 'Weekly', 'Monthly'].map(tab => `
         <button onclick="state.leaderboardTab='${tab}'; renderApp();"
-          class="py-2 rounded-xl text-xs font-bold transition ${state.leaderboardTab===tab ? 'btn-3d text-white keep-white' : 'text-slate-400'}">
-          ${tab}
-        </button>
+          class="py-2.5 rounded-xl text-xs font-extrabold transition ${state.leaderboardTab===tab ? 'btn-3d-blue' : 'text-slate-400'}">${tab}</button>
       `).join('')}
     </div>
 
-    <!-- Top 3 Podium -->
-    <div class="grid grid-cols-3 gap-2 items-end pt-4 pb-2">
-      <!-- #2 -->
+    <div class="grid grid-cols-3 gap-2 items-end pt-4 pb-1">
       <div class="glass-card rounded-2xl p-3 text-center">
         <div class="w-11 h-11 mx-auto rounded-full bg-gradient-to-br ${top3[1].color} flex items-center justify-center font-black text-navy-950 text-sm mb-1.5">2</div>
         <div class="font-bold text-xs truncate">${top3[1].name}</div>
         <div class="font-mono text-[11px] text-cyanGlow font-bold">${top3[1].points.toLocaleString()}</div>
         <div class="text-[10px] text-slate-400">${top3[1].acc}</div>
       </div>
-      <!-- #1 -->
-      <div class="glass-card rounded-2xl p-3.5 text-center border-gold/50 bg-gradient-to-b from-gold/15 to-transparent -translate-y-2 shadow-[0_0_25px_rgba(255,215,0,0.2)]">
+
+      <div class="glass-card rounded-2xl p-3.5 text-center border-gold/60 bg-gradient-to-b from-gold/20 to-transparent -translate-y-2 shadow-[0_0_28px_rgba(255,215,0,0.22)]">
         <div class="text-xl mb-1">👑</div>
         <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-br ${top3[0].color} flex items-center justify-center font-black text-navy-950 text-base mb-1.5">1</div>
         <div class="font-bold text-xs truncate text-gold">${top3[0].name}</div>
         <div class="font-mono text-xs text-white font-black">${top3[0].points.toLocaleString()}</div>
         <div class="text-[10px] text-neon font-bold">${top3[0].acc}</div>
       </div>
-      <!-- #3 -->
+
       <div class="glass-card rounded-2xl p-3 text-center">
         <div class="w-11 h-11 mx-auto rounded-full bg-gradient-to-br ${top3[2].color} flex items-center justify-center font-black text-navy-950 text-sm mb-1.5">3</div>
         <div class="font-bold text-xs truncate">${top3[2].name}</div>
@@ -1766,22 +1746,21 @@ function renderLeaderboard() {
       </div>
     </div>
 
-    <!-- Full Rankings List -->
     <div class="space-y-2.5">
       ${rows.map(r => `
         <div class="glass-card rounded-2xl p-3.5 flex items-center justify-between ${r.isMe ? 'border-neon/60 bg-neon/10' : ''}">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <div class="w-7 text-center font-mono font-black text-sm ${r.rank<=3 ? 'text-gold' : 'text-slate-400'}">#${r.rank}</div>
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center text-lg shadow">${r.badge}</div>
-            <div>
-              <div class="font-bold text-sm flex items-center gap-1.5">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center text-lg shadow shrink-0">${r.badge}</div>
+            <div class="min-w-0">
+              <div class="font-bold text-sm flex items-center gap-1.5 truncate">
                 ${r.name} ${r.isMe ? '<span class="px-1.5 py-0.5 rounded bg-neon text-navy-950 text-[9px] font-black">YOU</span>' : ''}
               </div>
-              <div class="text-[11px] text-slate-400">Accuracy: <span class="text-neon font-semibold">${r.acc}</span></div>
+              <div class="text-[11px] text-slate-400">Accuracy: <span class="text-neon font-bold">${r.acc}</span></div>
             </div>
           </div>
-          <div class="text-right font-mono">
-            <div class="font-extrabold text-sm text-gold">${r.points.toLocaleString()}</div>
+          <div class="text-right font-mono shrink-0">
+            <div class="font-black text-sm text-gold">${r.points.toLocaleString()}</div>
             <div class="text-[10px] text-slate-400">VP</div>
           </div>
         </div>
@@ -1794,72 +1773,64 @@ function renderLeaderboard() {
 function renderRewards() {
   return `
   ${getHeader('Rewards & Quests', true)}
-  <div class="screen-scroll px-4 pt-3 space-y-4 screen-enter">
-    <!-- Daily Login Streak -->
+  <div class="screen-scroll px-4 pt-3 space-y-4 anim-enter">
     <div class="glass-card rounded-3xl p-5 bg-gradient-to-br from-amber-500/20 via-navy-900 to-navy-950 border-gold/40">
       <div class="flex justify-between items-center mb-3">
         <div>
-          <span class="text-[10px] font-bold text-gold uppercase tracking-wider">Daily Login Streak</span>
-          <h2 class="font-display font-black text-xl">Day ${state.user.streakDays} Bonus</h2>
+          <span class="text-[10px] font-black text-gold uppercase tracking-widest">Daily Login Streak</span>
+          <h2 class="font-display font-black text-xl">Day ${state.user.streakDays} Reward</h2>
         </div>
-        <div class="text-3xl">🎁</div>
+        <div class="text-3xl anim-float">🎁</div>
       </div>
       <div class="grid grid-cols-7 gap-1.5 mb-4">
         ${[1,2,3,4,5,6,7].map(d => `
-          <div class="py-2 rounded-xl text-center text-[10px] font-bold ${d < state.user.streakDays ? 'bg-neon/20 text-neon border border-neon/40' : d===state.user.streakDays ? 'bg-gold text-navy-950' : 'bg-white/5 text-slate-400'}">
-            D${d}
-          </div>
+          <div class="py-2 rounded-xl text-center text-[10px] font-extrabold ${d < state.user.streakDays ? 'bg-neon/20 text-neon border border-neon/40' : d===state.user.streakDays ? 'bg-gold text-navy-950' : 'bg-white/5 text-slate-400'}">D${d}</div>
         `).join('')}
       </div>
-      <button onclick="claimDailyReward()" ${state.user.dailyClaimed ? 'disabled' : ''}
-        class="w-full py-3 rounded-xl font-display font-extrabold text-xs ${state.user.dailyClaimed ? 'bg-white/10 text-slate-400' : 'btn-neon'}">
+      <button onclick="claimDaily()" ${state.user.dailyClaimed ? 'disabled' : ''}
+        class="w-full py-3.5 rounded-2xl font-display font-extrabold text-xs ${state.user.dailyClaimed ? 'bg-white/10 text-slate-400' : 'btn-3d-neon'}">
         ${state.user.dailyClaimed ? '✓ Claimed Today (+250 VP)' : 'Claim +250 Virtual Points'}
       </button>
     </div>
 
-    <!-- Weekly Challenges -->
     <div class="glass-card rounded-3xl p-4 space-y-3">
-      <h3 class="font-display font-bold text-sm">Weekly Challenges</h3>
+      <h3 class="font-display font-extrabold text-sm">Weekly Challenges</h3>
       ${state.challenges.map(c => {
         const pct = Math.round((c.progress / c.total) * 100);
         const ready = c.progress >= c.total && !c.claimed;
         return `
-        <div class="p-3 rounded-2xl bg-white/5 space-y-2">
-          <div class="flex justify-between items-center text-xs">
+        <div class="p-3.5 rounded-2xl bg-white/5 space-y-2">
+          <div class="flex justify-between text-xs">
             <span class="font-bold">${c.title}</span>
-            <span class="font-mono font-bold text-gold">+${c.reward} VP</span>
+            <span class="font-mono font-extrabold text-gold">+${c.reward} VP</span>
           </div>
           <div class="h-2 rounded-full bg-white/10 overflow-hidden">
             <div class="h-full bg-gradient-to-r from-electric to-neon rounded-full" style="width:${pct}%"></div>
           </div>
           <div class="flex justify-between items-center text-[10px] text-slate-400">
             <span>Progress: ${c.progress}/${c.total}</span>
-            ${ready ? `<button onclick="claimChallenge('${c.id}')" class="px-2.5 py-1 rounded-lg bg-neon text-navy-950 font-extrabold">Claim Reward</button>` : c.claimed ? `<span class="text-neon font-bold">✓ Claimed</span>` : ''}
+            ${ready ? `<button onclick="claimChal('${c.id}')" class="px-3 py-1 rounded-lg bg-neon text-navy-950 font-black">Claim</button>` : c.claimed ? `<span class="text-neon font-bold">✓ Claimed</span>` : ''}
           </div>
         </div>`;
       }).join('')}
     </div>
 
-    <!-- Interactive Sports Quiz -->
-    <div class="glass-card rounded-3xl p-4 border-electric/30 space-y-3">
+    <div class="glass-card rounded-3xl p-4 border-electric/35 space-y-3">
       <div class="flex justify-between items-center">
-        <span class="px-2.5 py-0.5 rounded-full bg-electric/20 text-electric text-[10px] font-bold">SPORTS QUIZ</span>
-        <span class="font-mono text-xs text-gold font-bold">+250 VP</span>
+        <span class="px-2.5 py-0.5 rounded-full bg-electric/20 text-cyanGlow text-[10px] font-extrabold">777BET QUIZ</span>
+        <span class="font-mono text-xs text-gold font-extrabold">+250 VP</span>
       </div>
-      <div class="font-display font-bold text-sm">Which player holds the record for most centuries in ODI Cricket?</div>
+      <div class="font-display font-bold text-sm">Which player holds the record for the most ODI Cricket centuries?</div>
       <div class="grid grid-cols-2 gap-2">
-        ${['Virat Kohli', 'Sachin Tendulkar', 'Ricky Ponting', 'Rohit Sharma'].map(ans => `
-          <button onclick="answerQuiz('${ans}')" ${state.quizAnswered ? 'disabled' : ''}
-            class="p-2.5 rounded-xl text-xs font-semibold border transition ${state.quizAnswered && ans==='Virat Kohli' ? 'bg-neon/20 border-neon text-neon' : 'bg-white/5 border-white/10 hover:border-electric'}">
-            ${ans}
-          </button>
+        ${['Virat Kohli', 'Sachin Tendulkar', 'Ricky Ponting', 'Rohit Sharma'].map(a => `
+          <button onclick="answerQuiz('${a}')" ${state.quizAnswered ? 'disabled' : ''}
+            class="p-3 rounded-xl text-xs font-bold border transition ${state.quizAnswered && a==='Virat Kohli' ? 'bg-neon/20 border-neon text-neon' : 'bg-white/5 border-white/10 active:scale-95'}">${a}</button>
         `).join('')}
       </div>
     </div>
 
-    <!-- Achievement Badges -->
     <div>
-      <h3 class="font-display font-bold text-sm mb-2.5">Achievement Badges</h3>
+      <h3 class="font-display font-extrabold text-sm mb-2.5">Achievement Badges</h3>
       <div class="grid grid-cols-2 gap-2.5">
         ${state.badges.map(b => `
           <div class="glass-card rounded-2xl p-3 flex items-center gap-2.5 ${b.unlocked ? '' : 'opacity-45'}">
@@ -1875,32 +1846,29 @@ function renderRewards() {
   </div>`;
 }
 
-function claimDailyReward() {
+function claimDaily() {
   if (state.user.dailyClaimed) return;
   state.user.dailyClaimed = true;
   state.user.virtualPoints += 250;
-  showToast('+250 Virtual Points Claimed!', 'Come back tomorrow for Day 6!', 'success');
+  showToast('+250 VP Claimed!', '777bet Daily Streak Bonus', 'success');
   renderApp();
 }
-
-function claimChallenge(id) {
+function claimChal(id) {
   const c = state.challenges.find(x => x.id === id);
   if (!c || c.claimed) return;
   c.claimed = true;
   state.user.virtualPoints += c.reward;
-  showToast(`Challenge Complete! +${c.reward} VP`, c.title, 'success');
+  showToast(`+${c.reward} VP Unlocked!`, c.title, 'success');
   renderApp();
 }
-
 function answerQuiz(ans) {
   if (state.quizAnswered) return;
   state.quizAnswered = true;
   if (ans === 'Virat Kohli') {
-    state.quizCorrect = true;
     state.user.virtualPoints += 250;
-    showToast('Correct Answer! +250 VP', 'Virat Kohli leads with 50+ ODI tons!', 'success');
+    showToast('Correct! +250 VP', 'Virat Kohli leads with 50+ ODI tons!', 'success');
   } else {
-    showToast('Nice Try!', 'The correct answer is Virat Kohli.', 'warn');
+    showToast('Nice Try!', 'Correct answer: Virat Kohli', 'warn');
   }
   renderApp();
 }
@@ -1909,18 +1877,18 @@ function answerQuiz(ans) {
 function renderNotifications() {
   return `
   ${getHeader('Notifications', true)}
-  <div class="screen-scroll px-4 pt-3 space-y-3 screen-enter">
+  <div class="screen-scroll px-4 pt-3 space-y-3 anim-enter">
     <div class="flex justify-between items-center">
       <span class="text-xs text-slate-400">${state.notifications.filter(n=>n.unread).length} Unread alerts</span>
-      <button onclick="state.notifications.forEach(n=>n.unread=false); showToast('All caught up!','','info'); renderApp();" class="text-xs text-electric font-bold">Mark all read</button>
+      <button onclick="state.notifications.forEach(n=>n.unread=false); showToast('All notifications read','','info'); renderApp();" class="text-xs text-electric font-bold">Mark all read</button>
     </div>
 
     ${state.notifications.map(n => `
-      <div onclick="nMarkRead('${n.id}', '${n.matchId || ''}')" class="glass-card rounded-2xl p-4 flex gap-3 cursor-pointer ${n.unread ? 'border-electric/50 bg-electric/10' : ''}">
+      <div onclick="readNotif('${n.id}', '${n.matchId || ''}')" class="glass-card glass-press rounded-2xl p-4 flex gap-3 cursor-pointer ${n.unread ? 'border-electric/50 bg-electric/10' : ''}">
         <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0">
           ${n.type==='live' ? '🔴' : n.type==='goal' ? '⚽' : n.type==='win' ? '💰' : n.type==='challenge' ? '⚡' : '🏆'}
         </div>
-        <div class="flex-1">
+        <div class="flex-1 min-w-0">
           <div class="flex justify-between items-start gap-2">
             <h4 class="font-bold text-xs leading-snug">${n.title}</h4>
             ${n.unread ? `<span class="w-2 h-2 rounded-full bg-neon shrink-0 mt-1"></span>` : ''}
@@ -1932,8 +1900,7 @@ function renderNotifications() {
     `).join('')}
   </div>`;
 }
-
-function nMarkRead(id, matchId) {
+function readNotif(id, matchId) {
   const n = state.notifications.find(x => x.id === id);
   if (n) n.unread = false;
   if (matchId) navigate('match-details', { matchId });
@@ -1942,82 +1909,74 @@ function nMarkRead(id, matchId) {
 
 // SCREEN 13: USER PROFILE
 function renderProfile() {
-  const totalPreds = state.myPredictions.length;
   return `
   ${getHeader('My Profile')}
-  <div class="screen-scroll px-4 pt-3 space-y-4 screen-enter">
-    <!-- Profile Hero Card -->
+  <div class="screen-scroll px-4 pt-3 space-y-4 anim-enter">
     <div class="glass-card rounded-3xl p-5 flex items-center gap-4 bg-gradient-to-br from-electric/20 via-navy-900 to-navy-950">
-      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br ${state.user.avatarColor} p-0.5 shrink-0 shadow-lg">
-        <div class="w-full h-full rounded-[14px] bg-navy-950 flex items-center justify-center font-display font-black text-xl text-white">AS</div>
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-electric via-cyanGlow to-neon p-0.5 shrink-0 shadow-lg">
+        <div class="w-full h-full rounded-[14px] bg-navy-950 flex items-center justify-center font-display font-black text-xl text-white keep-white">AS</div>
       </div>
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
           <h2 class="font-display font-extrabold text-lg truncate">${state.user.name}</h2>
-          <span class="px-2 py-0.5 rounded-full bg-gold/20 text-gold text-[9px] font-bold">PRO</span>
+          <span class="px-2 py-0.5 rounded-full bg-gold/20 text-gold text-[9px] font-black">VIP</span>
         </div>
-        <div class="text-xs text-slate-400">${state.user.username} • ID: <span class="font-mono text-cyanGlow">${state.user.id}</span></div>
+        <div class="text-xs text-slate-400 truncate">${state.user.username} • <span class="font-mono text-cyanGlow">${state.user.id}</span></div>
       </div>
-      <button onclick="navigate('settings')" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center">
-        ⚙️
-      </button>
+      <button onclick="navigate('settings')" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center active:scale-90">⚙️</button>
     </div>
 
-    <!-- Stats Grid -->
     <div class="grid grid-cols-3 gap-2.5">
       <div class="glass-card rounded-2xl p-3 text-center">
         <div class="font-mono font-black text-base text-gold">${state.user.virtualPoints.toLocaleString()}</div>
         <div class="text-[10px] text-slate-400 mt-0.5">Virtual Points</div>
       </div>
       <div class="glass-card rounded-2xl p-3 text-center">
-        <div class="font-mono font-black text-base text-neon">78%</div>
+        <div class="font-mono font-black text-base text-neon">80%</div>
         <div class="text-[10px] text-slate-400 mt-0.5">Accuracy</div>
       </div>
       <div class="glass-card rounded-2xl p-3 text-center">
-        <div class="font-mono font-black text-base text-electric">${totalPreds}</div>
+        <div class="font-mono font-black text-base text-electric">${state.myPredictions.length}</div>
         <div class="text-[10px] text-slate-400 mt-0.5">Predictions</div>
       </div>
     </div>
 
-    <!-- Quick Actions -->
     <div class="grid grid-cols-2 gap-2.5">
-      <button onclick="navigate('my-predictions')" class="glass-card rounded-2xl p-3.5 text-left active:scale-95 transition">
+      <button onclick="navigate('my-predictions')" class="glass-card glass-press rounded-2xl p-4 text-left">
         <div class="text-xl mb-1">📊</div>
         <div class="font-bold text-xs">My Predictions</div>
-        <div class="text-[10px] text-slate-400">Active & History</div>
+        <div class="text-[10px] text-slate-400">Active & Settled</div>
       </button>
-      <button onclick="navigate('rewards')" class="glass-card rounded-2xl p-3.5 text-left active:scale-95 transition">
+      <button onclick="navigate('rewards')" class="glass-card glass-press rounded-2xl p-4 text-left">
         <div class="text-xl mb-1">🎁</div>
         <div class="font-bold text-xs">Rewards Hub</div>
         <div class="text-[10px] text-slate-400">Quests & Daily VP</div>
       </button>
     </div>
 
-    <!-- Favourite Sports & Teams -->
-    <div class="glass-card rounded-2xl p-4 space-y-3">
+    <div class="glass-card rounded-3xl p-4 space-y-3">
       <div>
         <div class="text-xs font-bold text-slate-300 mb-2">Favourite Sports</div>
         <div class="flex flex-wrap gap-2">
-          ${state.user.favSports.map(s => `<span class="px-3 py-1 rounded-full bg-electric/15 border border-electric/30 text-electric text-xs font-semibold">${s}</span>`).join('')}
+          ${state.user.favSports.map(s => `<span class="px-3 py-1 rounded-full bg-electric/15 border border-electric/35 text-electric text-xs font-bold">${s}</span>`).join('')}
         </div>
       </div>
       <div class="pt-2 border-t border-white/10">
         <div class="text-xs font-bold text-slate-300 mb-2">Favourite Teams</div>
         <div class="flex flex-wrap gap-2">
-          ${state.user.favTeams.map(t => `<span class="px-3 py-1 rounded-full bg-gold/15 border border-gold/30 text-gold text-xs font-semibold">★ ${t}</span>`).join('')}
+          ${state.user.favTeams.map(t => `<span class="px-3 py-1 rounded-full bg-gold/15 border border-gold/35 text-gold text-xs font-bold">★ ${t}</span>`).join('')}
         </div>
       </div>
     </div>
 
-    <!-- Badges Showcase -->
-    <div class="glass-card rounded-2xl p-4">
+    <div class="glass-card rounded-3xl p-4">
       <div class="flex justify-between items-center mb-2.5">
-        <span class="text-xs font-bold">Unlocked Achievements</span>
-        <button onclick="navigate('rewards')" class="text-[11px] text-electric font-semibold">View All</button>
+        <span class="text-xs font-bold">Unlocked Badges</span>
+        <button onclick="navigate('rewards')" class="text-[11px] text-electric font-bold">See All</button>
       </div>
-      <div class="flex gap-3">
+      <div class="flex gap-2.5">
         ${state.badges.filter(b=>b.unlocked).map(b => `
-          <div class="flex-1 p-2.5 rounded-xl bg-white/5 text-center">
+          <div class="flex-1 p-2.5 rounded-2xl bg-white/5 text-center">
             <div class="text-2xl">${b.icon}</div>
             <div class="text-[10px] font-bold mt-1 truncate">${b.name}</div>
           </div>
@@ -2031,66 +1990,63 @@ function renderProfile() {
 function renderSettings() {
   return `
   ${getHeader('Settings', true)}
-  <div class="screen-scroll px-4 pt-3 space-y-4 screen-enter">
-    <!-- Account -->
+  <div class="screen-scroll px-4 pt-3 space-y-4 anim-enter">
     <div class="glass-card rounded-3xl overflow-hidden divide-y divide-white/10">
-      <button onclick="openEditProfileModal()" class="w-full p-4 flex items-center justify-between text-left hover:bg-white/5">
+      <button onclick="openEditProfileModal()" class="w-full p-4 flex items-center justify-between text-left active:bg-white/5">
         <div class="flex items-center gap-3"><span>👤</span><div><div class="font-bold text-xs">Edit Profile</div><div class="text-[10px] text-slate-400">${state.user.name} (${state.user.username})</div></div></div>
         <span class="text-slate-400">›</span>
       </button>
 
       <div class="p-4 flex items-center justify-between">
         <div class="flex items-center gap-3"><span>🌐</span><div><div class="font-bold text-xs">Language</div><div class="text-[10px] text-slate-400">${state.user.language}</div></div></div>
-        <select onchange="state.user.language=this.value; showToast('Language Updated', this.value, 'info');" class="bg-navy-900 border border-white/15 rounded-lg px-2 py-1 text-xs text-white outline-none">
+        <select onchange="state.user.language=this.value; showToast('Language Changed', this.value, 'info');" class="bg-navy-900 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white outline-none">
           <option ${state.user.language==='English (Global)'?'selected':''}>English (Global)</option>
           <option ${state.user.language==='Hindi (हिन्दी)'?'selected':''}>Hindi (हिन्दी)</option>
           <option ${state.user.language==='Spanish'?'selected':''}>Spanish</option>
         </select>
       </div>
 
-      <!-- Dark / Light Mode Toggle -->
       <div class="p-4 flex items-center justify-between">
-        <div class="flex items-center gap-3"><span>${state.darkMode ? '🌙' : '☀️'}</span><div><div class="font-bold text-xs">Appearance Mode</div><div class="text-[10px] text-slate-400">${state.darkMode ? 'Premium Dark Theme' : 'Daylight Theme'}</div></div></div>
+        <div class="flex items-center gap-3"><span>${state.darkMode ? '🌙' : '☀️'}</span><div><div class="font-bold text-xs">Theme Mode</div><div class="text-[10px] text-slate-400">${state.darkMode ? 'Dark Obsidian Mode' : 'Light Mode'}</div></div></div>
         <button onclick="toggleTheme()" class="w-12 h-6 rounded-full p-1 transition ${state.darkMode ? 'bg-electric' : 'bg-slate-400'} flex items-center">
           <div class="w-4 h-4 rounded-full bg-white shadow transform transition ${state.darkMode ? 'translate-x-6' : 'translate-x-0'}"></div>
         </button>
       </div>
     </div>
 
-    <!-- Preferences -->
     <div class="glass-card rounded-3xl overflow-hidden divide-y divide-white/10">
       <div class="p-4 flex items-center justify-between">
-        <div class="flex items-center gap-3"><span>🔔</span><div><div class="font-bold text-xs">Live Match Alerts</div><div class="text-[10px] text-slate-400">Goals, wickets & score updates</div></div></div>
-        <button onclick="state.user.notificationsEnabled.liveScores=!state.user.notificationsEnabled.liveScores; renderApp();"
-          class="w-11 h-6 rounded-full p-1 transition ${state.user.notificationsEnabled.liveScores ? 'bg-neon' : 'bg-white/20'} flex items-center">
-          <div class="w-4 h-4 rounded-full bg-white shadow transform transition ${state.user.notificationsEnabled.liveScores ? 'translate-x-5' : ''}"></div>
+        <div class="flex items-center gap-3"><span>🔔</span><div><div class="font-bold text-xs">Match Alerts</div><div class="text-[10px] text-slate-400">Live goals, wickets & results</div></div></div>
+        <button onclick="state.user.notifications.live=!state.user.notifications.live; renderApp();"
+          class="w-11 h-6 rounded-full p-1 transition ${state.user.notifications.live ? 'bg-neon' : 'bg-white/20'} flex items-center">
+          <div class="w-4 h-4 rounded-full bg-white shadow transform transition ${state.user.notifications.live ? 'translate-x-5' : ''}"></div>
         </button>
       </div>
+
       <div class="p-4 flex items-center justify-between">
-        <div class="flex items-center gap-3"><span>🔒</span><div><div class="font-bold text-xs">Public Leaderboard Profile</div><div class="text-[10px] text-slate-400">Show username in global ranks</div></div></div>
-        <button onclick="state.user.privacyPublicProfile=!state.user.privacyPublicProfile; renderApp();"
-          class="w-11 h-6 rounded-full p-1 transition ${state.user.privacyPublicProfile ? 'bg-neon' : 'bg-white/20'} flex items-center">
-          <div class="w-4 h-4 rounded-full bg-white shadow transform transition ${state.user.privacyPublicProfile ? 'translate-x-5' : ''}"></div>
+        <div class="flex items-center gap-3"><span>🔒</span><div><div class="font-bold text-xs">Public Leaderboard</div><div class="text-[10px] text-slate-400">Display rank publicly</div></div></div>
+        <button onclick="state.user.publicLeaderboard=!state.user.publicLeaderboard; renderApp();"
+          class="w-11 h-6 rounded-full p-1 transition ${state.user.publicLeaderboard ? 'bg-neon' : 'bg-white/20'} flex items-center">
+          <div class="w-4 h-4 rounded-full bg-white shadow transform transition ${state.user.publicLeaderboard ? 'translate-x-5' : ''}"></div>
         </button>
       </div>
     </div>
 
-    <!-- Legal & Support -->
     <div class="glass-card rounded-3xl overflow-hidden divide-y divide-white/10">
-      <button onclick="openLegalModal('Terms & Conditions')" class="w-full p-4 flex justify-between text-xs font-bold"><span>📜 Terms & Conditions</span><span class="text-slate-400">›</span></button>
-      <button onclick="openLegalModal('Help & Support')" class="w-full p-4 flex justify-between text-xs font-bold"><span>💬 Help & Support</span><span class="text-slate-400">›</span></button>
-      <button onclick="openLegalModal('About BETZONE X')" class="w-full p-4 flex justify-between text-xs font-bold"><span>ℹ️ About Application (v4.0)</span><span class="text-slate-400">›</span></button>
+      <button onclick="openInfoModal('Terms & Conditions')" class="w-full p-4 flex justify-between text-xs font-bold"><span>📜 Terms & Conditions</span><span class="text-slate-400">›</span></button>
+      <button onclick="openInfoModal('Help & Support')" class="w-full p-4 flex justify-between text-xs font-bold"><span>💬 Help & Support</span><span class="text-slate-400">›</span></button>
+      <button onclick="openInfoModal('About 777bet')" class="w-full p-4 flex justify-between text-xs font-bold"><span>ℹ️ About 777bet (v5.0)</span><span class="text-slate-400">›</span></button>
     </div>
 
-    <button onclick="showToast('Logged Out', 'See you soon!', 'info'); state.history=[]; navigate('login', {}, false);"
-      class="w-full py-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 font-bold text-sm active:scale-95 transition">
+    <button onclick="showToast('Logged Out', 'See you in the arena!', 'info'); state.history=[]; navigate('login', {}, false);"
+      class="w-full py-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 font-extrabold text-sm active:scale-95 transition">
       Log Out
     </button>
   </div>`;
 }
 
 // ============================================================================
-// 5. MODALS & THEME CONTROLS
+// 5. MODALS, THEME & LIVE TICKER ENGINE
 // ============================================================================
 function toggleTheme() {
   state.darkMode = !state.darkMode;
@@ -2107,18 +2063,17 @@ function openEditProfileModal() {
       </div>
       <div>
         <label class="text-xs text-slate-400 block mb-1">Display Name</label>
-        <input id="edit-name" value="${state.user.name}" class="w-full bg-navy-900 border border-white/15 rounded-xl px-3 py-2.5 text-sm text-white outline-none"/>
+        <input id="edit-name" value="${state.user.name}" class="w-full bg-navy-900 border border-white/15 rounded-xl px-3.5 py-3 text-sm text-white outline-none"/>
       </div>
       <div>
         <label class="text-xs text-slate-400 block mb-1">Username</label>
-        <input id="edit-user" value="${state.user.username}" class="w-full bg-navy-900 border border-white/15 rounded-xl px-3 py-2.5 text-sm text-white outline-none"/>
+        <input id="edit-user" value="${state.user.username}" class="w-full bg-navy-900 border border-white/15 rounded-xl px-3.5 py-3 text-sm text-white outline-none"/>
       </div>
-      <button onclick="saveProfileModal()" class="w-full py-3 rounded-xl btn-3d text-sm font-bold text-white keep-white">Save Changes</button>
+      <button onclick="saveProfile()" class="w-full py-3.5 rounded-2xl btn-3d-blue text-sm font-bold">Save Changes</button>
     </div>
   `);
 }
-
-function saveProfileModal() {
+function saveProfile() {
   state.user.name = document.getElementById('edit-name').value || state.user.name;
   state.user.username = document.getElementById('edit-user').value || state.user.username;
   closeModal();
@@ -2126,29 +2081,23 @@ function saveProfileModal() {
   renderApp();
 }
 
-function openLegalModal(title) {
+function openInfoModal(title) {
   openModal(`
     <div class="space-y-3">
       <div class="flex justify-between items-center">
-        <h3 class="font-display font-bold text-base text-cyanGlow">${title}</h3>
+        <h3 class="font-display font-bold text-base text-gold">${title}</h3>
         <button onclick="closeModal()" class="text-slate-400 text-lg">✕</button>
       </div>
       <p class="text-xs text-slate-300 leading-relaxed">
-        <strong>BETZONE X</strong> is a next-generation sports entertainment and social prediction platform.
-        All match predictions operate strictly using <strong>free Virtual Points (VP)</strong>.
-        There is no real-money wagering, no deposits, no withdrawals, and no cash prizes. Virtual points hold zero monetary value.
+        <strong>777bet</strong> is a social sports entertainment & prediction app powered strictly by
+        <strong>free Virtual Points (VP)</strong>. No real-money wagering, no deposits, no withdrawals, and no cash prizes exist on this platform.
       </p>
-      <p class="text-xs text-slate-400 leading-relaxed">
-        Need help? Contact our 24/7 digital concierge at <span class="text-electric">support@betzonex.app</span>.
-      </p>
-      <button onclick="closeModal()" class="w-full py-2.5 rounded-xl bg-white/10 text-xs font-bold">Close</button>
+      <p class="text-xs text-slate-400">Support: <span class="text-cyanGlow">support@777bet.app</span></p>
+      <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-white/10 text-xs font-bold">Close</button>
     </div>
   `);
 }
 
-// ============================================================================
-// 6. REAL-TIME SCORE TICKER & APP RENDERER
-// ============================================================================
 function renderApp() {
   const viewport = document.getElementById('screen-viewport');
   const routes = {
@@ -2165,30 +2114,24 @@ function renderApp() {
     'rewards': renderRewards,
     'notifications': renderNotifications,
     'profile': renderProfile,
-    'settings': renderSettings,
+    'settings': renderSettings
   };
-
-  const renderer = routes[state.currentScreen] || renderHome;
-  viewport.innerHTML = renderer();
+  viewport.innerHTML = (routes[state.currentScreen] || renderHome)();
   renderBottomNav();
 }
 
-// Subtle live match clock simulator every 8 seconds
+// Subtle real-time match clock update
 setInterval(() => {
-  const football = state.matches.find(m => m.id === 'm2');
-  if (football) {
-    let min = parseInt(football.timer) || 74;
-    football.timer = (min < 90 ? min + 1 : 90) + "'";
+  const f = state.matches.find(m => m.id === 'm2');
+  if (f) {
+    let min = parseInt(f.timer) || 76;
+    f.timer = (min < 90 ? min + 1 : 90) + "'";
   }
-  if (['home', 'match-details', 'live-centre'].includes(state.currentScreen)) {
-    // Only refresh subtly when on live score screens without interrupting typing
-    if (document.activeElement.tagName !== 'INPUT') {
-      renderApp();
-    }
+  if (['home', 'match-details', 'live-centre'].includes(state.currentScreen) && document.activeElement.tagName !== 'INPUT') {
+    renderApp();
   }
 }, 9000);
 
-// Boot App
 renderApp();
 </script>
 </body>
